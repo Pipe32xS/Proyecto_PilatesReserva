@@ -1,0 +1,62 @@
+{% extends 'base_index.html' %}
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+<section class="d-flex align-items-start justify-content-center bg-body-tertiary" style="min-height: 85vh; padding-top: 5vh;">
+  <div class="container" style="max-width: 650px;">
+
+    <!-- Formulario -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden"
+         style="transition: all .25s ease;"
+         onmouseenter="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 1rem 1.75rem rgba(0,0,0,.15)';"
+         onmouseleave="this.style.transform='none'; this.style.boxShadow='';">
+
+      <div class="w-100" style="height:8px; background: linear-gradient(90deg, #0dcaf0, #6610f2);"></div>
+
+      <div class="card-body p-4">
+        <div class="text-center mb-3">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2"
+               style="width:56px;height:56px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-chat-dots-fill fs-4 text-info"></i>
+          </div>
+          <h2 class="h3 fw-bold mb-0">Contáctanos</h2>
+          <small class="text-secondary">Te respondemos a la brevedad</small>
+        </div>
+
+        <form method="POST" class="mt-2">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger rounded-3 py-2" role="alert">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          {% for field in form %}
+            <div class="mb-2">
+              <label class="form-label fw-semibold small">{{ field.label }}</label>
+              {{ field }}
+              {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <button type="submit"
+                  class="btn w-100 fw-semibold py-2 rounded-3 text-white mt-2"
+                  style="background: linear-gradient(90deg, #0dcaf0, #6f42c1); transition: all .25s ease;"
+                  onmouseenter="this.style.filter='brightness(1.05)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';"
+                  onmouseleave="this.style.filter='none'; this.style.transform='none'; this.style.boxShadow='none';">
+            Enviar mensaje
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
+
+

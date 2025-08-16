@@ -1,0 +1,43 @@
+{% extends 'administrador/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2 class="title">Listado de Clases de Pilates</h2>
+    <a href="#" class="btn btn-success">Crear nueva clase</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Instructor</th>
+            <th>Capacidad</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for clase in clases %}
+        <tr>
+            <td>{{ clase.nombre_clase }}</td>
+            <td>{{ clase.fecha }}</td>
+            <td>{{ clase.horario }}</td>
+            <td>{{ clase.nombre_instructor }}</td>
+            <td>{{ clase.capacidad_maxima }}</td>
+            <td>{{ clase.descripcion }}</td>
+            <td>
+                <a href="#" class="btn btn-warning btn-sm">Modificar</a>
+                <a href="#" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta clase?')">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No hay clases registradas.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

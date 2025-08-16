@@ -1,0 +1,13 @@
+{% extends 'administrador/base_admin.html' %}
+{% block title %}Formulario de Clase{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if clase %}Modificar{% else %}Crear{% endif %} Clase</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'administrador:listar_clases' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

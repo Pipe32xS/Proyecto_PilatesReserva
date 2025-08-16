@@ -1,0 +1,14 @@
+{% extends 'base_index.html' %}
+
+{% block title %}Mensaje Enviado{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="alert text-center"
+         style="background-color: var(--bs-warning); color: #000; border:1px solid rgba(var(--bs-warning-rgb), 0.8);">
+        <h4 class="alert-heading">¡Gracias por contactarnos!</h4>
+        <p>Tu mensaje ha sido enviado correctamente. Nos pondremos en contacto contigo a la brevedad.</p>
+        <a href="/" class="btn btn-dark mt-3">Volver al inicio</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,352 @@
+{% extends 'base_index.html' %}
+{% block title %}Clases | PilatesReserva{% endblock %}
+
+{% block content %}
+<!-- HERO – Clases -->
+<section class="position-relative text-white overflow-hidden"
+         style="
+           min-height: 360px;
+           background:
+             radial-gradient(800px 240px at 15% -10%, rgba(13,202,240,.18), transparent),
+             radial-gradient(900px 260px at 95% -20%, rgba(111,66,193,.20), transparent),
+             linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+             url('https://images.unsplash.com/photo-1588286840104-8957b019727f?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+         ">
+  <div style="height:4px; background: linear-gradient(90deg, #0dcaf0, #6f42c1); opacity:.9;"></div>
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="p-4 p-md-5 rounded-4 shadow-lg"
+             style="background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(8px);">
+          <div class="mb-3 d-flex flex-wrap gap-2">
+            <span class="badge rounded-pill" style="background: rgba(13,202,240,.2); color:#9ee8f7;">
+              <i class="bi bi-calendar-check me-1"></i> Clases disponibles
+            </span>
+            <span class="badge rounded-pill text-dark" style="background: rgba(255,255,255,.85);">Reformer</span>
+            <span class="badge rounded-pill text-dark" style="background: rgba(255,255,255,.85);">Mat</span>
+            <span class="badge rounded-pill text-dark" style="background: rgba(255,255,255,.85);">Grupal</span>
+          </div>
+          <h1 class="fw-bold display-5 mb-2">Reserva tu clase</h1>
+          <p class="lead mb-4 mb-md-5">Elige el tipo, revisa horarios y confirma tu cupo. Inicia sesión para completar la reserva.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#clasesTabs" class="btn btn-info text-dark fw-semibold px-4 py-2 rounded-3"
+               style="border: 1px solid rgba(13,202,240,.6); box-shadow: 0 8px 24px rgba(13,202,240,.25); transition: all .25s;"
+               onmouseenter="this.style.transform='translateY(-2px)'; this.style.filter='brightness(1.05)';"
+               onmouseleave="this.style.transform='none'; this.style.filter='none';">
+              <i class="bi bi-search me-2"></i>Explorar horarios
+            </a>
+            <a href="#faq" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3"
+               style="border-color: rgba(255,255,255,.6); backdrop-filter: blur(2px); transition: all .25s;"
+               onmouseenter="this.style.backgroundColor='rgba(255,255,255,.12)'; this.style.transform='translateY(-2px)';"
+               onmouseleave="this.style.backgroundColor='transparent'; this.style.transform='none';">
+              <i class="bi bi-question-circle me-2"></i>Cómo funciona
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tabs -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="clasesTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="reformer-tab" data-bs-toggle="pill"
+                data-bs-target="#reformer" type="button" role="tab" aria-controls="reformer" aria-selected="true">
+          Reformer
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="mat-tab" data-bs-toggle="pill"
+                data-bs-target="#mat" type="button" role="tab" aria-controls="mat" aria-selected="false">
+          Mat
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="grupal-tab" data-bs-toggle="pill"
+                data-bs-target="#grupal" type="button" role="tab" aria-controls="grupal" aria-selected="false">
+          Grupal
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ================== REFORMER ================== -->
+      <div class="tab-pane fade show active" id="reformer" role="tabpanel" aria-labelledby="reformer-tab">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-5">
+            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+              <img src="https://storage.googleapis.com/stateless-www-thelabel-cl/2025/01/Pilates-the-label-scaled.jpg"
+                   class="w-100 h-100 object-fit-cover" alt="Pilates Reformer">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <h3 class="fw-bold">Pilates Reformer</h3>
+            <p class="mb-3">Trabajo de fuerza y alineación con máquina Reformer. Ideal para todos los niveles.</p>
+            <div class="alert alert-info py-2 px-3 mb-4">
+              <i class="bi bi-info-circle me-2"></i>Debes iniciar sesión para reservar un horario.
+            </div>
+
+            <!-- Título + CTA reservar -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="text-muted mb-0">Horarios disponibles</h6>
+              <a href="{% url 'login:login' %}" class="btn btn-outline-info fw-semibold">
+                <i class="bi bi-calendar2-plus me-1"></i> Reservar hora
+              </a>
+            </div>
+
+            <div class="row g-3 mt-1">
+              <!-- Lunes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Lunes</strong><span class="badge text-bg-light">6 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Martes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Martes</strong><span class="badge text-bg-light">6 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Miércoles -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Miércoles</strong><span class="badge text-bg-light">6 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Jueves -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Jueves</strong><span class="badge text-bg-light">6 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Viernes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Viernes</strong><span class="badge text-bg-light">6 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Sábado -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Sábado</strong><span class="badge text-bg-light">6 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+              <a href="{% url 'clase_reformer' %}" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
+              <a href="{% url 'login:login' %}" class="btn btn-outline-secondary">Iniciar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================== MAT ================== -->
+      <div class="tab-pane fade" id="mat" role="tabpanel" aria-labelledby="mat-tab">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-5">
+            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+              <img src="https://beyogabcn.com/wp-content/uploads/2022/08/clases-pilates-mat.jpg"
+                   class="w-100 h-100 object-fit-cover" alt="Pilates Mat">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <h3 class="fw-bold">Pilates Mat</h3>
+            <p class="mb-3">Trabajo en colchoneta para control postural y estabilidad del core.</p>
+
+            <!-- Título + CTA reservar -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="text-muted mb-0">Horarios disponibles</h6>
+              <a href="{% url 'login:login' %}" class="btn btn-outline-info fw-semibold">
+                <i class="bi bi-calendar2-plus me-1"></i> Reservar hora
+              </a>
+            </div>
+
+            <div class="row g-3 mt-1">
+              <!-- Lunes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Lunes</strong><span class="badge text-bg-light">10 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Martes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Martes</strong><span class="badge text-bg-light">10 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Miércoles -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Miércoles</strong><span class="badge text-bg-light">10 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Jueves -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Jueves</strong><span class="badge text-bg-light">10 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Viernes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Viernes</strong><span class="badge text-bg-light">10 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Sábado -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Sábado</strong><span class="badge text-bg-light">10 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+              <a href="{% url 'clase_mat' %}" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
+              <a href="{% url 'login:login' %}" class="btn btn-outline-secondary">Iniciar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================== GRUPAL ================== -->
+      <div class="tab-pane fade" id="grupal" role="tabpanel" aria-labelledby="grupal-tab">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-5">
+            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+              <img src="https://www.2playbook.com/uploads/s1/25/34/68/paz-9633.jpeg"
+                   class="w-100 h-100 object-fit-cover" alt="Clases grupales">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <h3 class="fw-bold">Clases Grupales</h3>
+            <p class="mb-3">Energía y motivación compartida, aforo controlado y seguimiento por instructor.</p>
+
+            <!-- Título + CTA reservar -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="text-muted mb-0">Horarios disponibles</h6>
+              <a href="{% url 'login:login' %}" class="btn btn-outline-info fw-semibold">
+                <i class="bi bi-calendar2-plus me-1"></i> Reservar hora
+              </a>
+            </div>
+
+            <div class="row g-3 mt-1">
+              <!-- Lunes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Lunes</strong><span class="badge text-bg-light">12 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Martes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Martes</strong><span class="badge text-bg-light">12 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Miércoles -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Miércoles</strong><span class="badge text-bg-light">12 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Jueves -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Jueves</strong><span class="badge text-bg-light">12 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Viernes -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Viernes</strong><span class="badge text-bg-light">12 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+              <!-- Sábado -->
+              <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <strong>Sábado</strong><span class="badge text-bg-light">12 cupos</span>
+                </div>
+                <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
+                <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
+              </div></div></div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+              <a href="{% url 'clase_grupal' %}" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
+              <a href="{% url 'login:login' %}" class="btn btn-outline-secondary">Iniciar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FAQ -->
+    <div class="mt-5">
+      <h4 class="fw-bold text-center mb-3">Preguntas frecuentes</h4>
+      <div class="accordion" id="faq">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="q1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1">
+              ¿Necesito experiencia previa?
+            </button>
+          </h2>
+          <div id="a1" class="accordion-collapse collapse show" data-bs-parent="#faq">
+            <div class="accordion-body">No. Tenemos clases para todos los niveles y adaptaciones según tu condición.</div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="q2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2">
+              ¿Cómo confirmo mi reserva?
+            </button>
+          </h2>
+          <div id="a2" class="accordion-collapse collapse" data-bs-parent="#faq">
+            <div class="accordion-body">Inicia sesión, elige horario y confirma. Recibirás un correo con los detalles.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+

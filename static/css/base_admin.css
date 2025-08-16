@@ -1,0 +1,120 @@
+/* === Estilo para el Panel del Administrador === */
+
+/* Sidebar con gradiente moderno */
+.sidebar {
+    background: linear-gradient(180deg, #4a00e0, #8e2de2);
+    color: #ffffff;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+/* Títulos del panel */
+.admin-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    text-align: center;
+    color: #ffffff;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+/* Navegación dentro del sidebar */
+.nav-link {
+    color: #e0e0e0;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-radius: 8px;
+}
+
+/* Header superior */
+.header {
+    background-color: #ffffff;
+    border-bottom: 2px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.header h2 {
+    font-weight: 600;
+    color: #5e35b1;
+}
+
+/* Contenedor principal */
+.content-area {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    min-height: 75vh;
+}
+
+/* Botones principales */
+.btn-primary,
+.btn-info,
+.btn-outline-dark,
+.btn-outline-primary {
+    border-radius: 25px;
+}
+
+/* Tarjetas métricas (puedes usar clases como .card-metric.orange) */
+.card-metric {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card-metric:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-metric.orange {
+    background-color: #ffa726;
+    color: white;
+}
+
+.card-metric.pink {
+    background-color: #ec407a;
+    color: white;
+}
+
+.card-metric.purple {
+    background-color: #7e57c2;
+    color: white;
+}
+
+.card-metric.cyan {
+    background-color: #26c6da;
+    color: white;
+}
+
+/* Topbar */
+.topbar {
+    background-color: #212529;
+    color: #f8f9fa;
+    padding: 8px 20px;
+    font-size: 0.95rem;
+}
+
+.topbar a {
+    color: #00bcd4;
+    text-decoration: none;
+}
+
+.topbar a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive sidebar */
+@media (max-width: 767.98px) {
+    .sidebar {
+        display: none;
+    }
+}

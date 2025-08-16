@@ -1,0 +1,20 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block titulo %}Panel Administrador{% endblock %}
+
+{% block encabezado %}
+Bienvenido Administrador
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-3">Dashboard Administrador</h1>
+  <p class="text-muted">Has iniciado sesión como <strong>administrador</strong>.</p>
+
+  <div class="d-flex gap-2 mt-4">
+    <a class="btn btn-outline-primary" href="{% url 'administrador:listar_contactos' %}">Contactos</a>
+    <a class="btn btn-outline-success" href="{% url 'administrador:listar_clases' %}">Clases</a>
+    <a class="btn btn-danger" href="{% url 'login:logout' %}">Cerrar sesión</a>
+  </div>
+</div>
+{% endblock %}

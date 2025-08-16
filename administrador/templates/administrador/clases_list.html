@@ -1,0 +1,17 @@
+{% extends 'administrador/base_admin.html' %}
+{% block titulo %}Clases | Admin{% endblock %}
+{% block encabezado %}Clases (demo){% endblock %}
+
+{% block content %}
+<section class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h5 mb-0">Clases</h2>
+    <!-- ✅ nombre de URL correcto -->
+    <a class="btn btn-info fw-semibold" href="{% url 'administrador:clase_create' %}">
+      Crear clase
+    </a>
+  </div>
+
+  <p class="text-secondary">Aquí iría la tabla con las clases creadas. (MVP)</p>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base_index.html' %}
+{% block title %}Reservar — Mat | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-7">
+        <h1 class="fw-bold mb-2">Reservar — Clase Mat</h1>
+        <p class="text-muted mb-4">Hola, {{ request.user.get_username }}. Aquí pronto verás el formulario de reserva para esta clase.</p>
+
+        <div class="alert alert-info">
+          <strong>Placeholder:</strong> Esta es una vista protegida (requiere login). Aquí irá el formulario real (fecha, hora, cupos, etc.).
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <a href="{% url 'index' %}" class="btn btn-outline-secondary">Volver al inicio</a>
+          <a href="{% url 'clase_mat' %}" class="btn btn-outline-primary">Ver detalles de la clase</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <img src="https://cdn.pixabay.com/photo/2017/04/25/14/02/pilates-2259763_1280.jpg" alt="Pilates Mat"
+             class="img-fluid rounded shadow-sm">
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

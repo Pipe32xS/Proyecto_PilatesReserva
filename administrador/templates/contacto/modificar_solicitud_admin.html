@@ -1,0 +1,21 @@
+{% extends 'base_admin.html' %}
+{% block title %}Modificar Contacto{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Modificar estado del mensaje</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.estado_mensaje.label_tag }}
+            {{ form.estado_mensaje }}
+        </div>
+        <div class="mb-3">
+            {{ form.comentario.label_tag }}
+            {{ form.comentario }}
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{% url 'listar_contactos' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

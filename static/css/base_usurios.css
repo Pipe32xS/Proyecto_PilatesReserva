@@ -1,0 +1,20 @@
+.cliente-title {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #00000033;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.3rem;
+    transition: 0.3s;
+}
+
+.header h2 {
+    font-weight: bold;
+}
+
+.content-area {
+    min-height: 400px;
+}

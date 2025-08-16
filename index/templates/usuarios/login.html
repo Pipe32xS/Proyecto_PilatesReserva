@@ -1,0 +1,22 @@
+{% extends 'base_index.html' %}
+{% block title %}Ingresar | PilatesReserva{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 480px;">
+  <h1 class="h3 mb-4">Inicia sesión</h1>
+
+  {% if form.errors %}
+    <div class="alert alert-danger">Usuario o contraseña inválidos.</div>
+  {% endif %}
+
+  <form method="post" class="bg-white p-4 rounded shadow-sm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary w-100">Entrar</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <a class="small" href="{% url 'index' %}">Volver al inicio</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base_index.html' %}
+
+{% block title %}Clase Reformer | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h1 class="fw-bold text-center mb-4">Clase Reformer</h1>
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="https://align-pilates.com/wp-content/uploads/2025/08/align-pilates-commercial-pilates-reformers-for-studios.jpg"
+             alt="Pilates Reformer"
+             class="img-fluid rounded shadow-sm">
+      </div>
+      <div class="col-md-6">
+        <p class="lead">
+          El Pilates Reformer utiliza una máquina con resortes y una plataforma deslizante
+          para trabajar fuerza, estabilidad y alineación con baja carga articular. Ideal para
+          todos los niveles y objetivos (rehabilitación, rendimiento o bienestar).
+        </p>
+        <a href="/login/?next={% url 'clase_reformer' %}"class="btn btn-info text-white fw-semibold px-4 py-2 mt-3">
+          Reservar Clase
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

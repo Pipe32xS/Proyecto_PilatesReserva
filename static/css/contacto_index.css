@@ -1,0 +1,6 @@
+.alert-warning-custom {
+    background-color: var(--bs-warning);
+    color: #000;
+    /* texto oscuro para contraste */
+    border-color: rgba(var(--bs-warning-rgb), 0.8);
+}

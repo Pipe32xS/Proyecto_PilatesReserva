@@ -1,0 +1,85 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block title %}Gestión de Contactos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-chat-left-text me-2"></i>Gestión de Mensajes</h2>
+  </div>
+
+  {% if contactos %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center shadow-sm">
+        <thead class="table-primary">
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for contacto in contactos %}
+          <tr>
+            <td>{{ contacto.nombre }}</td>
+            <td>{{ contacto.correo_electronico }}</td>
+            <td>{{ contacto.telefono }}</td>
+            <td>
+              <span class="badge {% if contacto.estado_mensaje == 'pendiente' %}bg-warning
+                                  {% elif contacto.estado_mensaje == 'revisado' %}bg-info
+                                  {% elif contacto.estado_mensaje == 'respondido' %}bg-success
+                                  {% endif %}">
+                {{ contacto.get_estado_mensaje_display }}
+              </span>
+            </td>
+            <td>{{ contacto.fecha_envio|date:"d-m-Y H:i" }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <a class="btn btn-sm btn-outline-primary" title="Ver Detalles" data-bs-toggle="modal" data-bs-target="#detalleContacto{{ contacto.id }}">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{% url 'modificar_contacto' contacto.id %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="#" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal Detalle -->
+          <div class="modal fade" id="detalleContacto{{ contacto.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title">🔎 Detalle del Mensaje</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-start">
+                  <p><strong>Nombre:</strong> {{ contacto.nombre }}</p>
+                  <p><strong>Correo:</strong> {{ contacto.correo_electronico }}</p>
+                  <p><strong>Teléfono:</strong> {{ contacto.telefono }}</p>
+                  <p><strong>Fecha:</strong> {{ contacto.fecha_envio|date:"d-m-Y H:i" }}</p>
+                  <p><strong>Mensaje:</strong><br>{{ contacto.mensaje }}</p>
+                  <p><strong>Comentario admin:</strong><br>{{ contacto.comentario }}</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No hay mensajes aún.</div>
+  {% endif %}
+</div>
+{% endblock %}

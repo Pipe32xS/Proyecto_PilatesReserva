@@ -1,0 +1,62 @@
+{% extends 'usuarios/base_usuarios.html' %}
+{% block title %}Nueva reserva | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="position-relative">
+  <div style="height:4px; background:linear-gradient(90deg,#0dcaf0,#6f42c1);"></div>
+  <div class="container-fluid px-0 py-4">
+    <h1 class="fw-bold mb-3">Nueva reserva</h1>
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'usuarios:nueva_reserva' %}" class="row g-3">
+      {% csrf_token %}
+
+      <!-- Tipo de clase -->
+      <div class="col-12 col-md-4">
+        <label class="form-label fw-semibold">Tipo de clase</label>
+        <select name="tipo" class="form-select" required>
+          <option value="reformer" {% if tipo_sel == 'reformer' %}selected{% endif %}>Reformer</option>
+          <option value="mat" {% if tipo_sel == 'mat' %}selected{% endif %}>Mat</option>
+          <option value="grupal" {% if tipo_sel == 'grupal' %}selected{% endif %}>Grupal</option>
+        </select>
+      </div>
+
+      <!-- Fecha -->
+      <div class="col-12 col-md-4">
+        <label class="form-label fw-semibold">Fecha</label>
+        <input type="date" name="fecha" class="form-control" min="{{ hoy }}" value="{{ fecha_sel|default:hoy }}" required>
+        <div class="form-text">Solo de lunes a sábado.</div>
+      </div>
+
+      <!-- Hora -->
+      <div class="col-12 col-md-4">
+        <label class="form-label fw-semibold">Hora</label>
+        <select name="hora" class="form-select" required>
+          <optgroup label="Mañana">
+            {% for h in manana %}
+              <option value="{{ h }}" {% if hora_sel == h %}selected{% endif %}>{{ h }}</option>
+            {% endfor %}
+          </optgroup>
+          <optgroup label="Tarde">
+            {% for h in tarde %}
+              <option value="{{ h }}" {% if hora_sel == h %}selected{% endif %}>{{ h }}</option>
+            {% endfor %}
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-info text-dark fw-semibold px-4">
+          <i class="bi bi-check2-circle me-1"></i> Confirmar
+        </button>
+        <a href="{% url 'usuarios:mis_reservas' %}" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+

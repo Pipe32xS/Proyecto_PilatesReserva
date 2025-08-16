@@ -1,0 +1,74 @@
+{% extends 'usuarios/base_usuarios.html' %}
+{% block title %}Detalle de reserva | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="position-relative">
+  <div style="height:4px; background:linear-gradient(90deg,#0dcaf0,#6f42c1);"></div>
+  <div class="container-fluid px-0 py-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+      <div>
+        <h1 class="fw-bold mb-1">Detalle de la reserva</h1>
+        <p class="text-secondary mb-0">Información de tu clase reservada.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{% url 'usuarios:mis_reservas' %}" class="btn btn-outline-secondary">
+          ← Volver a Mis reservas
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pt-2">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <div class="mb-2 text-uppercase small text-secondary">Fecha</div>
+          <!-- Si tienes activado locale es-ES se verá con nombre del día/mes en español -->
+          <div class="h5">{{ r.fecha|date:"l d \\d\\e F, Y" }}</div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="mb-2 text-uppercase small text-secondary">Hora</div>
+          <div class="h5">
+            {{ r.inicio }}{% if r.fin %} – {{ r.fin }}{% endif %}
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="mb-2 text-uppercase small text-secondary">Tipo de clase</div>
+          <div class="h5 text-capitalize">{{ r.tipo }}</div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="mb-2 text-uppercase small text-secondary">Estado</div>
+          <span class="badge
+                {% if r.estado == 'Confirmada' %}text-bg-success
+                {% elif r.estado == 'Pendiente' %}text-bg-warning
+                {% elif r.estado == 'Cancelada' %}text-bg-danger
+                {% else %}text-bg-secondary{% endif %}">
+            {{ r.estado }}
+          </span>
+        </div>
+
+        <div class="col-12">
+          <div class="mb-2 text-uppercase small text-secondary">Creada</div>
+          <div>{{ r.created_at|date:"d/m/Y H:i" }}</div>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <div class="d-flex gap-2">
+        <a href="{% url 'usuarios:mis_reservas' %}" class="btn btn-info text-dark fw-semibold">
+          Volver
+        </a>
+        {# Si más adelante quieres permitir cancelar desde aquí, añade el enlace: #}
+        {# <a href="{% url 'usuarios:reserva_cancelar' r.id %}" class="btn btn-outline-danger">Cancelar</a> #}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

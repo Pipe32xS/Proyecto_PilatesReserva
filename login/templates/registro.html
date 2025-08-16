@@ -1,0 +1,116 @@
+{% extends 'base_index.html' %}
+{% block titulo %}Registro de Alumnos | PilatesReserva{% endblock %}
+
+{% block content %}
+<!-- Fondo solo con imagen de Pilates (sin colores encima) -->
+<section class="d-flex align-items-center"
+         style="
+           min-height: 100vh;
+           background: url('https://images.unsplash.com/photo-1603985529862-c74f5ac4d8aa?q=80&w=1600&auto=format&fit=crop')
+                      center/cover no-repeat fixed;
+         ">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+        <!-- Tarjeta tipo “glass”: transparente + blur (sin css externo) -->
+        <div class="rounded-4 shadow-lg"
+             style="
+               background: rgba(255,255,255,.14);
+               border: 1px solid rgba(255,255,255,.35);
+               backdrop-filter: blur(12px) saturate(120%);
+               -webkit-backdrop-filter: blur(12px) saturate(120%);
+             ">
+
+          <!-- Encabezado de la tarjeta -->
+          <div class="p-4 p-md-5">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:56px;height:56px;background: rgba(1, 1, 1, 0.25);">
+                <i class="bi bi-person-plus-fill fs-4" style="color:#ffffff;"></i>
+              </div>
+              <div>
+                <h2 class="fw-bold mb-0 text-black">Crear cuenta</h2>
+                <small class="text-black-50">Regístrate para reservar tus clases</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cuerpo del formulario (panel sutil para legibilidad, aún translúcido) -->
+          <div class="px-4 px-md-5 pb-4 pb-md-5">
+            <div class="rounded-3 p-3 p-md-4"
+                 style="background: rgba(255,255,255,.70);">
+              <form action="{% url 'login:registro-cliente' %}" method="POST" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <!-- Email -->
+                <div class="mb-3">
+                  <label class="form-label">Correo electrónico</label>
+                  {{ form.email }}
+                  {% for error in form.email.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Usuario -->
+                <div class="mb-3">
+                  <label class="form-label">Usuario</label>
+                  {{ form.username }}
+                  {% for error in form.username.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Contraseña -->
+                <div class="mb-3">
+                  <label class="form-label">Contraseña</label>
+                  {{ form.password1 }}
+                  {% for error in form.password1.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Repite contraseña -->
+                <div class="mb-4">
+                  <label class="form-label">Repite la contraseña</label>
+                  {{ form.password2 }}
+                  {% for error in form.password2.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Acciones -->
+                <div class="d-grid gap-2">
+                  <button type="submit"
+                          class="btn fw-semibold text-white py-2"
+                          style="background: linear-gradient(90deg,#00c6ff,#7d5fff); border:0; transition: all .25s;"
+                          onmouseover="this.style.filter='brightness(1.07)'; this.style.transform='translateY(-2px)';"
+                          onmouseout="this.style.filter='none'; this.style.transform='none';">
+                    Registrarse
+                  </button>
+
+                  <a href="{% url 'login:login' %}"
+                     class="btn btn-light border-0 py-2"
+                     style="background: rgba(255,255,255,.9); box-shadow: 0 6px 16px rgba(0,0,0,.08); transition:all .25s;"
+                     onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 24px rgba(0,0,0,.12)';"
+                     onmouseout="this.style.transform='none'; this.style.boxShadow='0 6px 16px rgba(0,0,0,.08)';">
+                    ¿Ya tienes cuenta? Inicia sesión
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+        <!-- /Tarjeta glass -->
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

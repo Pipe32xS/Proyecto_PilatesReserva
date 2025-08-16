@@ -1,0 +1,29 @@
+{% extends 'base_index.html' %}
+
+{% block title %}Clase Grupal | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h1 class="fw-bold text-center mb-4">Clase Grupal</h1>
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="https://www.conectapilates.com/wp-content/uploads/2023/11/pilates-en-grupo.webp"
+             alt="Clase Grupal de Pilates"
+             class="img-fluid rounded shadow-sm">
+      </div>
+      <div class="col-md-6">
+        <p class="lead">
+          Entrena en un ambiente motivador y guiado, con correcciones del instructor y
+          opciones para distintos niveles. Perfecto para mantener constancia y disfrutar del
+          trabajo en equipo.
+        </p>
+        <a href="/login/?next={% url 'clase_grupal' %}"class="btn btn-info text-white fw-semibold px-4 py-2 mt-3">
+          Reservar Clase
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

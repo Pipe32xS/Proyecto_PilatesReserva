@@ -1,0 +1,15 @@
+{% extends 'administrador/base_admin.html' %}
+{% block titulo %}Contactos | Admin{% endblock %}
+{% block encabezado %}Contactos (demo){% endblock %}
+
+{% block content %}
+<section class="container py-4">
+  <h2 class="h5 mb-3">Contactos</h2>
+  <p class="text-secondary">Aquí iría la tabla de contactos. (MVP)</p>
+
+  <div class="mt-3">
+    <!-- ✅ volver al home del admin -->
+    <a href="{% url 'administrador:home' %}" class="btn btn-outline-secondary">Volver</a>
+  </div>
+</section>
+{% endblock %}

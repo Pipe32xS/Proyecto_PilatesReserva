@@ -1,0 +1,390 @@
+{% extends 'base_index.html' %}
+
+{% block title %}Inicio | PilatesReserva{% endblock %}
+
+{% block content %}
+<!-- HERO con glass y degradado diagonal -->
+<section class="text-white"
+  style="background:
+    linear-gradient(135deg, rgba(0,0,0,.65), rgba(0,0,0,.25)),
+    url('https://images.squarespace-cdn.com/content/v1/65a715a0a14a675d05f66d98/6e49f011-1930-481f-b998-7e465102dd14/Reformer+Banner.jpg')
+    no-repeat center center / cover;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-8 col-xl-7">
+
+        <!-- Glass card -->
+        <div class="rounded-4 p-4 p-md-5"
+             style="backdrop-filter: blur(6px);
+                    background: rgba(255,255,255,.08);
+                    border: 1px solid rgba(255,255,255,.15);">
+
+          <!-- Badge animada -->
+          <span class="badge rounded-pill mb-3"
+                style="background: rgba(13,202,240,.2); color: var(--bs-info); letter-spacing:.35px; transition:transform .25s;"
+                onmouseenter="this.style.transform='translateY(-2px)';"
+                onmouseleave="this.style.transform='none';">
+            Bienestar &amp; Movimiento
+          </span>
+
+          <h1 class="display-4 fw-bold lh-1">Transforma tu cuerpo con Pilates</h1>
+          <p class="lead mt-3 opacity-75 mb-4">
+            Fortalece tu cuerpo, mejora tu postura y recupera energía con clases guiadas para todos los niveles.
+          </p>
+
+          <!-- Botones -->
+          <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'login:login' %}?next={% url 'index' %}"
+               class="btn text-white fw-semibold px-4 py-2 rounded-3"
+               style="background: linear-gradient(90deg, #0dcaf0, #6f42c1); border: 0; transition: all .25s ease;"
+               onmouseenter="this.style.filter='brightness(1.06)'; this.style.transform='translateY(-2px)';"
+               onmouseleave="this.style.filter='none'; this.style.transform='none';">
+              Reservar Clase
+            </a>
+            <a href="{% url 'contacto_publico' %}"
+               class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3"
+               style="transition: all .25s ease;"
+               onmouseenter="this.style.backgroundColor='rgba(255,255,255,.95)'; this.style.color='#000'; this.style.transform='translateY(-2px)';"
+               onmouseleave="this.style.backgroundColor='transparent'; this.style.color='#fff'; this.style.transform='none';">
+              Contáctanos
+            </a>
+          </div>
+
+          <!-- Chips -->
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            <span class="badge rounded-pill text-bg-light"
+                  style="opacity:.9; border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(2px);">
+              +500 clases reservadas
+            </span>
+            <span class="badge rounded-pill text-bg-light"
+                  style="opacity:.9; border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(2px);">
+              Instructores certificados
+            </span>
+            <span class="badge rounded-pill text-bg-light"
+                  style="opacity:.9; border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(2px);">
+              Resultados visibles
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section class="py-5" style="background: linear-gradient(180deg,#f8f9fa 0,#ffffff 100%);">
+  <div class="container">
+    <h2 class="fw-bold text-center mb-4">¿Por qué elegir PilatesReserva?</h2>
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="h-100 p-4 rounded-4 shadow-sm border bg-white"
+             style="transition: all .25s ease; border-color: rgba(13,202,240,.25)!"
+             onmouseenter="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 1.25rem 2rem rgba(0,0,0,.12)';"
+             onmouseleave="this.style.transform='none'; this.style.boxShadow='';">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+               style="width:64px;height:64px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-person-heart fs-3" style="color: var(--bs-info);"></i>
+          </div>
+          <h5 class="fw-bold">Atención Personalizada</h5>
+          <p class="mb-0 opacity-75">Clases adaptadas a tu nivel y condición física, con seguimiento constante.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="h-100 p-4 rounded-4 shadow-sm border bg-white"
+             style="transition: all .25s ease; border-color: rgba(13,202,240,.25)!"
+             onmouseenter="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 1.25rem 2rem rgba(0,0,0,.12)';"
+             onmouseleave="this.style.transform='none'; this.style.boxShadow='';">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+               style="width:64px;height:64px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-calendar-check fs-3" style="color: var(--bs-info);"></i>
+          </div>
+          <h5 class="fw-bold">Reserva Online</h5>
+          <p class="mb-0 opacity-75">Agenda tus clases desde cualquier lugar con nuestra plataforma inteligente.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="h-100 p-4 rounded-4 shadow-sm border bg-white"
+             style="transition: all .25s ease; border-color: rgba(13,202,240,.25)!"
+             onmouseenter="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 1.25rem 2rem rgba(0,0,0,.12)';"
+             onmouseleave="this.style.transform='none'; this.style.boxShadow='';">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+               style="width:64px;height:64px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-bar-chart-line fs-3" style="color: var(--bs-info);"></i>
+          </div>
+          <h5 class="fw-bold">Resultados Visibles</h5>
+          <p class="mb-0 opacity-75">Mejora tu postura, flexibilidad y fuerza con rutinas efectivas y seguras.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PASOS -->
+<section class="py-4">
+  <div class="container">
+    <div class="row g-3 text-center">
+      <div class="col-12 col-md-4">
+        <div class="p-3 rounded-4 border bg-white shadow-sm h-100"
+             style="border-color: rgba(13,202,240,.25);">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2"
+               style="width:48px;height:48px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-person-plus-fill" style="color: var(--bs-info);"></i>
+          </div>
+          <div class="fw-semibold">1. Crea tu cuenta</div>
+          <small class="text-secondary">Toma menos de un minuto.</small>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="p-3 rounded-4 border bg-white shadow-sm h-100"
+             style="border-color: rgba(13,202,240,.25);">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2"
+               style="width:48px;height:48px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-calendar2-week" style="color: var(--bs-info);"></i>
+          </div>
+        <div class="fw-semibold">2. Reserva tu clase</div>
+        <small class="text-secondary">Mat, Reformer o grupal.</small>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="p-3 rounded-4 border bg-white shadow-sm h-100"
+             style="border-color: rgba(13,202,240,.25);">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2"
+               style="width:48px;height:48px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-heart-pulse-fill" style="color: var(--bs-info);"></i>
+          </div>
+          <div class="fw-semibold">3. Disfruta los resultados</div>
+          <small class="text-secondary">Más energía y mejor postura.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTADOR ANIMADO -->
+<section class="py-5" style="background: linear-gradient(90deg, rgba(13,202,240,.12), rgba(111,66,193,.12));">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-12 col-md-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="fs-1 fw-bold" id="count-1" data-target="750">0</div>
+          <div class="text-secondary">Clases impartidas</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="fs-1 fw-bold" id="count-2" data-target="1200">0</div>
+          <div class="text-secondary">Alumnos felices</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="fs-1 fw-bold" id="count-3" data-target="12">0</div>
+          <div class="text-secondary">Instructores certificados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS (Carrusel) -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-bold text-center mb-4">Lo que dicen nuestros alumnos</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div id="carouselTestimonios" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+          <div class="carousel-inner">
+
+            <div class="carousel-item active">
+              <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center"
+                       style="width:56px;height:56px;background: rgba(13,202,240,.15);">
+                    <i class="bi bi-chat-quote-fill fs-4" style="color: var(--bs-info);"></i>
+                  </div>
+                  <div>
+                    <p class="mb-2 fst-italic">“Desde la primera clase noté cambios en mi postura. ¡El equipo es increíble!”</p>
+                    <div class="fw-semibold">Camila R.</div>
+                    <small class="text-secondary">Clase Reformer</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="carousel-item">
+              <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center"
+                       style="width:56px;height:56px;background: rgba(13,202,240,.15);">
+                    <i class="bi bi-chat-quote-fill fs-4" style="color: var(--bs-info);"></i>
+                  </div>
+                  <div>
+                    <p class="mb-2 fst-italic">“La plataforma de reservas es muy fácil y flexible. Recomiendo 100%.”</p>
+                    <div class="fw-semibold">Rodrigo M.</div>
+                    <small class="text-secondary">Clase Mat</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="carousel-item">
+              <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center"
+                       style="width:56px;height:56px;background: rgba(13,202,240,.15);">
+                    <i class="bi bi-chat-quote-fill fs-4" style="color: var(--bs-info);"></i>
+                  </div>
+                  <div>
+                    <p class="mb-2 fst-italic">“Ambiente motivador y profesores muy atentos. ¡Me encanta la clase grupal!”</p>
+                    <div class="fw-semibold">Valentina S.</div>
+                    <small class="text-secondary">Clase Grupal</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Controles -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="fw-bold text-center mb-4">Tipos de Clases</h2>
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <a href="{% url 'clase_reformer' %}" class="text-decoration-none">
+          <div class="ratio ratio-16x9 rounded-4 shadow-sm position-relative overflow-hidden"
+               style="cursor:pointer; transition: all .35s ease; filter: grayscale(100%);"
+               onmouseenter="this.style.transform='scale(1.03)'; this.style.filter='grayscale(0%)';"
+               onmouseleave="this.style.transform='none'; this.style.filter='grayscale(100%)';">
+            <img src="https://cdn.pixabay.com/photo/2017/11/18/05/08/pilates-2959235_1280.jpg"
+                 alt="Clase de Pilates Reformer" class="w-100 h-100 object-fit-cover">
+            <div class="position-absolute top-50 start-50 translate-middle text-white fw-semibold px-3 py-2 rounded-3"
+                 style="background: rgba(0,0,0,.45); backdrop-filter: blur(2px);">
+              Clase Reformer
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-4">
+        <a href="{% url 'clase_mat' %}" class="text-decoration-none">
+          <div class="ratio ratio-16x9 rounded-4 shadow-sm position-relative overflow-hidden"
+               style="cursor:pointer; transition: all .35s ease; filter: grayscale(100%);"
+               onmouseenter="this.style.transform='scale(1.03)'; this.style.filter='grayscale(0%)';"
+               onmouseleave="this.style.transform='none'; this.style.filter='grayscale(100%)';">
+            <img src="https://blog.clubpilates.com.au/hubfs/Imported_Blog_Media/03-scaled.jpg"
+                 alt="Clase de Pilates en Mat" class="w-100 h-100 object-fit-cover">
+            <div class="position-absolute top-50 start-50 translate-middle text-white fw-semibold px-3 py-2 rounded-3"
+                 style="background: rgba(0,0,0,.45); backdrop-filter: blur(2px);">
+              Clase Mat
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-4">
+        <a href="{% url 'clase_grupal' %}" class="text-decoration-none">
+          <div class="ratio ratio-16x9 rounded-4 shadow-sm position-relative overflow-hidden"
+               style="cursor:pointer; transition: all .35s ease; filter: grayscale(100%);"
+               onmouseenter="this.style.transform='scale(1.03)'; this.style.filter='grayscale(0%)';"
+               onmouseleave="this.style.transform='none'; this.style.filter='grayscale(100%)';">
+            <img src="https://physio-fit.com.au/wp-content/uploads/2020/09/reformer-pilates-gold-coast.jpg"
+                 alt="Clase grupal de Pilates" class="w-100 h-100 object-fit-cover">
+            <div class="position-absolute top-50 start-50 translate-middle text-white fw-semibold px-3 py-2 rounded-3"
+                 style="background: rgba(0,0,0,.45); backdrop-filter: blur(2px);">
+              Clase Grupal
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA final -->
+<section class="py-5 text-white" style="background: linear-gradient(90deg, #0dcaf0, #6f42c1);">
+  <div class="container">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <h3 class="fw-bold mb-1">¿Listo para tu primera clase?</h3>
+        <p class="mb-0 opacity-90">Reserva ahora y recibe guía personalizada desde el primer día.</p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'login:login' %}?next={% url 'index' %}"
+           class="btn btn-light fw-semibold rounded-3 px-4 py-2"
+           style="transition: all .25s ease;"
+           onmouseenter="this.style.transform='translateY(-2px)';"
+           onmouseleave="this.style.transform='none';">
+          Comenzar
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Script: contador animado -->
+<script>
+  (function () {
+    const counters = [
+      document.getElementById('count-1'),
+      document.getElementById('count-2'),
+      document.getElementById('count-3')
+    ].filter(Boolean);
+
+    if (!('IntersectionObserver' in window) || counters.length === 0) return;
+
+    const animate = el => {
+      const target = +el.dataset.target;
+      let curr = 0;
+      const step = Math.max(1, Math.ceil(target / 120)); // ~2s
+      const t = setInterval(() => {
+        curr += step;
+        if (curr >= target) { curr = target; clearInterval(t); }
+        el.textContent = curr.toLocaleString('es-CL');
+      }, 16);
+    };
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          animate(e.target);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    counters.forEach(c => io.observe(c));
+  })();
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+

@@ -1,0 +1,89 @@
+{% extends "base_index.html" %}
+{% block title %}Iniciar sesión | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="d-flex align-items-start justify-content-center bg-body-tertiary" style="min-height: 90vh; padding-top: 5vh;">
+  <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+      <div style="height:10px; background: linear-gradient(90deg, #0dcaf0, #6610f2);"></div>
+
+      <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-4 mb-3"
+               style="width:64px;height:64px;background: rgba(13,202,240,.15);">
+            <i class="bi bi-shield-lock-fill fs-3 text-info"></i>
+          </div>
+          <h2 class="fw-bold mb-0">Iniciar sesión</h2>
+          <small class="text-secondary">Accede para gestionar tus clases</small>
+        </div>
+
+        <form method="POST" action="{% url 'login:login' %}">
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger rounded-3" role="alert">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <!-- Usuario/correo (usa AuthenticationForm.username) -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Correo o usuario</label>
+            <div class="input-group">
+              <span class="input-group-text bg-info text-white border-0">
+                <i class="bi bi-envelope-fill"></i>
+              </span>
+              {{ form.username }}
+            </div>
+            {% for error in form.username.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Password -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Contraseña</label>
+            <div class="input-group">
+              <span class="input-group-text bg-info text-white border-0">
+                <i class="bi bi-lock-fill"></i>
+              </span>
+              {{ form.password }}
+            </div>
+            {% for error in form.password.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <button class="btn w-100 fw-semibold py-2 rounded-3 text-white"
+                  type="submit"
+                  style="background: linear-gradient(90deg, #0dcaf0, #6f42c1);">
+            Entrar
+          </button>
+        </form>
+
+        <div class="text-center mt-4">
+          <p class="mb-2">
+            ¿No tienes una cuenta?
+            <a class="fw-semibold link-info link-underline-opacity-0 link-underline-opacity-100-hover"
+               href="{% url 'login:registro-cliente' %}">Regístrate</a>
+          </p>
+          <!-- IMPORTANTE: tu app index NO tiene namespace; usa 'index' a secas -->
+          <a class="link-secondary link-underline-opacity-0 link-underline-opacity-100-hover"
+             href="{% url 'index' %}">Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

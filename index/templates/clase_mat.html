@@ -1,0 +1,29 @@
+{% extends 'base_index.html' %}
+
+{% block title %}Clase Mat | PilatesReserva{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h1 class="fw-bold text-center mb-4">Clase Mat</h1>
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="https://cdn.pixabay.com/photo/2017/04/25/14/02/pilates-2259763_1280.jpg"
+             alt="Pilates Mat"
+             class="img-fluid rounded shadow-sm">
+      </div>
+      <div class="col-md-6">
+        <p class="lead">
+          La clase Mat se realiza en colchoneta utilizando el peso corporal y pequeños
+          implementos. Enfocada en control postural, respiración y fortalecimiento del core,
+          es una base perfecta para cualquier práctica de Pilates.
+        </p>
+        <a href="/login/?next={% url 'clase_mat' %}"class="btn btn-info text-white fw-semibold px-4 py-2 mt-3">
+          Reservar Clase
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
