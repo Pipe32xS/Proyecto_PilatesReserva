@@ -28,7 +28,7 @@ def contacto_publico(request):
         form = ContactoPublicoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("index:contacto_exito")
+            return redirect("contacto_exito")
     else:
         form = ContactoPublicoForm()
     return render(request, "contacto_form.html", {"form": form})

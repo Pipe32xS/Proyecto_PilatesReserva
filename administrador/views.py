@@ -50,7 +50,7 @@ def crear_clase(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Clase creada exitosamente.')
-            return redirect('listar_clases')
+            return redirect('administrador:listar_clases')
     else:
         form = ClasePilatesForm()
     return render(request, 'clases/crear_clase.html', {'form': form})
@@ -64,7 +64,7 @@ def modificar_clase(request, clase_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Clase modificada exitosamente.')
-            return redirect('listar_clases')
+            return redirect('administrador:listar_clases')
     else:
         form = ClasePilatesForm(instance=clase)
     return render(request, 'clases/modificar_clase.html', {'form': form})
@@ -76,5 +76,5 @@ def eliminar_clase(request, clase_id):
     if request.method == 'POST':
         clase.delete()
         messages.success(request, 'Clase eliminada exitosamente.')
-        return redirect('listar_clases')
+        return redirect('administrador:listar_clases')
     return render(request, 'clases/eliminar_clase.html', {'clase': clase})
