@@ -4,7 +4,7 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2 class="title">Listado de Clases de Pilates</h2>
-    <a href="#" class="btn btn-success">Crear nueva clase</a>
+    <a href="{% url 'administrador:crear_clase' %}"="btn btn-success">Crear nueva clase</a>
 </div>
 
 <table class="table">
@@ -29,8 +29,8 @@
             <td>{{ clase.capacidad_maxima }}</td>
             <td>{{ clase.descripcion }}</td>
             <td>
-                <a href="#" class="btn btn-warning btn-sm">Modificar</a>
-                <a href="#" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta clase?')">Eliminar</a>
+                <a href="{% url 'administrador:modificar_clase' clase.id %}" class="btn btn-warning btn-sm">Modificar</a>
+                <a href="{% url 'administrador:eliminar_clase' clase.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta clase?')">Eliminar</a>
             </td>
         </tr>
         {% empty %}

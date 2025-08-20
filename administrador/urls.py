@@ -18,5 +18,4 @@ urlpatterns = [
          views.modificar_clase, name='modificar_clase'),
     path('clases/eliminar/<int:clase_id>/',
          views.eliminar_clase, name='eliminar_clase'),
-
 ]
