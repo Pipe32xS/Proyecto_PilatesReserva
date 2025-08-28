@@ -1,6 +1,7 @@
 # index/models.py
 from django.conf import settings
 from django.db import models
+from administrador.models import ClasePilates  # <-- importamos la clase admin
 
 
 class Reserva(models.Model):
@@ -16,14 +17,23 @@ class Reserva(models.Model):
         ("Completada", "Completada"),
     ]
 
-    # Acceso inverso único: user.reservas_index
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="reservas_index",         # <-- nombre único para la app index
-        related_query_name="reserva_index",    # <-- nombre único para queries
+        related_name="reservas_index",
+        related_query_name="reserva_index",
     )
 
+    # --- NUEVO: vínculo (opcional por compatibilidad) ---
+    clase = models.ForeignKey(
+        ClasePilates,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reservas_index",
+    )
+
+    # Campos existentes (se mantendrán para compatibilidad / reportes)
     tipo = models.CharField(max_length=20, choices=CLASES)
     fecha = models.DateField()
     inicio = models.TimeField()
@@ -34,6 +44,24 @@ class Reserva(models.Model):
 
     class Meta:
         ordering = ["-fecha", "-inicio"]
+        # Evita doble reserva del mismo usuario a misma clase
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "clase"], name="uniq_reserva_usuario_misma_clase"
+            )
+        ]
 
     def __str__(self):
-        return f"{self.user} - {self.tipo} - {self.fecha} {self.inicio}"
+        base = f"{self.user} - {self.tipo} - {self.fecha} {self.inicio}"
+        if self.clase_id:
+            base += f" (Clase: {self.clase.nombre_clase})"
+        return base
+
+    # --- Helpers de cupos ---
+    @staticmethod
+    def cupos_tomados(clase: ClasePilates) -> int:
+        return Reserva.objects.filter(clase=clase).exclude(estado="Cancelada").count()
+
+    @staticmethod
+    def hay_cupo(clase: ClasePilates) -> bool:
+        return Reserva.cupos_tomados(clase) < clase.capacidad_maxima

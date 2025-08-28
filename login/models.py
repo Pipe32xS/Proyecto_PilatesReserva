@@ -4,7 +4,8 @@ from django.db import models
 
 class User(AbstractUser):
     ROLES = [
-        ('cliente', 'Cliente'),
-        ('administrador', 'Administrador'),
+        ("cliente", "Cliente"),
+        ("administrador", "Administrador"),
     ]
-    rol = models.CharField(max_length=20, choices=ROLES)
+    # Default evita errores al crear usuarios/superusuarios sin definir rol explícito
+    rol = models.CharField(max_length=20, choices=ROLES, default="cliente")

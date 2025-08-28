@@ -11,7 +11,9 @@
     <a href="{% url 'usuarios:mis_reservas' %}" class="btn btn-info text-dark fw-semibold px-4 py-2">
       <i class="bi bi-calendar-event me-2"></i> Ir a Mis Reservas
     </a>
-    <a href="{% url 'clases' %}" class="btn btn-outline-secondary px-4 py-2">
+
+    <!-- IMPORTANTE: ahora apunta a la vista que lista las clases del admin -->
+    <a href="{% url 'usuarios:clases_disponibles' %}" class="btn btn-outline-secondary px-4 py-2">
       <i class="bi bi-plus-lg me-2"></i> Reservar nueva clase
     </a>
   </div>
