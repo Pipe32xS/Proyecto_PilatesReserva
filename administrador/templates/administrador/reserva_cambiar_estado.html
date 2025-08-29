@@ -1,0 +1,18 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Cambiar estado de la reserva</h2>
+    <p><strong>Cliente:</strong> {{ reserva.cliente }}</p>
+    <p><strong>Clase:</strong> {{ reserva.clase }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'administrador:reservas_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

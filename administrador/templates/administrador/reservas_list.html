@@ -1,0 +1,176 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Reservas</h2>
+    <a class="btn btn-outline-secondary" href="{% url 'administrador:home' %}">&larr; Volver</a>
+  </div>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for m in messages|slice:":3" %}
+        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Filtros (como links, sin <form>) -->
+  <div class="d-flex align-items-center mb-3 gap-2">
+    <div class="btn-group" role="group" aria-label="Filtros de estado">
+      {% for item in filters %}
+        {% with k=item.0 l=item.1 %}
+          <a
+            href="?f={{ k }}{% if q %}&q={{ q|urlencode }}{% endif %}"
+            class="btn btn-sm {% if f == k %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            {{ l }}
+          </a>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+    <!-- Búsqueda (form aparte). Mantiene el filtro activo con hidden f -->
+    <form class="ms-auto" method="get">
+      <input type="hidden" name="f" value="{{ f|default:'todas' }}">
+      <div class="input-group input-group-sm" style="min-width: 260px;">
+        <input type="text" class="form-control" name="q" placeholder="Buscar cliente…"
+               value="{{ q }}">
+        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th style="width: 80px;">ID</th>
+          <th>Cliente</th>
+          <th>Clase</th>
+          <th>Estado</th>
+          <th style="width: 1%; white-space: nowrap;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reservas %}
+          <tr>
+            <td>{{ r.id }}</td>
+
+            <!-- Cliente (soporta r.user o r.cliente) -->
+            <td>
+              {% if r.cliente %}
+                {% if r.cliente.get_full_name %}{{ r.cliente.get_full_name }}
+                {% elif r.cliente.username %}{{ r.cliente.username }}
+                {% else %}{{ r.cliente }}{% endif %}
+              {% elif r.user %}
+                {% if r.user.get_full_name %}{{ r.user.get_full_name }}
+                {% elif r.user.username %}{{ r.user.username }}
+                {% else %}{{ r.user }}{% endif %}
+              {% else %}—{% endif %}
+            </td>
+
+            <!-- Clase -->
+            <td>{% if r.clase %}{{ r.clase }}{% else %}—{% endif %}</td>
+
+            <!-- Estado con badges -->
+            <td>
+              {% if r.estado %}
+                {% with e=r.estado|lower %}
+                  {% if e == "confirmada" %}
+                    <span class="badge text-bg-success">Confirmada</span>
+                  {% elif e == "pendiente" %}
+                    <span class="badge text-bg-warning">Pendiente</span>
+                  {% elif e == "cancelada" %}
+                    <span class="badge text-bg-danger">Cancelada</span>
+                  {% elif e == "completada" %}
+                    <span class="badge text-bg-secondary">Completada</span>
+                  {% else %}
+                    <span class="badge text-bg-light text-muted">{{ r.estado }}</span>
+                  {% endif %}
+                {% endwith %}
+              {% elif r.status %}
+                {% with e=r.status|lower %}
+                  {% if e == "confirmada" %}
+                    <span class="badge text-bg-success">Confirmada</span>
+                  {% elif e == "pendiente" %}
+                    <span class="badge text-bg-warning">Pendiente</span>
+                  {% elif e == "cancelada" %}
+                    <span class="badge text-bg-danger">Cancelada</span>
+                  {% elif e == "completada" %}
+                    <span class="badge text-bg-secondary">Completada</span>
+                  {% else %}
+                    <span class="badge text-bg-light text-muted">{{ r.status }}</span>
+                  {% endif %}
+                {% endwith %}
+              {% elif r.estado_reserva %}
+                {% with e=r.estado_reserva|lower %}
+                  {% if e == "confirmada" %}
+                    <span class="badge text-bg-success">Confirmada</span>
+                  {% elif e == "pendiente" %}
+                    <span class="badge text-bg-warning">Pendiente</span>
+                  {% elif e == "cancelada" %}
+                    <span class="badge text-bg-danger">Cancelada</span>
+                  {% elif e == "completada" %}
+                    <span class="badge text-bg-secondary">Completada</span>
+                  {% else %}
+                    <span class="badge text-bg-light text-muted">{{ r.estado_reserva }}</span>
+                  {% endif %}
+                {% endwith %}
+              {% else %}
+                <span class="badge text-bg-light text-muted">—</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <a class="btn btn-sm btn-outline-primary"
+                 href="{% url 'administrador:reserva_cambiar_estado' r.id %}">
+                Cambiar estado
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">No hay reservas.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación (segura) -->
+  {% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-3" aria-label="Paginación">
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+          {% if page_obj.has_previous %}
+            <a class="page-link" href="?f={{ f }}&q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+          {% else %}
+            <span class="page-link">Anterior</span>
+          {% endif %}
+        </li>
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if num == page_obj.number %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?f={{ f }}&q={{ q|urlencode }}&page={{ num }}">{{ num }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+          {% if page_obj.has_next %}
+            <a class="page-link" href="?f={{ f }}&q={{ q|urlencode }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+          {% else %}
+            <span class="page-link">Siguiente</span>
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}
+
+
+

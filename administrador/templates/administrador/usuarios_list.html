@@ -1,0 +1,232 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Administrar Usuarios</h2>
+    <div class="d-flex gap-2">
+      <form class="d-none d-md-block" method="get">
+        <input type="hidden" name="estado" value="{{ estado }}">
+        <input type="hidden" name="sort" value="{{ sort }}">
+        <input type="hidden" name="dir" value="{{ dir }}">
+        <div class="input-group input-group-sm" style="min-width: 280px;">
+          <input type="text" class="form-control" name="q"
+                 placeholder="Buscar username, nombre o email…"
+                 value="{{ q }}">
+          <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+        </div>
+      </form>
+      <a class="btn btn-primary btn-sm" href="{% url 'administrador:usuario_crear' %}">
+        + Crear usuario
+      </a>
+      <a class="btn btn-outline-secondary btn-sm d-md-none" href="{% url 'administrador:usuario_crear' %}">Nuevo</a>
+    </div>
+  </div>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for m in messages|slice:":3" %}
+        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Filtros -->
+  <form class="row g-2 align-items-center mb-3" method="get">
+    <div class="col-auto">
+      <select class="form-select form-select-sm" name="estado" onchange="this.form.submit()">
+        <option value="todos" {% if estado == "todos" %}selected{% endif %}>Todos</option>
+        <option value="activos" {% if estado == "activos" %}selected{% endif %}>Activos</option>
+        <option value="inactivos" {% if estado == "inactivos" %}selected{% endif %}>Inactivos</option>
+      </select>
+    </div>
+    <input type="hidden" name="q" value="{{ q }}">
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="dir" value="{{ dir }}">
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <!-- ID -->
+          <th style="width:70px;">
+            <a class="text-decoration-none"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=id&dir={% if sort == 'id' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              ID
+              {% if sort == 'id' %}
+                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
+              {% endif %}
+            </a>
+          </th>
+
+          <!-- Username -->
+          <th>
+            <a class="text-decoration-none"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=username&dir={% if sort == 'username' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Username
+              {% if sort == 'username' %}
+                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
+              {% endif %}
+            </a>
+          </th>
+
+          <!-- Nombre -->
+          <th>
+            <a class="text-decoration-none"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=nombre&dir={% if sort == 'nombre' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Nombre
+              {% if sort == 'nombre' %}
+                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
+              {% endif %}
+            </a>
+          </th>
+
+          <!-- Email -->
+          <th>
+            <a class="text-decoration-none"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=email&dir={% if sort == 'email' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Email
+              {% if sort == 'email' %}
+                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
+              {% endif %}
+            </a>
+          </th>
+
+          {% if tiene_rol %}
+            <th>
+              <a class="text-decoration-none"
+                 href="?estado={{ estado }}&q={{ q|urlencode }}&sort=rol&dir={% if sort == 'rol' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                Rol
+                {% if sort == 'rol' %}
+                  <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
+                {% endif %}
+              </a>
+            </th>
+          {% endif %}
+
+          <th>
+            <a class="text-decoration-none"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=estado&dir={% if sort == 'estado' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Estado
+              {% if sort == 'estado' %}
+                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
+              {% endif %}
+            </a>
+          </th>
+
+          <th style="width:1%; white-space:nowrap;">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for u in usuarios %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>
+              {% if u.first_name or u.last_name %}
+                {{ u.first_name }} {{ u.last_name }}
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td>{{ u.email|default:"—" }}</td>
+
+            {% if tiene_rol %}
+              <td>
+                {% if u.rol %}
+                  {% with r=u.rol|lower %}
+                    {% if "admin" in r %}
+                      <span class="badge text-bg-danger">{{ u.rol }}</span>
+                    {% elif "cliente" in r %}
+                      <span class="badge text-bg-primary">{{ u.rol }}</span>
+                    {% else %}
+                      <span class="badge text-bg-secondary">{{ u.rol }}</span>
+                    {% endif %}
+                  {% endwith %}
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+            {% endif %}
+
+            <td>
+              {% if u.is_active %}
+                <span class="badge text-bg-success">Activo</span>
+              {% else %}
+                <span class="badge text-bg-secondary">Inactivo</span>
+              {% endif %}
+            </td>
+
+            <td class="d-flex gap-2">
+              {% if not u.is_superuser %}
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'administrador:usuario_editar' u.id %}">
+                  Editar
+                </a>
+                <form method="post" action="{% url 'administrador:usuario_toggle_activo' u.id %}"
+                      onsubmit="return confirm('¿Seguro que quieres {% if u.is_active %}desactivar{% else %}activar{% endif %} este usuario?');">
+                  {% csrf_token %}
+                  <button class="btn btn-sm {% if u.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                    {% if u.is_active %}Desactivar{% else %}Activar{% endif %}
+                  </button>
+                </form>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">No hay usuarios.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-3" aria-label="Paginación">
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+          {% if page_obj.has_previous %}
+            <a class="page-link"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+          {% else %}
+            <span class="page-link">Anterior</span>
+          {% endif %}
+        </li>
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if num == page_obj.number %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?estado={{ estado }}&q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&page={{ num }}">{{ num }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+          {% if page_obj.has_next %}
+            <a class="page-link"
+               href="?estado={{ estado }}&q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+          {% else %}
+            <span class="page-link">Siguiente</span>
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+
+    <p class="text-muted small mt-2">
+      Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ page_obj.paginator.count }}
+    </p>
+  {% endif %}
+</div>
+{% endblock %}
+
+
+
+

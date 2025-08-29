@@ -21,42 +21,55 @@
 
           <!-- Inicio -->
           <li class="nav-item mb-2">
-            <!-- ✅ nombre correcto -->
             <a class="nav-link text-white" href="{% url 'administrador:home' %}">
               <i class="bi bi-house me-2"></i>Inicio
             </a>
           </li>
 
+          <!-- Administrar Usuarios -->
           <li class="nav-item mb-2">
-            <a class="nav-link text-white" href="#"><i class="bi bi-people me-2"></i>Administrar Usuarios</a>
+            <a class="nav-link text-white" href="{% url 'administrador:usuarios_list' %}">
+              <i class="bi bi-people me-2"></i>Administrar Usuarios
+            </a>
           </li>
 
+          <!-- Administrar clases -->
           <li class="nav-item mb-2">
             <a class="nav-link text-white" href="{% url 'administrador:listar_clases' %}">
               <i class="bi bi-grid-3x3-gap me-2"></i>Administrar clases
             </a>
           </li>
 
+          <!-- Administrar Perfiles (placeholder) -->
           <li class="nav-item mb-2">
-            <a class="nav-link text-white" href="#"><i class="bi bi-person-badge me-2"></i>Administrar Perfiles</a>
+            <a class="nav-link text-white" href="#">
+              <i class="bi bi-person-badge me-2"></i>Administrar Perfiles
+            </a>
           </li>
 
+          <!-- Reservas -->
           <li class="nav-item mb-2">
-            <a class="nav-link text-white" href="#"><i class="bi bi-calendar-check me-2"></i>Reservas</a>
+            <a class="nav-link text-white" href="{% url 'administrador:reservas_list' %}">
+              <i class="bi bi-calendar-check me-2"></i>Reservas
+            </a>
           </li>
 
+          <!-- CRM Usuarios / Contactos -->
           <li class="nav-item mb-2">
             <a class="nav-link text-white" href="{% url 'administrador:listar_contactos' %}">
               <i class="bi bi-inboxes me-2"></i>CRM Usuarios
             </a>
           </li>
 
+          <!-- Reportes (placeholder) -->
           <li class="nav-item mb-2">
-            <a class="nav-link text-white" href="#"><i class="bi bi-graph-up me-2"></i>Reportes</a>
+            <a class="nav-link text-white" href="#">
+              <i class="bi bi-graph-up me-2"></i>Reportes
+            </a>
           </li>
 
+          <!-- Logout -->
           <li class="nav-item mt-4">
-            <!-- logout está en el namespace "login" -->
             <a class="nav-link text-danger fw-semibold" href="{% url 'login:logout' %}">
               <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
             </a>
@@ -83,5 +96,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 

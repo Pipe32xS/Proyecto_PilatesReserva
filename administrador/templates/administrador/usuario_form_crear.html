@@ -1,0 +1,85 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 720px;">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Crear usuario</h2>
+    <a class="btn btn-outline-secondary" href="{% url 'administrador:usuarios_list' %}">&larr; Volver</a>
+  </div>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for m in messages|slice:":3" %}
+        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          Revisa el formulario.
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Username</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Nombre</label>
+            {{ form.first_name }}
+            {{ form.first_name.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Apellido</label>
+            {{ form.last_name }}
+            {{ form.last_name.errors }}
+          </div>
+          {% if form.rol %}
+            <div class="col-md-6">
+              <label class="form-label">Rol</label>
+              {{ form.rol }}
+              {{ form.rol.errors }}
+            </div>
+          {% endif %}
+          <div class="col-md-6">
+            <label class="form-label">Contraseña</label>
+            {{ form.password1 }}
+            {{ form.password1.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Repetir contraseña</label>
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+          </div>
+          <div class="col-12 form-check mt-2">
+            {{ form.is_active }}
+            <label class="form-check-label">Activo</label>
+            {{ form.is_active.errors }}
+          </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+          <button class="btn btn-primary">Crear</button>
+          <a class="btn btn-light" href="{% url 'administrador:usuarios_list' %}">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
