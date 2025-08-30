@@ -1,3 +1,4 @@
+# administrador/models.py
 from django.db import models
 from django.conf import settings
 
@@ -35,11 +36,11 @@ class ClasePilates(models.Model):
 
 
 class ReservaClase(models.Model):
-    # ← AQUÍ el cambio importante: related_name único
+    # related_name único para evitar conflictos
     cliente = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='reservas_clase',     # antes: 'reservas'
+        related_name='reservas_clase',
         related_query_name='reserva_clase'
     )
     clase = models.ForeignKey(ClasePilates, on_delete=models.CASCADE)
@@ -76,3 +77,44 @@ class Contacto(models.Model):
 
     def __str__(self):
         return f'{self.nombre} - {self.estado_mensaje}'
+
+
+# =========================
+# Gestión de Horarios (MVP)
+# =========================
+class HorarioBloque(models.Model):
+    class DiaSemana(models.IntegerChoices):
+        LUNES = 0, "Lunes"
+        MARTES = 1, "Martes"
+        MIERCOLES = 2, "Miércoles"
+        JUEVES = 3, "Jueves"
+        VIERNES = 4, "Viernes"
+        SABADO = 5, "Sábado"
+        DOMINGO = 6, "Domingo"
+
+    dia_semana = models.IntegerField(choices=DiaSemana.choices)
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
+    # String para no depender de otro modelo (MVP simple)
+    instructor = models.CharField(
+        max_length=100, blank=True, help_text="Opcional")
+    capacidad = models.PositiveSmallIntegerField(default=10)
+    activo = models.BooleanField(default=True)
+
+    creado = models.DateTimeField(auto_now_add=True)
+    actualizado = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("dia_semana", "hora_inicio")
+        verbose_name = "Bloque horario"
+        verbose_name_plural = "Bloques horarios"
+
+    def __str__(self):
+        return f"{self.get_dia_semana_display()} {self.hora_inicio}–{self.hora_fin} ({self.instructor or 'sin instructor'})"
+
+    def clean(self):
+        # Validación básica de rango horario
+        from django.core.exceptions import ValidationError
+        if self.hora_fin <= self.hora_inicio:
+            raise ValidationError(
+                "La hora de fin debe ser mayor a la hora de inicio.")

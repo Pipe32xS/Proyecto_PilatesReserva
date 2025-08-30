@@ -3,15 +3,23 @@ from datetime import datetime, date, time, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.timezone import now
 
 from administrador.models import ClasePilates
-from index.models import Reserva
+from index.models import Reserva  # tu modelo de reservas público
+
+# Alias opcional para agregaciones (si en algún entorno no existiera index.Reserva)
+try:
+    from index.models import Reserva as ReservaAgg
+except Exception:
+    from administrador.models import ReservaClase as ReservaAgg
 
 
-# ----------------------- Helpers internos existentes -----------------------
+# ----------------------- Helpers internos -----------------------
 ALLOWED_MORNING = ["07:00", "08:00", "09:00", "10:00", "11:00", "12:30"]
 ALLOWED_AFTERNOON = ["16:00", "17:00", "18:00", "19:00", "20:00"]
 ALLOWED_ALL = set(ALLOWED_MORNING + ALLOWED_AFTERNOON)
@@ -30,6 +38,31 @@ def _plus_one_hour(t: time) -> time:
 def _is_mon_to_sat(d: date) -> bool:
     # Monday=0 ... Sunday=6
     return d.weekday() <= 5
+
+
+def _first_existing_field(model, candidates):
+    """Devuelve el primer nombre de campo que exista en el modelo."""
+    names = {f.name for f in model._meta.get_fields()}
+    for c in candidates:
+        if c in names:
+            return c
+    return None
+
+
+def _exclude_canceladas(qs):
+    """
+    Excluye reservas canceladas si el modelo tiene un campo de estado
+    común como 'estado' / 'status' / 'state'.
+    """
+    estado_field = _first_existing_field(
+        qs.model, ["estado", "status", "state"])
+    if estado_field:
+        try:
+            return qs.exclude(**{f"{estado_field}__iexact": "cancelada"})
+        except Exception:
+            # Si hay valores distintos (p. ej. 'cancelled'), ajusta aquí si lo necesitas.
+            pass
+    return qs
 
 
 # ----------------------- Vistas originales (se mantienen) -----------------------
@@ -59,22 +92,17 @@ def mis_reservas(request):
     return render(request, "usuarios/mis_reservas.html", contexto)
 
 
-# --------- Entrada segura para "Nueva reserva" (redirige a clases del admin)
+# Entrada segura para "Nueva reserva": redirige a clases del admin
 @login_required
 def reservar_entry(request):
-    """
-    Entrada segura para 'Nueva reserva'. Redirige a la lista
-    de clases creadas por el administrador.
-    Si quieres mantener el flujo manual, queda disponible en /usuarios/reservar-manual/.
-    """
     return redirect("usuarios:clases_disponibles")
 
 
 @login_required
 def nueva_reserva(request):
     """
-    Flujo anterior (manual): tipo/fecha/hora fija. Lo mantenemos por compatibilidad.
-    Ahora además tienes el nuevo flujo basado en clases del admin (reservar_entry -> clases_disponibles).
+    Flujo manual (compatibilidad): tipo/fecha/hora fija.
+    El flujo recomendado es reservar desde clases_disponibles.
     """
     if request.method == "POST":
         tipo = (request.POST.get("tipo") or "").lower().strip()
@@ -108,7 +136,7 @@ def nueva_reserva(request):
                 else:
                     Reserva.objects.create(
                         user=request.user,
-                        tipo=tipo,       # <-- se guarda lo que viene del select
+                        tipo=tipo,
                         fecha=f,
                         inicio=t_inicio,
                         fin=t_fin,
@@ -145,9 +173,6 @@ def reserva_detalle(request, pk: int):
 
 @login_required
 def reserva_cancelar(request, pk: int):
-    """
-    Cancela la reserva del usuario actual (MVP: vía GET).
-    """
     r = get_object_or_404(Reserva, pk=pk, user=request.user)
     if r.estado == "Cancelada":
         messages.info(request, "Esta reserva ya estaba cancelada.")
@@ -158,30 +183,56 @@ def reserva_cancelar(request, pk: int):
     return redirect("usuarios:mis_reservas")
 
 
-# ----------------------- NUEVAS vistas conectadas a clases del admin -----------------------
+# ----------------------- NUEVA vista (tarjetas) -----------------------
 @login_required
 def clases_disponibles(request):
     """
-    Lista SOLO las clases creadas por el administrador con fecha >= hoy,
-    ordenadas por fecha y hora. Muestra cupos disponibles.
+    Lista de clases (formato tarjetas) con filtros y paginación.
+    Renderiza: templates/index/clases_grid.html
     """
-    hoy = timezone.localdate()
-    clases = ClasePilates.objects.filter(
-        fecha__gte=hoy).order_by("fecha", "horario")
+    q = (request.GET.get("q") or "").strip()
+    desde = request.GET.get("desde") or ""
+    hasta = request.GET.get("hasta") or ""
 
-    items = []
-    for c in clases:
-        tomados = Reserva.cupos_tomados(c)
-        libres = max(c.capacidad_maxima - tomados, 0)
-        items.append({
-            "obj": c,
-            "cupos_tomados": tomados,
-            "cupos_libres": libres,
-            "hay_cupo": libres > 0,
-            # si quieres mostrar badge "Vencida" en template, quedará False aquí
-            "vencida": False,
-        })
-    return render(request, "usuarios/clases_disponibles.html", {"items": items})
+    # Base: clases futuras (>= hoy) por defecto
+    qs = ClasePilates.objects.all().order_by("fecha", "horario")
+    if desde:
+        qs = qs.filter(fecha__gte=desde)
+    else:
+        qs = qs.filter(fecha__gte=now().date())
+
+    if hasta:
+        qs = qs.filter(fecha__lte=hasta)
+
+    if q:
+        qs = qs.filter(
+            Q(nombre_clase__icontains=q)
+            | Q(descripcion__icontains=q)
+            | Q(nombre_instructor__icontains=q)
+        )
+
+    # Conteo de reservas por clase (excluyendo canceladas si el modelo tiene campo de estado)
+    reservas_qs = ReservaAgg.objects.all()
+    reservas_qs = _exclude_canceladas(reservas_qs)
+
+    reservas = reservas_qs.values("clase_id").annotate(cnt=Count("id"))
+    reservas_por_clase = {r["clase_id"]: r["cnt"] for r in reservas}
+
+    # Paginación (12 por página)
+    paginator = Paginator(qs, 12)
+    page = request.GET.get("page") or 1
+    page_obj = paginator.get_page(page)  # tolerante a out-of-range
+
+    context = {
+        "page_obj": page_obj,
+        "paginator": paginator,
+        "q": q,
+        "desde": desde,
+        "hasta": hasta,
+        "reservas_por_clase": reservas_por_clase,
+        "reserve_url_name": "usuarios:reservar_clase",  # nombre namespaced
+    }
+    return render(request, "index/clases_grid.html", context)
 
 
 @login_required
@@ -192,31 +243,42 @@ def reservar_clase(request, clase_id: int):
     """
     c = get_object_or_404(ClasePilates, pk=clase_id)
 
-    # Verificación básica de fecha (no permitir pasado)
+    # Fecha no pasada
     if c.fecha < timezone.localdate():
         messages.error(
             request, "No es posible reservar una clase en el pasado.")
         return redirect("usuarios:clases_disponibles")
 
-    # Verificación de cupo
-    if not Reserva.hay_cupo(c):
+    # Verificación de cupo (excluyendo canceladas si corresponde)
+    try:
+        # si definiste un helper en tu modelo de reservas
+        hay_cupo = Reserva.hay_cupo(c)
+    except Exception:
+        # Fallback: contar reservas no canceladas
+        user_res_qs = Reserva.objects.filter(clase=c)
+        user_res_qs = _exclude_canceladas(user_res_qs)
+        reservados = user_res_qs.count()
+        hay_cupo = reservados < (c.capacidad_maxima or 0)
+
+    if not hay_cupo:
         messages.warning(request, "La clase ya no tiene cupos disponibles.")
         return redirect("usuarios:clases_disponibles")
 
     # Evitar duplicado por unique constraint (usuario + clase)
-    ya_tiene = Reserva.objects.filter(user=request.user, clase=c).exists()
-    if ya_tiene:
+    ya_tiene_qs = Reserva.objects.filter(user=request.user, clase=c)
+    ya_tiene_qs = _exclude_canceladas(ya_tiene_qs)
+    if ya_tiene_qs.exists():
         messages.info(request, "Ya reservaste esta clase.")
         return redirect("usuarios:mis_reservas")
 
-    # Crear la reserva (llenando además los campos de compatibilidad)
+    # Crear la reserva
     Reserva.objects.create(
         user=request.user,
         clase=c,
         tipo=_infer_tipo_desde_nombre(c.nombre_clase),
         fecha=c.fecha,
         inicio=c.horario,
-        fin=None,  # opcional: calcular +1h si quieres
+        fin=None,  # si quieres +1h, calcula y guarda
         estado="Confirmada",
     )
     messages.success(request, "¡Reserva creada con éxito!")

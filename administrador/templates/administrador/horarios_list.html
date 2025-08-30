@@ -1,0 +1,98 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Gestión de horarios</h2>
+    <a class="btn btn-outline-secondary" href="{% url 'administrador:home' %}">&larr; Volver</a>
+  </div>
+
+  <!-- Filtros -->
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+      <input type="text" class="form-control" name="q" placeholder="Buscar por instructor…" value="{{ q }}">
+    </div>
+
+    <div class="col-md-4">
+      <select class="form-select" name="dia">
+        <option value="">Todos los días</option>
+        <option value="0" {% if dia == "0" %}selected{% endif %}>Lunes</option>
+        <option value="1" {% if dia == "1" %}selected{% endif %}>Martes</option>
+        <option value="2" {% if dia == "2" %}selected{% endif %}>Miércoles</option>
+        <option value="3" {% if dia == "3" %}selected{% endif %}>Jueves</option>
+        <option value="4" {% if dia == "4" %}selected{% endif %}>Viernes</option>
+        <option value="5" {% if dia == "5" %}selected{% endif %}>Sábado</option>
+        <option value="6" {% if dia == "6" %}selected{% endif %}>Domingo</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <select class="form-select" name="activos">
+        <option value="todos" {% if activos == "todos" %}selected{% endif %}>Todos</option>
+        <option value="solo_activos" {% if activos == "solo_activos" %}selected{% endif %}>Solo activos</option>
+        <option value="solo_inactivos" {% if activos == "solo_inactivos" %}selected{% endif %}>Solo inactivos</option>
+      </select>
+    </div>
+
+    <div class="col-md-1 d-grid">
+      <button class="btn btn-primary">Filtrar</button>
+    </div>
+  </form>
+
+  <div class="mb-3">
+    <a class="btn btn-success" href="{% url 'administrador:horario_crear' %}">
+      <i class="bi bi-plus-circle me-1"></i> Nuevo bloque
+    </a>
+    <a href="{% url 'administrador:horarios_generar_clases' %}" class="btn btn-primary">
+      <i class="bi bi-magic me-1"></i> Generar clases
+    </a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Día</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Instructor</th>
+          <th>Capacidad</th>
+          <th>Estado</th>
+          <th style="width:1%; white-space:nowrap;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bloques %}
+          <tr>
+            <td>
+              {% if b.dia_semana == 0 %}Lunes{% elif b.dia_semana == 1 %}Martes{% elif b.dia_semana == 2 %}Miércoles
+              {% elif b.dia_semana == 3 %}Jueves{% elif b.dia_semana == 4 %}Viernes{% elif b.dia_semana == 5 %}Sábado
+              {% elif b.dia_semana == 6 %}Domingo{% else %}—{% endif %}
+            </td>
+            <td>{{ b.hora_inicio|time:"H:i" }}</td>
+            <td>{{ b.hora_fin|time:"H:i" }}</td>
+            <td>{{ b.instructor|default:"—" }}</td>
+            <td>{{ b.capacidad }}</td>
+            <td>
+              {% if b.activo %}
+                <span class="badge bg-success">Activo</span>
+              {% else %}
+                <span class="badge bg-secondary">Inactivo</span>
+              {% endif %}
+            </td>
+            <td>
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'administrador:horario_editar' b.id %}">Editar</a>
+              <a class="btn btn-sm btn-outline-danger" href="{% url 'administrador:horario_eliminar' b.id %}">Eliminar</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">Sin bloques aún.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,72 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 720px;">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">
+      {% if modo == "editar" %}Editar bloque{% else %}Nuevo bloque{% endif %}
+    </h2>
+    <a class="btn btn-outline-secondary" href="{% url 'administrador:horarios_list' %}">&larr; Volver</a>
+  </div>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for m in messages|slice:":3" %}
+        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Día de semana</label>
+            {{ form.dia_semana }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Hora inicio</label>
+            {{ form.hora_inicio }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Hora fin</label>
+            {{ form.hora_fin }}
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Instructor (opcional)</label>
+            {{ form.instructor }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Capacidad</label>
+            {{ form.capacidad }}
+          </div>
+          <div class="col-12 form-check mt-2">
+            {{ form.activo }}
+            <label class="form-check-label">Activo</label>
+          </div>
+        </div>
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-warning mt-3">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="mt-3 d-flex gap-2">
+          <button class="btn btn-primary">{% if modo == "editar" %}Guardar cambios{% else %}Crear bloque{% endif %}</button>
+          <a class="btn btn-light" href="{% url 'administrador:horarios_list' %}">Cancelar</a>
+          {% if modo == "editar" %}
+            <a class="btn btn-outline-danger ms-auto"
+               href="{% url 'administrador:horario_eliminar' bloque.id %}">
+              Eliminar
+            </a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

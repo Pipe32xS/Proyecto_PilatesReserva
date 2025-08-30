@@ -1,4 +1,6 @@
+# usuarios/urls.py
 from django.urls import path
+from django.views.generic import RedirectView
 from . import views
 
 app_name = "usuarios"
@@ -22,4 +24,13 @@ urlpatterns = [
 
     # (opcional) mantener el flujo manual en una URL aparte
     path("reservar-manual/", views.nueva_reserva, name="reservar_manual"),
+
+    # --- 🔄 Redirección desde la ruta vieja ---
+    # Si alguien entra a /usuarios/clases/, lo mandamos a la vista nueva
+    path(
+        "clases/",
+        RedirectView.as_view(
+            pattern_name="clases_disponibles", permanent=False),
+        name="clases_publico",
+    ),
 ]

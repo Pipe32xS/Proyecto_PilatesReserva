@@ -6,14 +6,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from datetime import timedelta, date
 
 from .forms import (
     ClasePilatesForm,
     ReservaEstadoForm,
     UsuarioAdminForm,
     UsuarioCrearForm,
+    HorarioBloqueForm,
+    GenerarClasesForm,  # <- form de horarios
 )
-from .models import ClasePilates
+from .models import ClasePilates, HorarioBloque  # <- modelo de horarios
 
 User = get_user_model()
 
@@ -204,7 +207,8 @@ def reserva_admin_cambiar_estado(request, reserva_id: int):
             messages.success(request, "Estado de la reserva actualizado.")
             return redirect("administrador:reservas_list")
         messages.error(
-            request, "No se pudo actualizar el estado. Revisa el formulario.")
+            request, "No se pudo actualizar el estado. Revisa el formulario."
+        )
     else:
         form = ReservaEstadoForm(instance=reserva)
 
@@ -365,3 +369,213 @@ def admin_usuario_toggle_activo(request, user_id: int):
     )
     back = request.META.get("HTTP_REFERER") or "administrador:usuarios_list"
     return redirect(back)
+
+
+# ---------------------------
+# Gestión de Horarios (Bloques)
+# ---------------------------
+@login_required
+def horarios_list(request):
+    """Listado/filtros para Gestión de Horarios (solo admin)."""
+    if (resp := _forbidden_if_not_admin(request)) is not None:
+        return resp
+
+    # Opciones de días para el filtro (se usan en el template)
+    dias = [
+        ("0", "Lunes"),
+        ("1", "Martes"),
+        ("2", "Miércoles"),
+        ("3", "Jueves"),
+        ("4", "Viernes"),
+        ("5", "Sábado"),
+        ("6", "Domingo"),
+    ]
+
+    q = (request.GET.get("q") or "").strip()
+    dia = request.GET.get("dia", "")           # "", "0".."6"
+    # "todos" | "solo_activos" | "solo_inactivos"
+    activos = request.GET.get("activos", "todos")
+
+    qs = HorarioBloque.objects.all().order_by("dia_semana", "hora_inicio")
+
+    if dia != "":
+        try:
+            qs = qs.filter(dia_semana=int(dia))
+        except ValueError:
+            pass
+
+    if activos == "solo_activos":
+        qs = qs.filter(activo=True)
+    elif activos == "solo_inactivos":
+        qs = qs.filter(activo=False)
+
+    if q:
+        qs = qs.filter(instructor__icontains=q)
+
+    return render(
+        request,
+        "administrador/horarios_list.html",
+        {
+            "bloques": qs,
+            "dias": dias,     # <- importante para el template
+            "q": q,
+            "dia": dia,
+            "activos": activos,
+        },
+    )
+
+
+@login_required
+def horario_crear(request):
+    if (resp := _forbidden_if_not_admin(request)) is not None:
+        return resp
+
+    if request.method == "POST":
+        form = HorarioBloqueForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Bloque horario creado.")
+            return redirect("administrador:horarios_list")
+        messages.error(request, "Revisa el formulario.")
+    else:
+        form = HorarioBloqueForm()
+
+    return render(
+        request,
+        "administrador/horario_form.html",
+        {"form": form, "modo": "crear"},
+    )
+
+
+@login_required
+def horario_editar(request, bloque_id: int):
+    if (resp := _forbidden_if_not_admin(request)) is not None:
+        return resp
+
+    bloque = get_object_or_404(HorarioBloque, pk=bloque_id)
+
+    if request.method == "POST":
+        form = HorarioBloqueForm(request.POST, instance=bloque)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Bloque horario actualizado.")
+            return redirect("administrador:horarios_list")
+        messages.error(request, "Revisa el formulario.")
+    else:
+        form = HorarioBloqueForm(instance=bloque)
+
+    return render(
+        request,
+        "administrador/horario_form.html",
+        {"form": form, "modo": "editar", "bloque": bloque},
+    )
+
+
+@login_required
+def horario_eliminar(request, bloque_id: int):
+    if (resp := _forbidden_if_not_admin(request)) is not None:
+        return resp
+
+    bloque = get_object_or_404(HorarioBloque, pk=bloque_id)
+
+    if request.method == "POST":
+        bloque.delete()
+        messages.success(request, "Bloque horario eliminado.")
+        return redirect("administrador:horarios_list")
+
+    return render(
+        request,
+        "administrador/horario_confirm_delete.html",
+        {"bloque": bloque},
+    )
+
+
+@login_required
+def horarios_generar_clases(request):
+    """Pantalla para elegir rango y generar clases desde bloques."""
+    if (resp := _forbidden_if_not_admin(request)) is not None:
+        return resp
+
+    # Defaults: hoy -> hoy + 28 días
+    from django.utils import timezone
+    default_desde = timezone.localdate()
+    default_hasta = default_desde + timedelta(days=28)
+
+    if request.method == "POST":
+        form = GenerarClasesForm(request.POST)
+        if form.is_valid():
+            return _generar_clases_desde_bloques(request, form.cleaned_data)
+        messages.error(request, "Revisa el formulario.")
+    else:
+        form = GenerarClasesForm(initial={
+            "desde": default_desde,
+            "hasta": default_hasta,
+            "solo_activos": True,
+            "ignorar_existentes": True,
+            "nombre_clase": "Clase de Pilates",
+        })
+
+    # Info rápida para el admin
+    activos_count = HorarioBloque.objects.filter(activo=True).count()
+    total_count = HorarioBloque.objects.count()
+
+    return render(
+        request,
+        "administrador/horarios_generar_clases.html",
+        {"form": form, "activos_count": activos_count, "total_count": total_count},
+    )
+
+
+def _generar_clases_desde_bloques(request, data):
+    """Lógica de creación de ClasePilates a partir de HorarioBloque."""
+    d_ini: date = data["desde"]
+    d_fin: date = data["hasta"]
+    solo_activos = data.get("solo_activos", True)
+    ignorar_existentes = data.get("ignorar_existentes", True)
+    nombre_clase = (data.get("nombre_clase") or "Clase de Pilates").strip()
+    desc_form = (data.get("descripcion") or "").strip()
+
+    bloques = HorarioBloque.objects.all()
+    if solo_activos:
+        bloques = bloques.filter(activo=True)
+
+    created = 0
+    skipped = 0
+
+    # Iterar día a día
+    cur = d_ini
+    while cur <= d_fin:
+        weekday = cur.weekday()  # 0=lunes .. 6=domingo
+        for b in bloques.filter(dia_semana=weekday):
+            exists = ClasePilates.objects.filter(
+                fecha=cur,
+                horario=b.hora_inicio,
+                nombre_instructor=(b.instructor or "").strip()
+            ).exists()
+
+            if exists and ignorar_existentes:
+                skipped += 1
+                continue
+
+            if not exists:
+                cp = ClasePilates(
+                    nombre_clase=nombre_clase,
+                    fecha=cur,
+                    horario=b.hora_inicio,
+                    capacidad_maxima=b.capacidad,
+                    nombre_instructor=(b.instructor or "").strip(),
+                    descripcion=desc_form or f"Generada automáticamente desde bloque (instructor: {b.instructor or 'N/A'}).",
+                )
+                cp.save()
+                created += 1
+            else:
+                # Si no ignoramos existentes, podríamos crear otra clase "duplicada".
+                # Para MVP, si existe y no ignoramos, lo saltamos igual.
+                skipped += 1
+        cur += timedelta(days=1)
+
+    messages.success(
+        request,
+        f"Generación finalizada. Clases creadas: {created}. Saltadas/Existentes: {skipped}."
+    )
+    return redirect("administrador:listar_clases")

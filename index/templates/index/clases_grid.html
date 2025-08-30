@@ -1,0 +1,92 @@
+{% extends "usuarios/base_cliente.html" %}
+{% load dict_extras %}
+
+{% block title %}Clases disponibles{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0">Clases disponibles</h1>
+    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">← Volver</a>
+  </div>
+
+  <!-- Filtros -->
+  <form class="row g-2 align-items-end mb-3" method="get">
+    <div class="col-md-4">
+      <label class="form-label">Buscar</label>
+      <input type="text" name="q" value="{{ q }}" class="form-control"
+             placeholder="Nombre de clase, instructor, descripción">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Desde</label>
+      <input type="date" name="desde" value="{{ desde }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Hasta</label>
+      <input type="date" name="hasta" value="{{ hasta }}" class="form-control">
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-primary">Filtrar</button>
+    </div>
+  </form>
+
+  {# -------- Determinar la lista a recorrer (page_obj o clases o items) -------- #}
+  {% if page_obj and page_obj.object_list %}
+    {% with list=page_obj.object_list %}
+      {% include "index/partials/_clases_cards_list.html" with lista=list reservas_por_clase=reservas_por_clase reserve_url_name=reserve_url_name only %}
+    {% endwith %}
+  {% elif clases %}
+    {% include "index/partials/_clases_cards_list.html" with lista=clases reservas_por_clase=reservas_por_clase reserve_url_name=reserve_url_name only %}
+  {% elif items %}
+    {# por compatibilidad con tu vista más antigua que enviaba items=[{obj, cupos_tomados, ...}] #}
+    {% include "index/partials/_clases_cards_list.html" with lista=items reservas_por_clase=reservas_por_clase reserve_url_name=reserve_url_name only %}
+  {% else %}
+    <div class="alert alert-info">No hay clases disponibles.</div>
+  {% endif %}
+
+  {# Paginación #}
+  {% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-4" aria-label="Paginación">
+      <ul class="pagination justify-content-center">
+
+        {# Anterior #}
+        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+          {% if page_obj.has_previous %}
+            <a class="page-link"
+               href="?q={{ q }}&desde={{ desde }}&hasta={{ hasta }}&page={{ page_obj.previous_page_number }}">
+              Anterior
+            </a>
+          {% else %}
+            <span class="page-link">Anterior</span>
+          {% endif %}
+        </li>
+
+        {# Números de página (ventana -2 .. +2) #}
+        {% for p in page_obj.paginator.page_range %}
+          {% if p >= page_obj.number|add:"-2" and p <= page_obj.number|add:"2" %}
+            <li class="page-item {% if p == page_obj.number %}active{% endif %}">
+              <a class="page-link"
+                 href="?q={{ q }}&desde={{ desde }}&hasta={{ hasta }}&page={{ p }}">{{ p }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {# Siguiente #}
+        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+          {% if page_obj.has_next %}
+            <a class="page-link"
+               href="?q={{ q }}&desde={{ desde }}&hasta={{ hasta }}&page={{ page_obj.next_page_number }}">
+              Siguiente
+            </a>
+          {% else %}
+            <span class="page-link">Siguiente</span>
+          {% endif %}
+        </li>
+
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}
+

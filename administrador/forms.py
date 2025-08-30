@@ -1,16 +1,21 @@
 from django import forms
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
-from .models import Contacto, ClasePilates
+from .models import Contacto, ClasePilates, HorarioBloque
 
 User = get_user_model()
 
-# ------- Clases / Contacto / Reservas -------
+# =======================
+#  Clases / Contacto / Reservas
+# =======================
 
 try:
+    # Si existe la app index con reservas reales, úsala
     from index.models import Reserva as ReservaModel
 except Exception:
+    # Fallback local
     from .models import ReservaClase as ReservaModel
 
 
@@ -22,9 +27,12 @@ class ClasePilatesForm(forms.ModelForm):
             "capacidad_maxima", "nombre_instructor", "descripcion",
         ]
         widgets = {
-            "descripcion": forms.Textarea(attrs={"rows": 3}),
-            "fecha": forms.DateInput(attrs={"type": "date"}),
-            "horario": forms.TimeInput(attrs={"type": "time"}),
+            "descripcion": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
+            "fecha": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "horario": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            "nombre_clase": forms.TextInput(attrs={"class": "form-control"}),
+            "capacidad_maxima": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "nombre_instructor": forms.TextInput(attrs={"class": "form-control"}),
         }
 
 
@@ -32,7 +40,8 @@ class ContactoAdminForm(forms.ModelForm):
     class Meta:
         model = Contacto
         fields = ["estado_mensaje", "comentario"]
-        widgets = {"comentario": forms.Textarea(attrs={"rows": 3})}
+        widgets = {"comentario": forms.Textarea(
+            attrs={"rows": 3, "class": "form-control"})}
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
@@ -43,6 +52,7 @@ class ContactoAdminForm(forms.ModelForm):
 
 
 class ReservaEstadoForm(forms.ModelForm):
+    """Selecciona dinámicamente el campo de 'estado' disponible en el modelo de reservas."""
     class Meta:
         model = ReservaModel
         fields = []  # dinámico
@@ -83,8 +93,10 @@ class ReservaEstadoForm(forms.ModelForm):
 
         if not name or not field:
             self.fields["__estado__"] = forms.CharField(
-                required=False, label="Estado (no detectado)",
+                required=False,
+                label="Estado (no detectado)",
                 help_text="No se detectó el campo de estado en el modelo.",
+                widget=forms.TextInput(attrs={"class": "form-control"})
             )
             self._meta.fields = ["__estado__"]
             self.estado_field_name = None
@@ -93,13 +105,15 @@ class ReservaEstadoForm(forms.ModelForm):
         formfield = field.formfield(
             widget=forms.Select(attrs={"class": "form-select form-select-sm"})
             if getattr(field, "choices", None) else None
-        ) or forms.CharField()
+        ) or forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
         self.fields[name] = formfield
         self._meta.fields = [name]
         self.estado_field_name = name
 
 
-# ------- Admin Usuarios -------
+# =======================
+#  Admin de Usuarios
+# =======================
 
 class UsuarioAdminForm(forms.ModelForm):
     rol = forms.CharField(required=False, label="Rol",
@@ -180,3 +194,65 @@ class UsuarioCrearForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+# =======================
+#  Gestión de Horarios
+# =======================
+
+class HorarioBloqueForm(forms.ModelForm):
+    class Meta:
+        model = HorarioBloque
+        fields = ["dia_semana", "hora_inicio", "hora_fin",
+                  "instructor", "capacidad", "activo"]
+        widgets = {
+            "dia_semana": forms.Select(attrs={"class": "form-select"}),
+            "hora_inicio": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            "hora_fin": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            "instructor": forms.TextInput(attrs={"class": "form-control", "placeholder": "Opcional"}),
+            "capacidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "activo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        hi = cleaned.get("hora_inicio")
+        hf = cleaned.get("hora_fin")
+        if hi and hf and hf <= hi:
+            self.add_error(
+                "hora_fin", "La hora de fin debe ser mayor a la de inicio.")
+        return cleaned
+
+
+class GenerarClasesForm(forms.Form):
+    """Formulario para crear clases a partir de bloques en un rango de fechas."""
+    desde = forms.DateField(widget=forms.DateInput(
+        attrs={"type": "date", "class": "form-control"}))
+    hasta = forms.DateField(widget=forms.DateInput(
+        attrs={"type": "date", "class": "form-control"}))
+    solo_activos = forms.BooleanField(
+        required=False, initial=True,
+        label="Usar solo bloques activos",
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
+    )
+    nombre_clase = forms.CharField(
+        required=False, initial="Clase de Pilates",
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    descripcion = forms.CharField(
+        required=False, widget=forms.Textarea(attrs={"class": "form-control", "rows": 2})
+    )
+    ignorar_existentes = forms.BooleanField(
+        required=True, initial=True,
+        label="No crear si ya existe una clase en el mismo día/hora/instructor",
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
+    )
+
+    def clean(self):
+        cleaned = super().clean()
+        d = cleaned.get("desde")
+        h = cleaned.get("hasta")
+        if d and h and h < d:
+            raise forms.ValidationError(
+                "La fecha 'hasta' debe ser mayor o igual a 'desde'.")
+        return cleaned

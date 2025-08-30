@@ -1,0 +1,60 @@
+{% extends "administrador/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-3" style="max-width: 860px;">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Generar clases desde bloques</h2>
+    <a class="btn btn-outline-secondary" href="{% url 'administrador:horarios_list' %}">&larr; Volver</a>
+  </div>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="alert alert-info">
+    Bloques cargados: <strong>{{ activos_count }}</strong> activos /
+    <strong>{{ total_count }}</strong> en total. <br>
+    Se crearán <em>ClasePilates</em> por cada día del rango que coincida con un bloque (día de semana), 
+    tomando hora_inicio, capacidad e instructor del bloque.
+  </div>
+
+  <form method="post" class="card shadow-sm">
+    {% csrf_token %}
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Desde</label>
+          {{ form.desde }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Hasta</label>
+          {{ form.hasta }}
+        </div>
+        <div class="col-md-4 pt-4">
+          <div class="form-check mt-1">
+            {{ form.solo_activos }} <label class="form-check-label ms-1">Usar solo bloques activos</label>
+          </div>
+          <div class="form-check mt-2">
+            {{ form.ignorar_existentes }} <label class="form-check-label ms-1">{{ form.ignorar_existentes.label }}</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Nombre de la clase</label>
+          {{ form.nombre_clase }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Descripción (opcional)</label>
+          {{ form.descripcion }}
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+      <a href="{% url 'administrador:horarios_list' %}" class="btn btn-light">Cancelar</a>
+      <button class="btn btn-primary">Generar clases</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
