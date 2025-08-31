@@ -1,55 +1,57 @@
 # login/views.py
-from django.contrib.auth import authenticate, login, logout as auth_logout
-from django.shortcuts import render, redirect, resolve_url
 from django.contrib import messages
+from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 
 from .forms import LoginForm, RegistroClienteForm
 
 
 def login_view(request):
     """
-    Inicia sesión con usuario o email (tu backend ya lo permite).
-    Redirige por rol:
-      - administrador  -> administrador:admin-home
-      - cliente (u otros) -> usuarios:home_cliente
+    Inicia sesión y redirige por rol:
+      - administrador  -> administrador:home
+      - cliente/otros  -> usuarios:home_cliente
     """
     if request.method == "POST":
-        form = LoginForm(request, data=request.POST)
+        # ⛔️ No pases 'request' como primer parámetro a tu LoginForm personalizado
+        form = LoginForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
 
+            # Detección de rol robusta
             rol = (getattr(user, "rol", "") or "").lower()
-
-            if rol == "administrador":
-                # >>> AQUÍ estaba el problema: NO usar 'dashboard'
+            if rol == "administrador" or user.is_superuser or user.is_staff:
+                # Asegúrate de que esta URL exista
                 return redirect("administrador:home")
-            else:
-                return redirect("usuarios:home_cliente")
+            return redirect("usuarios:home_cliente")
         else:
             messages.error(request, "Usuario o contraseña incorrectos.")
     else:
-        form = LoginForm(request)
+        form = LoginForm()  # ⛔️ No pases 'request' aquí tampoco
 
     return render(request, "login/login.html", {"form": form})
 
 
-def registrar_cliente(request):
-    if request.method == "POST":
-        form = RegistroClienteForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            messages.success(
-                request, "Cuenta creada. Ya puedes iniciar sesión.")
-            return redirect("login:login")
-    else:
-        form = RegistroClienteForm()
-    return render(request, "login/registro_cliente.html", {"form": form})
+def registro_cliente(request):
+    """
+    Registro de clientes (usa el template login/registro.html)
+    """
+    form = RegistroClienteForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(
+            request, "¡Cuenta creada con éxito! Ahora puedes iniciar sesión.")
+        # Asegúrate de que el name de la URL de login sea 'login'
+        return redirect("login:login")
+
+    return render(request, "login/registro.html", {"form": form})
 
 
 @login_required
 def logout_view(request):
     auth_logout(request)
     messages.info(request, "Sesión cerrada correctamente.")
-    return redirect("index")
+    # Ajusta el nombre de la URL de tu home público
+    return redirect("index")  # o 'index:home' si está namespaced
