@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+HEAD
 # Proyecto_PilatesReserva
-=======
+
 # 🧘‍♀️ Proyecto PilatesReserva  
 
 **PilatesReserva** es un sistema inteligente desarrollado en **Django** como parte de un **proyecto de título universitario**.  
@@ -54,4 +54,4 @@ Allí podrás encontrar instrucciones paso a paso, ejemplos de uso y explicació
 
 Desarrollado por **Pipe32xS** con foco en calidad, escalabilidad y experiencia de usuario.  
 
->>>>>>> d428a7f (README.md – PilatesReserva)
+d428a7f (README.md – PilatesReserva)

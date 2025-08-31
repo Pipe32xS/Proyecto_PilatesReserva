@@ -2,10 +2,14 @@
 from django import forms
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import Q  # opcional
 
-# 👇 Contacto vive en la app "index"
-from index.models import Contacto
+# === Contacto: intentamos usar el de la app "index".
+#     Si no existe, caemos al de administrador.models como fallback.
+try:
+    from index.models import Contacto as ContactoModel
+except Exception:
+    from .models import Contacto as ContactoModel
 
 from .models import ClasePilates, HorarioBloque, PerfilUsuario
 
@@ -46,7 +50,7 @@ class ClasePilatesForm(forms.ModelForm):
         }
 
 
-def _model_has_field(model, name: str) -> bool:
+def _has_field(model, name: str) -> bool:
     try:
         model._meta.get_field(name)
         return True
@@ -54,58 +58,73 @@ def _model_has_field(model, name: str) -> bool:
         return False
 
 
+# >>> Calculamos a NIVEL DE MÓDULO los campos editables del Contacto:
+CONTACTO_EDIT_FIELDS: list[str] = []
+if _has_field(ContactoModel, "estado_mensaje"):
+    CONTACTO_EDIT_FIELDS.append("estado_mensaje")
+if _has_field(ContactoModel, "comentario"):
+    CONTACTO_EDIT_FIELDS.append("comentario")
+
+
 class ContactoAdminForm(forms.ModelForm):
     """
-    Form dinámico: solo incluye los campos de gestión que existan en tu modelo Contacto.
-    Admite, en este orden de prioridad:
-      - "estado_mensaje", "comentario"
-      - "estado", "notas", "nota", "estado_contacto"
-    Si ninguno existe, la forma queda sin campos (solo lectura).
+    Form dinámico: solo incluye campos que EXISTEN en ContactoModel.
+    Además, asegura que 'estado_mensaje' sea un <select> con opciones:
+      - Usa choices del modelo si existen
+      - Si no, usa un fallback ('pendiente', 'revisado', 'respondido')
     """
 
+    # Fallback por si el modelo no define choices
+    ESTADO_FALLBACK = [
+        ("pendiente", "Pendiente"),
+        ("revisado", "Revisado"),
+        ("respondido", "Respondido"),
+    ]
+
     class Meta:
-        model = Contacto
-        fields: list[str] = []  # se completa en __init__
+        model = ContactoModel
+        fields = CONTACTO_EDIT_FIELDS  # ← calculado arriba
+        widgets = {
+            "comentario": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
+        }
 
     def __init__(self, *args, **kwargs):
+        # importante: pasamos el usuario desde la vista
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        # Candidatos conocidos de campos de gestión
-        candidates_in_order = [
-            "estado_mensaje",
-            "comentario",
-            "estado",
-            "notas",
-            "nota",
-            "estado_contacto",
-        ]
+        # Asegurar <select> con opciones para 'estado_mensaje'
+        if "estado_mensaje" in self.fields:
+            try:
+                meta_field = ContactoModel._meta.get_field("estado_mensaje")
+                model_choices = list(getattr(meta_field, "choices", [])) or []
+            except Exception:
+                model_choices = []
 
-        existing: list[str] = [
-            n for n in candidates_in_order if _model_has_field(Contacto, n)]
+            choices = model_choices or self.ESTADO_FALLBACK
 
-        # Limpiar cualquier campo autogenerado por Django y reconstruir solo con los existentes
-        self.fields.clear()
-        for name in existing:
-            # formfield() respeta choices, tipos, etc.
-            formfield = Contacto._meta.get_field(name).formfield()
-            if formfield is None:
-                # Por si fuese no editable
-                continue
-            # Aplica estilo Bootstrap básico
-            if hasattr(formfield.widget, "attrs"):
-                css = formfield.widget.attrs.get("class", "")
-                formfield.widget.attrs["class"] = (
-                    css + " form-control").strip()
-            self.fields[name] = formfield
+            # reconstruimos el campo como ChoiceField para garantizar <select>
+            self.fields["estado_mensaje"] = forms.ChoiceField(
+                choices=choices,
+                required=False,  # pon True si quieres que sea obligatorio
+                widget=forms.Select(attrs={"class": "form-select"}),
+                label=self.fields["estado_mensaje"].label if "estado_mensaje" in self.fields else "Estado",
+            )
 
-        # Si no hay campos gestionables, la forma queda vacía (no rompe en .is_valid())
-        self._meta.fields = list(self.fields.keys())
+            # valor inicial (cuando se edita)
+            if self.instance and getattr(self.instance, "estado_mensaje", None) is not None:
+                self.initial["estado_mensaje"] = self.instance.estado_mensaje
 
-        # Si no es admin, todo deshabilitado
-        if not self.user or getattr(self.user, "rol", "").lower() != "administrador":
-            for field in self.fields.values():
-                field.disabled = True
+        # permitir edición a superuser, staff o rol=administrador
+        es_admin = False
+        if self.user:
+            rol = (getattr(self.user, "rol", "") or "").lower()
+            es_admin = self.user.is_superuser or self.user.is_staff or rol == "administrador"
+
+        if not es_admin:
+            # si NO es admin, dejar campos deshabilitados (solo lectura)
+            for f in self.fields.values():
+                f.disabled = True
 
 
 class ReservaEstadoForm(forms.ModelForm):
@@ -176,7 +195,6 @@ class ReservaEstadoForm(forms.ModelForm):
 # =======================
 #  Admin de Usuarios
 # =======================
-
 
 class UsuarioAdminForm(forms.ModelForm):
     rol = forms.CharField(required=False, label="Rol",
@@ -268,7 +286,6 @@ class UsuarioCrearForm(forms.ModelForm):
 #  Gestión de Horarios
 # =======================
 
-
 class HorarioBloqueForm(forms.ModelForm):
     class Meta:
         model = HorarioBloque
@@ -332,7 +349,6 @@ class GenerarClasesForm(forms.Form):
 # =======================
 #  Administrar Perfiles (CRUD)
 # =======================
-
 
 class PerfilUsuarioForm(forms.ModelForm):
     """Formulario simple para el CRUD de PerfilUsuario."""

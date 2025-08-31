@@ -70,11 +70,22 @@ class Reserva(models.Model):
 
 
 class Contacto(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=150)
     correo = models.EmailField()
-    telefono = models.CharField(max_length=20, blank=True, null=True)
+    telefono = models.CharField(max_length=30, blank=True, null=True)
     mensaje = models.TextField()
     fecha_envio = models.DateTimeField(auto_now_add=True)
+
+    # 👇 NUEVO: estado y comentario interno para el CRM
+    ESTADOS = [
+        ("pendiente", "Pendiente"),
+        ("revisado", "Revisado"),
+        ("respondido", "Respondido"),
+    ]
+    estado_mensaje = models.CharField(
+        max_length=12, choices=ESTADOS, default="pendiente"
+    )
+    comentario = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.nombre} - {self.correo}"
