@@ -4,7 +4,10 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
-from .models import Contacto, ClasePilates, HorarioBloque, PerfilUsuario
+# 👇 Contacto vive en la app "index"
+from index.models import Contacto
+
+from .models import ClasePilates, HorarioBloque, PerfilUsuario
 
 User = get_user_model()
 
@@ -24,29 +27,82 @@ class ClasePilatesForm(forms.ModelForm):
     class Meta:
         model = ClasePilates
         fields = [
-            "nombre_clase", "fecha", "horario",
-            "capacidad_maxima", "nombre_instructor", "descripcion",
+            "nombre_clase",
+            "fecha",
+            "horario",
+            "capacidad_maxima",
+            "nombre_instructor",
+            "descripcion",
         ]
         widgets = {
             "descripcion": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
             "fecha": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "horario": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
             "nombre_clase": forms.TextInput(attrs={"class": "form-control"}),
-            "capacidad_maxima": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "capacidad_maxima": forms.NumberInput(
+                attrs={"class": "form-control", "min": 1}
+            ),
             "nombre_instructor": forms.TextInput(attrs={"class": "form-control"}),
         }
 
 
+def _model_has_field(model, name: str) -> bool:
+    try:
+        model._meta.get_field(name)
+        return True
+    except Exception:
+        return False
+
+
 class ContactoAdminForm(forms.ModelForm):
+    """
+    Form dinámico: solo incluye los campos de gestión que existan en tu modelo Contacto.
+    Admite, en este orden de prioridad:
+      - "estado_mensaje", "comentario"
+      - "estado", "notas", "nota", "estado_contacto"
+    Si ninguno existe, la forma queda sin campos (solo lectura).
+    """
+
     class Meta:
         model = Contacto
-        fields = ["estado_mensaje", "comentario"]
-        widgets = {"comentario": forms.Textarea(
-            attrs={"rows": 3, "class": "form-control"})}
+        fields: list[str] = []  # se completa en __init__
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
+
+        # Candidatos conocidos de campos de gestión
+        candidates_in_order = [
+            "estado_mensaje",
+            "comentario",
+            "estado",
+            "notas",
+            "nota",
+            "estado_contacto",
+        ]
+
+        existing: list[str] = [
+            n for n in candidates_in_order if _model_has_field(Contacto, n)]
+
+        # Limpiar cualquier campo autogenerado por Django y reconstruir solo con los existentes
+        self.fields.clear()
+        for name in existing:
+            # formfield() respeta choices, tipos, etc.
+            formfield = Contacto._meta.get_field(name).formfield()
+            if formfield is None:
+                # Por si fuese no editable
+                continue
+            # Aplica estilo Bootstrap básico
+            if hasattr(formfield.widget, "attrs"):
+                css = formfield.widget.attrs.get("class", "")
+                formfield.widget.attrs["class"] = (
+                    css + " form-control").strip()
+            self.fields[name] = formfield
+
+        # Si no hay campos gestionables, la forma queda vacía (no rompe en .is_valid())
+        self._meta.fields = list(self.fields.keys())
+
+        # Si no es admin, todo deshabilitado
         if not self.user or getattr(self.user, "rol", "").lower() != "administrador":
             for field in self.fields.values():
                 field.disabled = True
@@ -54,6 +110,7 @@ class ContactoAdminForm(forms.ModelForm):
 
 class ReservaEstadoForm(forms.ModelForm):
     """Selecciona dinámicamente el campo de 'estado' disponible en el modelo de reservas."""
+
     class Meta:
         model = ReservaModel
         fields = []  # dinámico
@@ -76,7 +133,10 @@ class ReservaEstadoForm(forms.ModelForm):
         def _first_with_choices():
             for f in opts.get_fields():
                 if isinstance(f, models.Field) and getattr(f, "choices", None):
-                    if isinstance(f, (models.CharField, models.IntegerField, models.SmallIntegerField)):
+                    if isinstance(
+                        f, (models.CharField, models.IntegerField,
+                            models.SmallIntegerField)
+                    ):
                         return f.name, f
             return None, None
 
@@ -97,7 +157,7 @@ class ReservaEstadoForm(forms.ModelForm):
                 required=False,
                 label="Estado (no detectado)",
                 help_text="No se detectó el campo de estado en el modelo.",
-                widget=forms.TextInput(attrs={"class": "form-control"})
+                widget=forms.TextInput(attrs={"class": "form-control"}),
             )
             self._meta.fields = ["__estado__"]
             self.estado_field_name = None
@@ -105,7 +165,8 @@ class ReservaEstadoForm(forms.ModelForm):
 
         formfield = field.formfield(
             widget=forms.Select(attrs={"class": "form-select form-select-sm"})
-            if getattr(field, "choices", None) else None
+            if getattr(field, "choices", None)
+            else None
         ) or forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
         self.fields[name] = formfield
         self._meta.fields = [name]
@@ -115,6 +176,7 @@ class ReservaEstadoForm(forms.ModelForm):
 # =======================
 #  Admin de Usuarios
 # =======================
+
 
 class UsuarioAdminForm(forms.ModelForm):
     rol = forms.CharField(required=False, label="Rol",
@@ -155,12 +217,17 @@ class UsuarioCrearForm(forms.ModelForm):
     Crear usuario: username, nombre, email, rol y password opcional.
     Si no se ingresa password, se crea con password no usable.
     """
+
     rol = forms.CharField(required=False, label="Rol",
                           help_text="Ej: administrador / cliente")
-    password1 = forms.CharField(required=False, widget=forms.PasswordInput(
-        attrs={"class": "form-control"}), label="Password")
-    password2 = forms.CharField(required=False, widget=forms.PasswordInput(
-        attrs={"class": "form-control"}), label="Repite password")
+    password1 = forms.CharField(
+        required=False, widget=forms.PasswordInput(attrs={"class": "form-control"}), label="Password"
+    )
+    password2 = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        label="Repite password",
+    )
 
     class Meta:
         model = User
@@ -201,19 +268,20 @@ class UsuarioCrearForm(forms.ModelForm):
 #  Gestión de Horarios
 # =======================
 
+
 class HorarioBloqueForm(forms.ModelForm):
     class Meta:
         model = HorarioBloque
         fields = ["dia_semana", "hora_inicio", "hora_fin",
                   "instructor", "capacidad", "activo"]
-    widgets = {
-        "dia_semana": forms.Select(attrs={"class": "form-select"}),
-        "hora_inicio": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
-        "hora_fin": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
-        "instructor": forms.TextInput(attrs={"class": "form-control", "placeholder": "Opcional"}),
-        "capacidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
-        "activo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-    }
+        widgets = {
+            "dia_semana": forms.Select(attrs={"class": "form-select"}),
+            "hora_inicio": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            "hora_fin": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            "instructor": forms.TextInput(attrs={"class": "form-control", "placeholder": "Opcional"}),
+            "capacidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "activo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
 
     def clean(self):
         cleaned = super().clean()
@@ -227,26 +295,28 @@ class HorarioBloqueForm(forms.ModelForm):
 
 class GenerarClasesForm(forms.Form):
     """Formulario para crear clases a partir de bloques en un rango de fechas."""
+
     desde = forms.DateField(widget=forms.DateInput(
         attrs={"type": "date", "class": "form-control"}))
     hasta = forms.DateField(widget=forms.DateInput(
         attrs={"type": "date", "class": "form-control"}))
     solo_activos = forms.BooleanField(
-        required=False, initial=True,
+        required=False,
+        initial=True,
         label="Usar solo bloques activos",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
     )
     nombre_clase = forms.CharField(
-        required=False, initial="Clase de Pilates",
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False, initial="Clase de Pilates", widget=forms.TextInput(attrs={"class": "form-control"})
     )
     descripcion = forms.CharField(
         required=False, widget=forms.Textarea(attrs={"class": "form-control", "rows": 2})
     )
     ignorar_existentes = forms.BooleanField(
-        required=True, initial=True,
+        required=True,
+        initial=True,
         label="No crear si ya existe una clase en el mismo día/hora/instructor",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
     )
 
     def clean(self):
@@ -263,10 +333,10 @@ class GenerarClasesForm(forms.Form):
 #  Administrar Perfiles (CRUD)
 # =======================
 
+
 class PerfilUsuarioForm(forms.ModelForm):
-    """
-    Formulario simple para el CRUD de PerfilUsuario.
-    """
+    """Formulario simple para el CRUD de PerfilUsuario."""
+
     usuario = forms.ModelChoiceField(
         queryset=User.objects.all(),
         widget=forms.Select(attrs={"class": "form-select"}),

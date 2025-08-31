@@ -6,7 +6,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from datetime import timedelta, date
+
 from index.models import Contacto
 
 from .forms import (
@@ -19,7 +21,6 @@ from .forms import (
     ContactoAdminForm,
 )
 from .models import ClasePilates, HorarioBloque  # <- modelo de horarios
-from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
 
@@ -46,19 +47,91 @@ def _forbidden_if_not_admin(request):
     return None
 
 
-# ---- DASHBOARD HOME ----
+def _has_field(model, name: str) -> bool:
+    """Helper seguro para verificar si un modelo tiene un campo por nombre."""
+    try:
+        model._meta.get_field(name)
+        return True
+    except Exception:
+        return False
+
+
+# ---- DASHBOARD HOME (con KPIs reales) ----
 @login_required
 def admin_home(request):
-    """
-    Página de bienvenida del panel admin. No duplica funciones;
-    solo muestra un mensaje y deja que uses el sidebar.
-    """
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
-    return render(request, "administrador/home.html")
+
+    hoy = timezone.localdate()
+    lunes = hoy - timedelta(days=hoy.weekday())
+    domingo = lunes + timedelta(days=6)
+
+    # ---- Contactos pendientes ----
+    contactos_qs = Contacto.objects.all()
+    if _has_field(Contacto, "estado_mensaje"):
+        contactos_pendientes = contactos_qs.filter(
+            estado_mensaje__iexact="pendiente"
+        ).count()
+    elif _has_field(Contacto, "estado_contacto"):
+        contactos_pendientes = contactos_qs.filter(
+            estado_contacto__iexact="pendiente"
+        ).count()
+    elif _has_field(Contacto, "estado"):
+        contactos_pendientes = contactos_qs.filter(
+            estado__iexact="pendiente").count()
+    else:
+        # MVP: si no hay campo de estado, mostramos el total como pendientes
+        contactos_pendientes = contactos_qs.count()
+
+    # ---- Reservas de HOY ----
+    reservas_qs = ReservaModel.objects.all()
+    reservas_hoy = 0
+    if _has_field(ReservaModel, "fecha"):
+        reservas_hoy = reservas_qs.filter(fecha=hoy).count()
+    elif _has_field(ReservaModel, "fecha_reserva"):
+        reservas_hoy = reservas_qs.filter(fecha_reserva=hoy).count()
+    elif _has_field(ReservaModel, "clase") and _has_field(ClasePilates, "fecha"):
+        try:
+            reservas_hoy = reservas_qs.select_related("clase").filter(
+                clase__fecha=hoy
+            ).count()
+        except Exception:
+            reservas_hoy = 0
+
+    # ---- Clases de esta semana ----
+    clases_semana = ClasePilates.objects.filter(
+        fecha__range=(lunes, domingo)
+    ).count()
+
+    # ---- Usuarios activos ----
+    usuarios_activos = User.objects.filter(is_active=True).count()
+
+    # ---- Próximas clases (top 5) ----
+    proximas_clases = (
+        ClasePilates.objects.filter(fecha__gte=hoy)
+        .order_by("fecha", "horario")[:5]
+    )
+
+    # ---- Últimos contactos (top 5) ----
+    if _has_field(Contacto, "fecha_envio"):
+        ultimos_contactos = Contacto.objects.all().order_by(
+            "-fecha_envio", "-id")[:5]
+    else:
+        ultimos_contactos = Contacto.objects.all().order_by("-id")[:5]
+
+    contexto = {
+        "admin_name": request.user.username,
+        "contactos_pendientes": contactos_pendientes,
+        "reservas_hoy": reservas_hoy,
+        "clases_semana": clases_semana,
+        "usuarios_activos": usuarios_activos,
+        "proximas_clases": proximas_clases,
+        "ultimos_contactos": ultimos_contactos,
+    }
+    return render(request, "administrador/home.html", contexto)
 
 
-# ---- Vistas de panel / CRM ----
+# ---- CRM: listado de contactos ----
 @login_required
 def listar_contactos(request):
     """CRM: listado de mensajes de contacto con búsqueda/filtro/paginación."""
@@ -70,15 +143,18 @@ def listar_contactos(request):
 
     qs = Contacto.objects.all().order_by("-fecha_envio")
 
+    # Búsqueda: usa los NOMBRES DE CAMPO reales del modelo Contacto
     if q:
         qs = qs.filter(
             Q(nombre__icontains=q)
-            | Q(correo__icontains=q)
+            | Q(correo__icontains=q)      # tu modelo usa 'correo'
             | Q(telefono__icontains=q)
             | Q(mensaje__icontains=q)
+            | Q(comentario__icontains=q)
         )
 
-    if estado in {"pendiente", "revisado", "respondido"}:
+    # Filtro por estado si corresponde
+    if estado in {"pendiente", "revisado", "respondido"} and _has_field(Contacto, "estado_mensaje"):
         qs = qs.filter(estado_mensaje=estado)
 
     paginator = Paginator(qs, 10)
@@ -365,6 +441,7 @@ def admin_usuario_editar(request, user_id: int):
 
     usuario = get_object_or_404(User, pk=user_id)
 
+    # 🚫 No permitir editar al superusuario
     if usuario.is_superuser:
         messages.error(request, "No está permitido editar al superusuario.")
         return redirect("administrador:usuarios_list")
@@ -372,6 +449,7 @@ def admin_usuario_editar(request, user_id: int):
     if request.method == "POST":
         form = UsuarioAdminForm(request.POST, instance=usuario)
         if form.is_valid():
+            # Evitar autobloqueo cambiando is_active a False sobre sí mismo
             if usuario.pk == request.user.pk and not form.cleaned_data.get("is_active", True):
                 messages.error(request, "No puedes desactivarte a ti mismo.")
             else:
@@ -383,7 +461,11 @@ def admin_usuario_editar(request, user_id: int):
     else:
         form = UsuarioAdminForm(instance=usuario)
 
-    return render(request, "administrador/usuario_form.html", {"form": form, "usuario": usuario})
+    return render(
+        request,
+        "administrador/usuario_form.html",
+        {"form": form, "usuario": usuario},
+    )
 
 
 @login_required
@@ -396,6 +478,7 @@ def admin_usuario_toggle_activo(request, user_id: int):
 
     usuario = get_object_or_404(User, pk=user_id)
 
+    # 🚫 No permitir (des)activar al superusuario
     if usuario.is_superuser:
         messages.error(
             request, "No está permitido (des)activar al superusuario.")
@@ -403,6 +486,7 @@ def admin_usuario_toggle_activo(request, user_id: int):
             "HTTP_REFERER") or "administrador:usuarios_list"
         return redirect(back)
 
+    # 🚫 No permitir desactivarse a sí mismo
     if usuario.pk == request.user.pk and usuario.is_active:
         messages.error(request, "No puedes desactivarte a ti mismo.")
         back = request.META.get(
@@ -526,7 +610,6 @@ def horarios_generar_clases(request):
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
 
-    from django.utils import timezone
     default_desde = timezone.localdate()
     default_hasta = default_desde + timedelta(days=28)
 
@@ -608,7 +691,7 @@ def _generar_clases_desde_bloques(request, data):
     return redirect("administrador:listar_clases")
 
 
-# ---- CRM Contactos rápido (para tu sidebar) ----
+# ---- CRM Contactos rápido (si usas una vista simple en sidebar) ----
 @login_required
 def crm_contactos(request):
     if (resp := _forbidden_if_not_admin(request)) is not None:

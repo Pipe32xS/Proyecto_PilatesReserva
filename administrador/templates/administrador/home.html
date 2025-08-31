@@ -10,7 +10,7 @@
     <div>
       <h1 class="h3 fw-bold mb-1">Dashboard</h1>
       <p class="text-secondary mb-0">
-        Hola, <span class="fw-semibold">{{ request.user.first_name|default:request.user.username }}</span>. 
+        Hola, <span class="fw-semibold">{{ request.user.first_name|default:request.user.username }}</span>.
         Aquí tienes un resumen rápido del día.
       </p>
     </div>
@@ -28,7 +28,7 @@
       <div class="card-body">
         <div class="text-secondary small mb-1">Contactos pendientes</div>
         <div class="display-6 fw-bold">
-          {{ kpis.contactos_pendientes|default:"0" }}
+          {{ contactos_pendientes|default:"0" }}
         </div>
         <div class="small text-secondary">Mensajes por revisar</div>
       </div>
@@ -39,7 +39,7 @@
       <div class="card-body">
         <div class="text-secondary small mb-1">Reservas hoy</div>
         <div class="display-6 fw-bold">
-          {{ kpis.reservas_hoy|default:"0" }}
+          {{ reservas_hoy|default:"0" }}
         </div>
         <div class="small text-secondary">Clases del día</div>
       </div>
@@ -50,7 +50,7 @@
       <div class="card-body">
         <div class="text-secondary small mb-1">Clases esta semana</div>
         <div class="display-6 fw-bold">
-          {{ kpis.clases_semana|default:"0" }}
+          {{ clases_semana|default:"0" }}
         </div>
         <div class="small text-secondary">Programadas</div>
       </div>
@@ -61,7 +61,7 @@
       <div class="card-body">
         <div class="text-secondary small mb-1">Usuarios activos</div>
         <div class="display-6 fw-bold">
-          {{ kpis.usuarios_activos|default:"0" }}
+          {{ usuarios_activos|default:"0" }}
         </div>
         <div class="small text-secondary">Con acceso</div>
       </div>
@@ -138,4 +138,5 @@
   .kpi .display-6 { line-height: .9; }
 </style>
 {% endblock %}
+
 
