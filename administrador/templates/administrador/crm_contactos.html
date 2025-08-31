@@ -1,0 +1,34 @@
+{% extends "administrador/base_admin.html" %}
+{% block encabezado %}CRM Usuarios{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Contactos recibidos</h5>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Mensaje</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in contactos %}
+        <tr>
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.correo }}</td>
+          <td>{{ c.telefono|default:"—" }}</td>
+          <td>{{ c.mensaje }}</td>
+          <td>{{ c.fecha_envio|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center text-muted">No hay contactos aún.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

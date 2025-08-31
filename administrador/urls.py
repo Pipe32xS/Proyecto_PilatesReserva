@@ -1,12 +1,13 @@
 # administrador/urls.py
-from django.urls import path
+from django.urls import path, include   # <-- añadimos include
 from . import views
+from . import views_perfiles
 
 app_name = "administrador"
 
 urlpatterns = [
     # Dashboard / Contactos
-    path("dashboard/", views.admin_home, name="home"),
+    path("", views.admin_home, name="home"),
     path("contactos/", views.listar_contactos, name="listar_contactos"),
     path("contactos/<int:contacto_id>/",
          views.modificar_contacto, name="modificar_contacto"),
@@ -41,4 +42,12 @@ urlpatterns = [
          views.horario_eliminar, name="horario_eliminar"),
     path("horarios/generar-clases/", views.horarios_generar_clases,
          name="horarios_generar_clases"),
+
+    # Perfiles (CRUD)  <-- NUEVO: incluye las rutas del módulo de perfiles
+    path("perfiles/", include("administrador.urls_perfiles")),
+    path("perfiles/<int:user_id>/reservas/",
+         views_perfiles.perfil_reservas, name="perfil_reservas"),
+    path("perfiles/<int:user_id>/reservas/",
+         views_perfiles.perfil_reservas, name="perfil_reservas"),
+    path("crm/", views.crm_contactos, name="crm_contactos"),
 ]

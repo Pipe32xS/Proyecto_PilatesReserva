@@ -1,20 +1,141 @@
-{% extends 'administrador/base_admin.html' %}
-
-{% block titulo %}Panel Administrador{% endblock %}
-
-{% block encabezado %}
-Bienvenido Administrador
-{% endblock %}
+{% extends "administrador/base_admin.html" %}
+{% block encabezado %}Bienvenido Administrador{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <h1 class="mb-3">Dashboard Administrador</h1>
-  <p class="text-muted">Has iniciado sesión como <strong>administrador</strong>.</p>
+<!-- HERO -->
+<section class="p-4 p-md-5 rounded-4 mb-4"
+         style="background: linear-gradient(0deg, rgba(13,110,253,.035), rgba(13,110,253,.035));
+                border:1px solid rgba(13,110,253,.08);">
+  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+    <div>
+      <h1 class="h3 fw-bold mb-1">Dashboard</h1>
+      <p class="text-secondary mb-0">
+        Hola, <span class="fw-semibold">{{ request.user.first_name|default:request.user.username }}</span>. 
+        Aquí tienes un resumen rápido del día.
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-outline-primary">Ir a Contactos</a>
+      <a href="{% url 'administrador:reservas_list' %}" class="btn btn-primary">Ir a Reservas</a>
+    </div>
+  </div>
+</section>
 
-  <div class="d-flex gap-2 mt-4">
-    <a class="btn btn-outline-primary" href="{% url 'administrador:listar_contactos' %}">Contactos</a>
-    <a class="btn btn-outline-success" href="{% url 'administrador:listar_clases' %}">Clases</a>
-    <a class="btn btn-danger" href="{% url 'login:logout' %}">Cerrar sesión</a>
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="kpi card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-secondary small mb-1">Contactos pendientes</div>
+        <div class="display-6 fw-bold">
+          {{ kpis.contactos_pendientes|default:"0" }}
+        </div>
+        <div class="small text-secondary">Mensajes por revisar</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="kpi card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-secondary small mb-1">Reservas hoy</div>
+        <div class="display-6 fw-bold">
+          {{ kpis.reservas_hoy|default:"0" }}
+        </div>
+        <div class="small text-secondary">Clases del día</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="kpi card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-secondary small mb-1">Clases esta semana</div>
+        <div class="display-6 fw-bold">
+          {{ kpis.clases_semana|default:"0" }}
+        </div>
+        <div class="small text-secondary">Programadas</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="kpi card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-secondary small mb-1">Usuarios activos</div>
+        <div class="display-6 fw-bold">
+          {{ kpis.usuarios_activos|default:"0" }}
+        </div>
+        <div class="small text-secondary">Con acceso</div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- DOS COLUMNAS: próximas clases / últimos contactos -->
+<div class="row g-4">
+  <div class="col-12 col-lg-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h6 m-0">Próximas clases</h2>
+          <a class="small text-decoration-none" href="{% url 'administrador:listar_clases' %}">Ver todas</a>
+        </div>
+
+        {% if proximas_clases %}
+          <ul class="list-group list-group-flush">
+            {% for c in proximas_clases %}
+              <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                <div class="me-3">
+                  <div class="fw-semibold">{{ c.nombre_clase }}</div>
+                  <div class="text-secondary small">
+                    {{ c.fecha }} · {{ c.horario }}{% if c.nombre_instructor %} · {{ c.nombre_instructor }}{% endif %}
+                  </div>
+                </div>
+                {% if c.capacidad_maxima %}
+                  <span class="badge text-bg-light border">
+                    Cap: {{ c.capacidad_maxima }}
+                  </span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="text-secondary small">No hay clases próximas registradas.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h6 m-0">Últimos contactos</h2>
+          <a class="small text-decoration-none" href="{% url 'administrador:listar_contactos' %}">Abrir CRM</a>
+        </div>
+
+        {% if ultimos_contactos %}
+          <ul class="list-group list-group-flush">
+            {% for con in ultimos_contactos %}
+              <li class="list-group-item px-0">
+                <div class="fw-semibold">{{ con.nombre }}</div>
+                <div class="text-secondary small">
+                  {{ con.correo }}{% if con.telefono %} · {{ con.telefono }}{% endif %}
+                </div>
+                <div class="small mt-1 text-truncate" style="-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
+                  {{ con.mensaje }}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="text-secondary small">Aún no hay mensajes recientes.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .kpi .display-6 { line-height: .9; }
+</style>
 {% endblock %}
+

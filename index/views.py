@@ -3,9 +3,11 @@ from django.shortcuts import render, redirect
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
 from django.utils.timezone import now
+from django.contrib import messages
 
 from .forms import ContactoPublicoForm
 from administrador.models import ClasePilates
+from .models import Contacto  # <- Modelo de contactos
 
 # Detecta automáticamente el modelo de reservas disponible
 USE_INDEX_RESERVA = False
@@ -29,14 +31,25 @@ def contacto_exito(request):
     return render(request, "contacto_exito.html")
 
 
+# -------- NUEVO: contacto desde landing --------
 def contacto_publico(request):
+    """
+    Procesa el formulario de contacto del landing page.
+    Guarda en el modelo Contacto y redirige con mensaje de éxito.
+    """
     if request.method == "POST":
         form = ContactoPublicoForm(request.POST)
         if form.is_valid():
+            # Guardamos el contacto en DB
             form.save()
+            messages.success(
+                request, "Tu mensaje fue enviado con éxito. ¡Gracias por contactarnos!")
             return redirect("contacto_exito")
+        else:
+            messages.error(request, "Revisa los campos del formulario.")
     else:
         form = ContactoPublicoForm()
+
     return render(request, "contacto_form.html", {"form": form})
 
 
@@ -77,7 +90,7 @@ def clases_disponibles_cards(request):
     paginator = Paginator(qs, 12)
     page_obj = paginator.get_page(request.GET.get("page") or 1)
 
-    return render(request, "index/clases_grid.html", {  # <- no la vamos a usar ahora
+    return render(request, "index/clases_grid.html", {
         "page_obj": page_obj,
         "paginator": paginator,
         "q": q,
@@ -116,7 +129,7 @@ def clases_grid(request):
     paginator = Paginator(qs, 12)
     page_obj = paginator.get_page(request.GET.get("page") or 1)
 
-    return render(request, "index/clases_grid.html", {  # <- ESTE template nuevo
+    return render(request, "index/clases_grid.html", {
         "page_obj": page_obj,
         "paginator": paginator,
         "q": q,

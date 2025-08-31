@@ -1,0 +1,13 @@
+{% extends "administrador/base_admin.html" %}
+{% block encabezado %}Eliminar Perfil{% endblock %}
+
+{% block content %}
+<div class="alert alert-warning">
+  ¿Seguro que deseas eliminar el perfil de <strong>{{ perfil.usuario.username }}</strong>?
+</div>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+  <a class="btn btn-outline-secondary" href="{% url 'administrador:perfiles_list' %}">Cancelar</a>
+</form>
+{% endblock %}

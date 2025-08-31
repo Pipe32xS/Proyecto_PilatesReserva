@@ -1,0 +1,52 @@
+{% extends "administrador/base_admin.html" %}
+{% block encabezado %}Administrar Perfiles{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0">Perfiles</h5>
+  <a class="btn btn-primary" href="{% url 'administrador:perfil_crear' %}">
+    <i class="bi bi-plus-lg"></i> Nuevo perfil
+  </a>
+</div>
+
+<table class="table table-sm table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Nombre</th>
+      <th>RUT</th>
+      <th>Teléfono</th>
+      <th class="text-end">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in perfiles %}
+      <tr>
+        <td>{{ p.usuario.username }}</td>
+        <td>
+          {{ p.primer_nombre }} {{ p.apellido_paterno }}
+          {% if p.apellido_materno %} {{ p.apellido_materno }}{% endif %}
+        </td>
+        <td>{{ p.rut|default:"—" }}</td>
+        <td>{{ p.telefono|default:"—" }}</td>
+        <td class="text-end">
+          <a href="{% url 'administrador:perfil_editar' p.id %}" class="btn btn-sm btn-outline-secondary">Editar perfil</a>
+          <a href="{% url 'administrador:usuarios_list' %}?q={{ p.usuario.username }}" class="btn btn-sm btn-outline-dark">Editar usuario</a>
+
+          {# 👉 IMPORTANTE: manda el parámetro ?cliente=<id> #}
+          <a href="{% url 'administrador:reservas_list' %}?cliente={{ p.usuario.id }}" class="btn btn-sm btn-outline-primary">
+            Ver reservas
+          </a>
+
+          <a href="mailto:{{ p.usuario.email }}" class="btn btn-sm btn-outline-success">Email</a>
+          <a href="{% url 'administrador:perfil_eliminar' p.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted py-3">No hay perfiles aún.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "administrador/base_admin.html" %}
+{% block encabezado %}{% if modo == 'editar' %}Editar Perfil{% else %}Crear Perfil{% endif %}{% endblock %}
+
+{% block content %}
+<form method="post" class="row g-3">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="col-md-6">
+      <label class="form-label">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+        <div class="invalid-feedback d-block">{{ field.errors|striptags }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <a href="{% url 'administrador:perfiles_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

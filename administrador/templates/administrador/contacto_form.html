@@ -1,13 +1,61 @@
-{% extends 'base_index.html' %}
-{% block titulo %}Editar contacto | Admin{% endblock %}
+{% extends "administrador/base_admin.html" %}
+{% block encabezado %}Contacto{% endblock %}
 
 {% block content %}
-<section class="container py-4">
-  <h2 class="fw-bold mb-3">Editar contacto #{{ contacto_id }}</h2>
-  <p class="text-secondary">Aquí iría el formulario para editar el contacto. (MVP)</p>
-
-  <div class="mt-3 d-flex gap-2">
-    <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-outline-secondary">Volver</a>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">{{ contacto.nombre }}</h5>
+        <p class="mb-1"><strong>Email:</strong> {{ contacto.correo_electronico }}</p>
+        <p class="mb-1"><strong>Teléfono:</strong> {{ contacto.telefono }}</p>
+        <p class="mb-1"><strong>Fecha:</strong> {{ contacto.fecha_envio|date:"Y-m-d H:i" }}</p>
+        <hr>
+        <p class="mb-0"><strong>Mensaje:</strong></p>
+        <div class="border rounded p-3 bg-light mt-1" style="white-space: pre-wrap;">
+          {{ contacto.mensaje }}
+        </div>
+      </div>
+    </div>
   </div>
-</section>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title">Gestionar</h6>
+        <form method="post" class="mt-3">
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            {{ form.estado_mensaje }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Comentario interno</label>
+            {{ form.comentario }}
+          </div>
+
+          <div class="d-flex gap-2">
+            <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-outline-secondary">Volver</a>
+            <button class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+
+        {% if not form.fields.estado_mensaje.disabled %}
+          <div class="mt-3 small text-muted">
+            Tip: marca <em>Revisado</em> o <em>Respondido</em> cuando gestiones el caso.
+          </div>
+        {% else %}
+          <div class="mt-3 small text-muted">
+            Este formulario es de solo lectura para tu usuario.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

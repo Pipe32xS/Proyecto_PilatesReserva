@@ -1,9 +1,10 @@
+# administrador/forms.py
 from django import forms
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
-from .models import Contacto, ClasePilates, HorarioBloque
+from .models import Contacto, ClasePilates, HorarioBloque, PerfilUsuario
 
 User = get_user_model()
 
@@ -205,14 +206,14 @@ class HorarioBloqueForm(forms.ModelForm):
         model = HorarioBloque
         fields = ["dia_semana", "hora_inicio", "hora_fin",
                   "instructor", "capacidad", "activo"]
-        widgets = {
-            "dia_semana": forms.Select(attrs={"class": "form-select"}),
-            "hora_inicio": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
-            "hora_fin": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
-            "instructor": forms.TextInput(attrs={"class": "form-control", "placeholder": "Opcional"}),
-            "capacidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
-            "activo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-        }
+    widgets = {
+        "dia_semana": forms.Select(attrs={"class": "form-select"}),
+        "hora_inicio": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+        "hora_fin": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+        "instructor": forms.TextInput(attrs={"class": "form-control", "placeholder": "Opcional"}),
+        "capacidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+        "activo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    }
 
     def clean(self):
         cleaned = super().clean()
@@ -256,3 +257,38 @@ class GenerarClasesForm(forms.Form):
             raise forms.ValidationError(
                 "La fecha 'hasta' debe ser mayor o igual a 'desde'.")
         return cleaned
+
+
+# =======================
+#  Administrar Perfiles (CRUD)
+# =======================
+
+class PerfilUsuarioForm(forms.ModelForm):
+    """
+    Formulario simple para el CRUD de PerfilUsuario.
+    """
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={"class": "form-select"}),
+        label="Usuario",
+    )
+
+    class Meta:
+        model = PerfilUsuario
+        fields = [
+            "usuario",
+            "primer_nombre",
+            "apellido_paterno",
+            "apellido_materno",
+            "rut",
+            "direccion",
+            "telefono",
+        ]
+        widgets = {
+            "primer_nombre": forms.TextInput(attrs={"class": "form-control"}),
+            "apellido_paterno": forms.TextInput(attrs={"class": "form-control"}),
+            "apellido_materno": forms.TextInput(attrs={"class": "form-control"}),
+            "rut": forms.TextInput(attrs={"class": "form-control"}),
+            "direccion": forms.TextInput(attrs={"class": "form-control"}),
+            "telefono": forms.TextInput(attrs={"class": "form-control"}),
+        }

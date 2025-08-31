@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from datetime import timedelta, date
+from index.models import Contacto
 
 from .forms import (
     ClasePilatesForm,
@@ -14,9 +15,11 @@ from .forms import (
     UsuarioAdminForm,
     UsuarioCrearForm,
     HorarioBloqueForm,
-    GenerarClasesForm,  # <- form de horarios
+    GenerarClasesForm,
+    ContactoAdminForm,
 )
 from .models import ClasePilates, HorarioBloque  # <- modelo de horarios
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
 
@@ -43,28 +46,81 @@ def _forbidden_if_not_admin(request):
     return None
 
 
-# ---- Vistas de panel / dashboard ----
+# ---- DASHBOARD HOME ----
 @login_required
 def admin_home(request):
+    """
+    Página de bienvenida del panel admin. No duplica funciones;
+    solo muestra un mensaje y deja que uses el sidebar.
+    """
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
     return render(request, "administrador/home.html")
 
 
+# ---- Vistas de panel / CRM ----
 @login_required
 def listar_contactos(request):
+    """CRM: listado de mensajes de contacto con búsqueda/filtro/paginación."""
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
-    # Placeholder – ajusta cuando tengas el modelo real de Contacto
-    return render(request, "administrador/contactos_list.html")
+
+    q = (request.GET.get("q") or "").strip()
+    estado = (request.GET.get("estado") or "todos").lower()
+
+    qs = Contacto.objects.all().order_by("-fecha_envio")
+
+    if q:
+        qs = qs.filter(
+            Q(nombre__icontains=q)
+            | Q(correo__icontains=q)
+            | Q(telefono__icontains=q)
+            | Q(mensaje__icontains=q)
+        )
+
+    if estado in {"pendiente", "revisado", "respondido"}:
+        qs = qs.filter(estado_mensaje=estado)
+
+    paginator = Paginator(qs, 10)
+    page_obj = paginator.get_page(request.GET.get("page") or 1)
+
+    return render(
+        request,
+        "administrador/contactos_list.html",
+        {
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "q": q,
+            "estado": estado,
+            "estados": ["todos", "pendiente", "revisado", "respondido"],
+        },
+    )
 
 
 @login_required
 def modificar_contacto(request, contacto_id: int):
+    """CRM: ver/actualizar un contacto (estado y comentario)."""
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
-    # Placeholder
-    return render(request, "administrador/contacto_form.html", {"contacto_id": contacto_id})
+
+    contacto = get_object_or_404(Contacto, pk=contacto_id)
+
+    if request.method == "POST":
+        form = ContactoAdminForm(
+            request.POST, instance=contacto, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Contacto actualizado.")
+            return redirect("administrador:listar_contactos")
+        messages.error(request, "Revisa el formulario.")
+    else:
+        form = ContactoAdminForm(instance=contacto, user=request.user)
+
+    return render(
+        request,
+        "administrador/contacto_form.html",
+        {"form": form, "contacto": contacto},
+    )
 
 
 # ---- CRUD de clases ----
@@ -150,7 +206,12 @@ def reservas_admin_list(request):
             except Exception:
                 pass
 
-    # -------- Filtros --------
+    # ---- FILTRO POR CLIENTE ----
+    cliente_id = request.GET.get("cliente")
+    if cliente_id and _field_exists(ReservaModel, client_fk):
+        qs = qs.filter(**{f"{client_fk}_id": cliente_id})
+
+    # -------- Filtros por estado --------
     estado_field = _first_existing_field(
         ReservaModel, ["estado", "status", "estado_reserva"]
     )
@@ -158,7 +219,7 @@ def reservas_admin_list(request):
     if estado_field and f in {"confirmada", "pendiente", "cancelada", "completada"}:
         qs = qs.filter(**{f"{estado_field}__iexact": f})
 
-    # Búsqueda por cliente (username/first_name/last_name)
+    # Búsqueda por cliente
     q = (request.GET.get("q") or "").strip()
     if q and _field_exists(ReservaModel, client_fk):
         qs = qs.filter(
@@ -169,7 +230,7 @@ def reservas_admin_list(request):
 
     # -------- Paginación --------
     page = request.GET.get("page") or 1
-    paginator = Paginator(qs, 10)  # 10 por página (MVP)
+    paginator = Paginator(qs, 10)
     page_obj = paginator.get_page(page)
 
     filters = [
@@ -189,6 +250,7 @@ def reservas_admin_list(request):
         "q": q,
         "estado_field": estado_field,
         "filters": filters,
+        "cliente_id": cliente_id,
     }
     return render(request, "administrador/reservas_list.html", contexto)
 
@@ -207,8 +269,7 @@ def reserva_admin_cambiar_estado(request, reserva_id: int):
             messages.success(request, "Estado de la reserva actualizado.")
             return redirect("administrador:reservas_list")
         messages.error(
-            request, "No se pudo actualizar el estado. Revisa el formulario."
-        )
+            request, "No se pudo actualizar el estado. Revisa el formulario.")
     else:
         form = ReservaEstadoForm(instance=reserva)
 
@@ -232,7 +293,6 @@ def admin_usuarios_list(request):
     sort = (request.GET.get("sort") or "id").lower()
     direction = (request.GET.get("dir") or "asc").lower()
 
-    # Mapa de campos permitidos
     allowed = {
         "id": "id",
         "username": "username",
@@ -295,11 +355,7 @@ def admin_usuario_crear(request):
     else:
         form = UsuarioCrearForm(initial={"is_active": True})
 
-    return render(
-        request,
-        "administrador/usuario_form_crear.html",
-        {"form": form},
-    )
+    return render(request, "administrador/usuario_form_crear.html", {"form": form})
 
 
 @login_required
@@ -309,7 +365,6 @@ def admin_usuario_editar(request, user_id: int):
 
     usuario = get_object_or_404(User, pk=user_id)
 
-    # 🚫 No permitir editar al superusuario
     if usuario.is_superuser:
         messages.error(request, "No está permitido editar al superusuario.")
         return redirect("administrador:usuarios_list")
@@ -317,7 +372,6 @@ def admin_usuario_editar(request, user_id: int):
     if request.method == "POST":
         form = UsuarioAdminForm(request.POST, instance=usuario)
         if form.is_valid():
-            # Evitar autobloqueo cambiando is_active a False sobre sí mismo
             if usuario.pk == request.user.pk and not form.cleaned_data.get("is_active", True):
                 messages.error(request, "No puedes desactivarte a ti mismo.")
             else:
@@ -329,11 +383,7 @@ def admin_usuario_editar(request, user_id: int):
     else:
         form = UsuarioAdminForm(instance=usuario)
 
-    return render(
-        request,
-        "administrador/usuario_form.html",
-        {"form": form, "usuario": usuario},
-    )
+    return render(request, "administrador/usuario_form.html", {"form": form, "usuario": usuario})
 
 
 @login_required
@@ -346,7 +396,6 @@ def admin_usuario_toggle_activo(request, user_id: int):
 
     usuario = get_object_or_404(User, pk=user_id)
 
-    # 🚫 No permitir (des)activar al superusuario
     if usuario.is_superuser:
         messages.error(
             request, "No está permitido (des)activar al superusuario.")
@@ -354,7 +403,6 @@ def admin_usuario_toggle_activo(request, user_id: int):
             "HTTP_REFERER") or "administrador:usuarios_list"
         return redirect(back)
 
-    # 🚫 No permitir desactivarse a sí mismo
     if usuario.pk == request.user.pk and usuario.is_active:
         messages.error(request, "No puedes desactivarte a ti mismo.")
         back = request.META.get(
@@ -376,11 +424,9 @@ def admin_usuario_toggle_activo(request, user_id: int):
 # ---------------------------
 @login_required
 def horarios_list(request):
-    """Listado/filtros para Gestión de Horarios (solo admin)."""
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
 
-    # Opciones de días para el filtro (se usan en el template)
     dias = [
         ("0", "Lunes"),
         ("1", "Martes"),
@@ -392,8 +438,7 @@ def horarios_list(request):
     ]
 
     q = (request.GET.get("q") or "").strip()
-    dia = request.GET.get("dia", "")           # "", "0".."6"
-    # "todos" | "solo_activos" | "solo_inactivos"
+    dia = request.GET.get("dia", "")
     activos = request.GET.get("activos", "todos")
 
     qs = HorarioBloque.objects.all().order_by("dia_semana", "hora_inicio")
@@ -415,13 +460,7 @@ def horarios_list(request):
     return render(
         request,
         "administrador/horarios_list.html",
-        {
-            "bloques": qs,
-            "dias": dias,     # <- importante para el template
-            "q": q,
-            "dia": dia,
-            "activos": activos,
-        },
+        {"bloques": qs, "dias": dias, "q": q, "dia": dia, "activos": activos},
     )
 
 
@@ -440,11 +479,7 @@ def horario_crear(request):
     else:
         form = HorarioBloqueForm()
 
-    return render(
-        request,
-        "administrador/horario_form.html",
-        {"form": form, "modo": "crear"},
-    )
+    return render(request, "administrador/horario_form.html", {"form": form, "modo": "crear"})
 
 
 @login_required
@@ -483,20 +518,14 @@ def horario_eliminar(request, bloque_id: int):
         messages.success(request, "Bloque horario eliminado.")
         return redirect("administrador:horarios_list")
 
-    return render(
-        request,
-        "administrador/horario_confirm_delete.html",
-        {"bloque": bloque},
-    )
+    return render(request, "administrador/horario_confirm_delete.html", {"bloque": bloque})
 
 
 @login_required
 def horarios_generar_clases(request):
-    """Pantalla para elegir rango y generar clases desde bloques."""
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
 
-    # Defaults: hoy -> hoy + 28 días
     from django.utils import timezone
     default_desde = timezone.localdate()
     default_hasta = default_desde + timedelta(days=28)
@@ -507,15 +536,16 @@ def horarios_generar_clases(request):
             return _generar_clases_desde_bloques(request, form.cleaned_data)
         messages.error(request, "Revisa el formulario.")
     else:
-        form = GenerarClasesForm(initial={
-            "desde": default_desde,
-            "hasta": default_hasta,
-            "solo_activos": True,
-            "ignorar_existentes": True,
-            "nombre_clase": "Clase de Pilates",
-        })
+        form = GenerarClasesForm(
+            initial={
+                "desde": default_desde,
+                "hasta": default_hasta,
+                "solo_activos": True,
+                "ignorar_existentes": True,
+                "nombre_clase": "Clase de Pilates",
+            }
+        )
 
-    # Info rápida para el admin
     activos_count = HorarioBloque.objects.filter(activo=True).count()
     total_count = HorarioBloque.objects.count()
 
@@ -527,7 +557,6 @@ def horarios_generar_clases(request):
 
 
 def _generar_clases_desde_bloques(request, data):
-    """Lógica de creación de ClasePilates a partir de HorarioBloque."""
     d_ini: date = data["desde"]
     d_fin: date = data["hasta"]
     solo_activos = data.get("solo_activos", True)
@@ -542,15 +571,14 @@ def _generar_clases_desde_bloques(request, data):
     created = 0
     skipped = 0
 
-    # Iterar día a día
     cur = d_ini
     while cur <= d_fin:
-        weekday = cur.weekday()  # 0=lunes .. 6=domingo
+        weekday = cur.weekday()
         for b in bloques.filter(dia_semana=weekday):
             exists = ClasePilates.objects.filter(
                 fecha=cur,
                 horario=b.hora_inicio,
-                nombre_instructor=(b.instructor or "").strip()
+                nombre_instructor=(b.instructor or "").strip(),
             ).exists()
 
             if exists and ignorar_existentes:
@@ -564,18 +592,27 @@ def _generar_clases_desde_bloques(request, data):
                     horario=b.hora_inicio,
                     capacidad_maxima=b.capacidad,
                     nombre_instructor=(b.instructor or "").strip(),
-                    descripcion=desc_form or f"Generada automáticamente desde bloque (instructor: {b.instructor or 'N/A'}).",
+                    descripcion=desc_form
+                    or f"Generada automáticamente desde bloque (instructor: {b.instructor or 'N/A'}).",
                 )
                 cp.save()
                 created += 1
             else:
-                # Si no ignoramos existentes, podríamos crear otra clase "duplicada".
-                # Para MVP, si existe y no ignoramos, lo saltamos igual.
                 skipped += 1
         cur += timedelta(days=1)
 
     messages.success(
         request,
-        f"Generación finalizada. Clases creadas: {created}. Saltadas/Existentes: {skipped}."
+        f"Generación finalizada. Clases creadas: {created}. Saltadas/Existentes: {skipped}.",
     )
     return redirect("administrador:listar_clases")
+
+
+# ---- CRM Contactos rápido (para tu sidebar) ----
+@login_required
+def crm_contactos(request):
+    if (resp := _forbidden_if_not_admin(request)) is not None:
+        return resp
+
+    contactos = Contacto.objects.all().order_by("-fecha_envio")
+    return render(request, "administrador/crm_contactos.html", {"contactos": contactos})
