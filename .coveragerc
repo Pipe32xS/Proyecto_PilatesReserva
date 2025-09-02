@@ -1,0 +1,40 @@
+[run]
+source =
+    administrador
+    index
+omit =
+    */migrations/*
+    */tests/*
+    */templates/*
+    */static/*
+    */templatetags/*
+    */settings.py
+    */wsgi.py
+    */asgi.py
+    manage.py
+    */admin.py
+    */apps.py
+    */urls*.py
+    */views*.py
+    */forms.py
+
+[report]
+show_missing = True
+skip_covered = False
+omit =
+    */migrations/*
+    */tests/*
+    */templates/*
+    */static/*
+    */templatetags/*
+    */settings.py
+    */wsgi.py
+    */asgi.py
+    manage.py
+    */admin.py
+    */apps.py
+    */urls*.py
+    */views*.py
+    */forms.py
+
+

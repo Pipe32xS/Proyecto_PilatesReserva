@@ -59,8 +59,12 @@ WSGI_APPLICATION = 'Pilatesreserva.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'pilatesreserva',  # Cambia esto por el nombre de tu base de datos en Atlas
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'mongodb+srv://felipevallade3_db_user:L9dvNHaTqf7mrO1p@cluster0.je4jgtc.mongodb.net/pilatesreserva?retryWrites=true&w=majority&appName=Cluster0',
+        }
     }
 }
 
@@ -84,7 +88,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # <- Tu modelo de usuario personalizado
 AUTH_USER_MODEL = 'login.User'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Backends: permite login por email o usuario
 AUTHENTICATION_BACKENDS = [
