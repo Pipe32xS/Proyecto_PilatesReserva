@@ -8,7 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-!7j*@b!3h6e&d@(zu@6+d8ac@+4tr1h#agatv1zv(ar+*&3s9g'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pilatesreserva.onrender.com',
+                 'localhost',
+                 '127.0.0.1',]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
