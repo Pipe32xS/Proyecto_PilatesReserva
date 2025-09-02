@@ -60,10 +60,14 @@ WSGI_APPLICATION = 'Pilatesreserva.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'pilatesreserva',  # Cambia esto por el nombre de tu base de datos en Atlas
+        'NAME': 'pilatesreserva',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'mongodb+srv://felipevallade3_db_user:L9dvNHaTqf7mrO1p@cluster0.je4jgtc.mongodb.net/pilatesreserva?retryWrites=true&w=majority&appName=Cluster0',
+            'host': (
+                'mongodb+srv://felipevallade3_db_user:L9dvNHaTqf7mrO1p'
+                '@cluster0.je4jgtc.mongodb.net/pilatesreserva'
+                '?retryWrites=true&w=majority&appName=Cluster0'
+            ),
         }
     }
 }
