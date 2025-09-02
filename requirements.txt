@@ -1,9 +1,9 @@
-asgiref==3.9.1
-Django==3.2.20
-sqlparse==0.5.3
-tzdata==2025.2
+asgiref==3.3.4
+Django==3.1.14
+sqlparse==0.4.1
+tzdata==2023.3
 django-crispy-forms<1.12
-djongo
+djongo==1.3.6
 pymongo
 dnspython
 
