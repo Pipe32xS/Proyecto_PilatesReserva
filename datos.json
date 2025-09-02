@@ -1,0 +1,1538 @@
+[
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "admin",
+      "model": "logentry"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "auth",
+      "model": "permission"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "auth",
+      "model": "group"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "contenttypes",
+      "model": "contenttype"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "sessions",
+      "model": "session"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "administrador",
+      "model": "clasepilates"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "administrador",
+      "model": "contacto"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "administrador",
+      "model": "perfilusuario"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "administrador",
+      "model": "reservaclase"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "administrador",
+      "model": "horariobloque"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "index",
+      "model": "reserva"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "login",
+      "model": "user"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "fields": {
+      "app_label": "index",
+      "model": "contacto"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "bk195fzdlc3coeqbhooim4g25mjns9ka",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-Fs2mAZan1aNKj8eSZLLC1REqTYk_Gf7cmPehx3ryZl3C0Pke3Vl5ciuIkQBx-mafw4PIt8nxPpdlzbfqJUr4ut00qNPFljpzPu_z3MFIdt7kiIzV4GQbbSmu8wUADIWrPoFGBbIMNAMqwBRmIZccd6iN2hFZFVOL9ARrUN4M:1utH9m:XIHAWu0TLeRH_VBS36jClMDtBMXRGQKXseyFIDs0yuU",
+      "expire_date": "2025-09-16T02:54:02.969Z"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 1,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-01",
+      "horario": "10:00:00",
+      "capacidad_maxima": 14,
+      "nombre_instructor": "Felipe",
+      "descripcion": "Generada automáticamente desde bloque (instructor: Felipe)."
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 2,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-08",
+      "horario": "10:00:00",
+      "capacidad_maxima": 14,
+      "nombre_instructor": "Felipe",
+      "descripcion": "Generada automáticamente desde bloque (instructor: Felipe)."
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 3,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-15",
+      "horario": "10:00:00",
+      "capacidad_maxima": 14,
+      "nombre_instructor": "Felipe",
+      "descripcion": "Generada automáticamente desde bloque (instructor: Felipe)."
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 4,
+    "fields": {
+      "nombre_clase": "Clase prueba Ref pilates",
+      "fecha": "2025-09-02",
+      "horario": "09:15:00",
+      "capacidad_maxima": 4,
+      "nombre_instructor": "Felipe",
+      "descripcion": "Ven a disfrutar tu clase con Felipe!"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 5,
+    "fields": {
+      "nombre_clase": "Clase de Pilates Full power",
+      "fecha": "2025-09-06",
+      "horario": "08:00:00",
+      "capacidad_maxima": 10,
+      "nombre_instructor": "Daniel",
+      "descripcion": "Clase intensa en reformer"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 6,
+    "fields": {
+      "nombre_clase": "Clase de Pilates Full power",
+      "fecha": "2025-09-13",
+      "horario": "08:00:00",
+      "capacidad_maxima": 10,
+      "nombre_instructor": "Daniel",
+      "descripcion": "Clase intensa en reformer"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 7,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-02",
+      "horario": "07:00:00",
+      "capacidad_maxima": 12,
+      "nombre_instructor": "Daniel",
+      "descripcion": "Clases de Pilates con Daniel"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 8,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-09",
+      "horario": "07:00:00",
+      "capacidad_maxima": 12,
+      "nombre_instructor": "Daniel",
+      "descripcion": "Clases de Pilates con Daniel"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 9,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-16",
+      "horario": "07:00:00",
+      "capacidad_maxima": 12,
+      "nombre_instructor": "Daniel",
+      "descripcion": "Clases de Pilates con Daniel"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 10,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-20",
+      "horario": "08:00:00",
+      "capacidad_maxima": 10,
+      "nombre_instructor": "Daniel",
+      "descripcion": "Clases de Pilates con Daniel"
+    }
+  },
+  {
+    "model": "administrador.clasepilates",
+    "pk": 11,
+    "fields": {
+      "nombre_clase": "Clase de Pilates",
+      "fecha": "2025-09-22",
+      "horario": "10:00:00",
+      "capacidad_maxima": 14,
+      "nombre_instructor": "Felipe",
+      "descripcion": "Clases de Pilates con Daniel"
+    }
+  },
+  {
+    "model": "administrador.contacto",
+    "pk": 1,
+    "fields": {
+      "nombre": "Veronica",
+      "correo_electronico": "verorica@gmail.com",
+      "mensaje": "Me gustaria saber mas información",
+      "fecha_envio": "2025-08-30T05:59:20.119Z",
+      "estado_mensaje": "pendiente",
+      "telefono": "987542365",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "administrador.contacto",
+    "pk": 2,
+    "fields": {
+      "nombre": "Ximena RIvas",
+      "correo_electronico": "Ximer06@gmail.com",
+      "mensaje": "Me gustaría saber más información de las clases de pilates por favor!\r\nMuchas gracias :D",
+      "fecha_envio": "2025-08-31T15:01:16.967Z",
+      "estado_mensaje": "pendiente",
+      "telefono": "996585274",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "administrador.contacto",
+    "pk": 3,
+    "fields": {
+      "nombre": "Pablo Perez",
+      "correo_electronico": "pabloperez2@gmail.com",
+      "mensaje": "Me gustaría saber más información por favor.",
+      "fecha_envio": "2025-08-31T15:23:20.687Z",
+      "estado_mensaje": "pendiente",
+      "telefono": "995683217",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "administrador.contacto",
+    "pk": 4,
+    "fields": {
+      "nombre": "Jose Roa",
+      "correo_electronico": "joselo@gmail.com",
+      "mensaje": "Necesito me contacte para poder resolver algunas dudas.\r\nMuchas gracias!",
+      "fecha_envio": "2025-08-31T16:00:23.712Z",
+      "estado_mensaje": "pendiente",
+      "telefono": "996583624",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "administrador.horariobloque",
+    "pk": 1,
+    "fields": {
+      "dia_semana": 0,
+      "hora_inicio": "10:00:00",
+      "hora_fin": "10:50:00",
+      "instructor": "Felipe",
+      "capacidad": 14,
+      "activo": true,
+      "creado": "2025-08-30T05:55:26.975Z",
+      "actualizado": "2025-08-30T05:55:26.975Z"
+    }
+  },
+  {
+    "model": "administrador.horariobloque",
+    "pk": 2,
+    "fields": {
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "08:50:00",
+      "instructor": "Daniel",
+      "capacidad": 10,
+      "activo": true,
+      "creado": "2025-08-31T16:37:36.467Z",
+      "actualizado": "2025-08-31T16:37:36.467Z"
+    }
+  },
+  {
+    "model": "administrador.horariobloque",
+    "pk": 3,
+    "fields": {
+      "dia_semana": 1,
+      "hora_inicio": "07:00:00",
+      "hora_fin": "07:50:00",
+      "instructor": "Daniel",
+      "capacidad": 12,
+      "activo": true,
+      "creado": "2025-09-01T19:22:27.207Z",
+      "actualizado": "2025-09-01T19:22:27.207Z"
+    }
+  },
+  {
+    "model": "index.contacto",
+    "pk": 1,
+    "fields": {
+      "nombre": "Veronica",
+      "correo": "vero@gamil.com",
+      "telefono": "998564235",
+      "mensaje": "Necesito más info, muchas gracias!",
+      "fecha_envio": "2025-08-31T16:15:04.820Z",
+      "estado_mensaje": "pendiente",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "index.contacto",
+    "pk": 2,
+    "fields": {
+      "nombre": "Pablo",
+      "correo": "p.goler@gmail.com",
+      "telefono": "984573626",
+      "mensaje": "Me gustaría saber más información por favor, mi pareja y yo estamos muy interesados en asistir a las clases!\r\nSaludos.",
+      "fecha_envio": "2025-08-31T16:16:41.027Z",
+      "estado_mensaje": "pendiente",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "index.contacto",
+    "pk": 3,
+    "fields": {
+      "nombre": "Javiera Candia",
+      "correo": "javicandelita@gmail.com",
+      "telefono": "994123825",
+      "mensaje": "Me gustaría que me contacten para saber precios y horarios!",
+      "fecha_envio": "2025-08-31T16:35:07.472Z",
+      "estado_mensaje": "pendiente",
+      "comentario": ""
+    }
+  },
+  {
+    "model": "index.contacto",
+    "pk": 4,
+    "fields": {
+      "nombre": "Claudio Marambio",
+      "correo": "claum_r@gmail.com",
+      "telefono": "996325317",
+      "mensaje": "Mi hija esta interesada en asistir a las clases, por favor contáctenme!",
+      "fecha_envio": "2025-08-31T17:14:46.351Z",
+      "estado_mensaje": "revisado",
+      "comentario": "Entendido, te contactaremos a la brevedad vía telefónica."
+    }
+  },
+  {
+    "model": "index.contacto",
+    "pk": 5,
+    "fields": {
+      "nombre": "Jhony Follyx",
+      "correo": "folly@gmail.com",
+      "telefono": "985683652",
+      "mensaje": "Necesito información por favor!",
+      "fecha_envio": "2025-09-02T02:45:17.210Z",
+      "estado_mensaje": "respondido",
+      "comentario": "Excelente!"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "add_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "change_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "delete_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "view_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "add_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "change_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "delete_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "view_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "add_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "change_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "delete_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "view_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "add_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "change_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "delete_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "view_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "add_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "change_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "delete_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "view_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add clase pilates",
+      "content_type": [
+        "administrador",
+        "clasepilates"
+      ],
+      "codename": "add_clasepilates"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change clase pilates",
+      "content_type": [
+        "administrador",
+        "clasepilates"
+      ],
+      "codename": "change_clasepilates"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete clase pilates",
+      "content_type": [
+        "administrador",
+        "clasepilates"
+      ],
+      "codename": "delete_clasepilates"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view clase pilates",
+      "content_type": [
+        "administrador",
+        "clasepilates"
+      ],
+      "codename": "view_clasepilates"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add contacto",
+      "content_type": [
+        "administrador",
+        "contacto"
+      ],
+      "codename": "add_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change contacto",
+      "content_type": [
+        "administrador",
+        "contacto"
+      ],
+      "codename": "change_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete contacto",
+      "content_type": [
+        "administrador",
+        "contacto"
+      ],
+      "codename": "delete_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view contacto",
+      "content_type": [
+        "administrador",
+        "contacto"
+      ],
+      "codename": "view_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add perfil usuario",
+      "content_type": [
+        "administrador",
+        "perfilusuario"
+      ],
+      "codename": "add_perfilusuario"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change perfil usuario",
+      "content_type": [
+        "administrador",
+        "perfilusuario"
+      ],
+      "codename": "change_perfilusuario"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete perfil usuario",
+      "content_type": [
+        "administrador",
+        "perfilusuario"
+      ],
+      "codename": "delete_perfilusuario"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view perfil usuario",
+      "content_type": [
+        "administrador",
+        "perfilusuario"
+      ],
+      "codename": "view_perfilusuario"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add reserva clase",
+      "content_type": [
+        "administrador",
+        "reservaclase"
+      ],
+      "codename": "add_reservaclase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change reserva clase",
+      "content_type": [
+        "administrador",
+        "reservaclase"
+      ],
+      "codename": "change_reservaclase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete reserva clase",
+      "content_type": [
+        "administrador",
+        "reservaclase"
+      ],
+      "codename": "delete_reservaclase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view reserva clase",
+      "content_type": [
+        "administrador",
+        "reservaclase"
+      ],
+      "codename": "view_reservaclase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add Bloque horario",
+      "content_type": [
+        "administrador",
+        "horariobloque"
+      ],
+      "codename": "add_horariobloque"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change Bloque horario",
+      "content_type": [
+        "administrador",
+        "horariobloque"
+      ],
+      "codename": "change_horariobloque"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete Bloque horario",
+      "content_type": [
+        "administrador",
+        "horariobloque"
+      ],
+      "codename": "delete_horariobloque"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view Bloque horario",
+      "content_type": [
+        "administrador",
+        "horariobloque"
+      ],
+      "codename": "view_horariobloque"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add reserva",
+      "content_type": [
+        "index",
+        "reserva"
+      ],
+      "codename": "add_reserva"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change reserva",
+      "content_type": [
+        "index",
+        "reserva"
+      ],
+      "codename": "change_reserva"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete reserva",
+      "content_type": [
+        "index",
+        "reserva"
+      ],
+      "codename": "delete_reserva"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view reserva",
+      "content_type": [
+        "index",
+        "reserva"
+      ],
+      "codename": "view_reserva"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add user",
+      "content_type": [
+        "login",
+        "user"
+      ],
+      "codename": "add_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change user",
+      "content_type": [
+        "login",
+        "user"
+      ],
+      "codename": "change_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete user",
+      "content_type": [
+        "login",
+        "user"
+      ],
+      "codename": "delete_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view user",
+      "content_type": [
+        "login",
+        "user"
+      ],
+      "codename": "view_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can add contacto",
+      "content_type": [
+        "index",
+        "contacto"
+      ],
+      "codename": "add_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can change contacto",
+      "content_type": [
+        "index",
+        "contacto"
+      ],
+      "codename": "change_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can delete contacto",
+      "content_type": [
+        "index",
+        "contacto"
+      ],
+      "codename": "delete_contacto"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "fields": {
+      "name": "Can view contacto",
+      "content_type": [
+        "index",
+        "contacto"
+      ],
+      "codename": "view_contacto"
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$RXRRv1gwpy6mjPe0JqUKsN$RbMucHEPPz+wZZcQM6bg3efxWZ9Iw58SPanK0Lr1mOc=",
+      "last_login": "2025-09-02T02:43:03.027Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "admin@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-08-30T05:33:43.739Z",
+      "rol": "cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$0cFLgjn8QBRRsawtkZpJIL$dEaZ0PUPUF9/bIv1F9HpjlzesvpfqxjkdDl7dRUr3D0=",
+      "last_login": "2025-09-02T02:35:58.575Z",
+      "is_superuser": false,
+      "username": "Felipe",
+      "first_name": "",
+      "last_name": "",
+      "email": "felipevallade3@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-30T05:51:17.891Z",
+      "rol": "cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$2sYAVfg2UDtZL0FzTK5Hpl$vfcg92TUzoZLVqoi+T6vhaCdh4UUp0GfUbSrehk5k3w=",
+      "last_login": "2025-09-02T02:54:02.967Z",
+      "is_superuser": false,
+      "username": "admin1",
+      "first_name": "",
+      "last_name": "",
+      "email": "administrador@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-30T05:52:41Z",
+      "rol": "administrador",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$EXkKptORRiDZPdbwVmctDP$UWVAoNd59yZwVJMKMIXi3LaO5wJq/a2rJzGXoKLGoa0=",
+      "last_login": "2025-09-01T04:08:14.579Z",
+      "is_superuser": false,
+      "username": "Sebastian",
+      "first_name": "",
+      "last_name": "",
+      "email": "sebaloco@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-30T05:57:22.860Z",
+      "rol": "cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$EOQ8ufxagSNrt3Zeu3Sfqd$8f2oEhNTKSua6GSylUCkUegg/SPWsFZ2JL+IUQyj10U=",
+      "last_login": "2025-08-31T16:35:36.706Z",
+      "is_superuser": false,
+      "username": "Javiera",
+      "first_name": "",
+      "last_name": "",
+      "email": "javi14@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-31T03:51:04.550Z",
+      "rol": "cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$dP0QB4Mw74XTTwhoDRSCjg$VujEFUjFS7JpY+qWfQgTeMXbE2a0fF980ICya0Nqla8=",
+      "last_login": "2025-08-31T15:24:35.441Z",
+      "is_superuser": false,
+      "username": "Karlita",
+      "first_name": "Karla",
+      "last_name": "Sandoval",
+      "email": "karla@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-31T03:53:24.313Z",
+      "rol": "Cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$dEG6mBGpm8nT9RQ3i9aSe7$usBSu6VsiW34HKO+cWA+04ff6hAdOtZBG1v3H8TRBdk=",
+      "last_login": "2025-08-31T16:35:57.691Z",
+      "is_superuser": false,
+      "username": "Venomsita",
+      "first_name": "",
+      "last_name": "",
+      "email": "antosandoval@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-31T04:00:17.492Z",
+      "rol": "cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$VwevjIXXDrToMeADWixp3A$SwVBmWmDiK0T/xY7q/MXpQ5oNVS4CHD7Ec5HmjlpI9I=",
+      "last_login": "2025-08-31T04:11:35.488Z",
+      "is_superuser": false,
+      "username": "Dani",
+      "first_name": "Daniel",
+      "last_name": "Lavin",
+      "email": "daniellavin@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-31T04:03:19.166Z",
+      "rol": "Cliente",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "login.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$Rk0C6OM69oBJDy9xv7uXyX$d2bf32/CIQ0Zm9e+jXyHINPummtJy0hhLp5ac5bCEkk=",
+      "last_login": "2025-08-31T18:15:35.564Z",
+      "is_superuser": false,
+      "username": "Luquitas",
+      "first_name": "Lucas",
+      "last_name": "Gallardo",
+      "email": "lucas@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-31T18:14:13.091Z",
+      "rol": "20.685.394-5",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "Felipe"
+      ],
+      "clase": 1,
+      "tipo": "grupal",
+      "fecha": "2025-09-01",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-30T05:56:16.312Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "Felipe"
+      ],
+      "clase": 2,
+      "tipo": "grupal",
+      "fecha": "2025-09-08",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-30T05:56:20.039Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "Felipe"
+      ],
+      "clase": 3,
+      "tipo": "grupal",
+      "fecha": "2025-09-15",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-30T05:56:23.006Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 4,
+    "fields": {
+      "user": [
+        "Sebastian"
+      ],
+      "clase": 1,
+      "tipo": "grupal",
+      "fecha": "2025-09-01",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-30T05:57:36.788Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 5,
+    "fields": {
+      "user": [
+        "Sebastian"
+      ],
+      "clase": 3,
+      "tipo": "grupal",
+      "fecha": "2025-09-15",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-30T05:57:41.218Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 6,
+    "fields": {
+      "user": [
+        "Sebastian"
+      ],
+      "clase": 4,
+      "tipo": "grupal",
+      "fecha": "2025-09-02",
+      "inicio": "09:15:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T03:57:47.142Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 7,
+    "fields": {
+      "user": [
+        "Javiera"
+      ],
+      "clase": 4,
+      "tipo": "grupal",
+      "fecha": "2025-09-02",
+      "inicio": "09:15:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T03:58:08.902Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 8,
+    "fields": {
+      "user": [
+        "Karlita"
+      ],
+      "clase": 4,
+      "tipo": "grupal",
+      "fecha": "2025-09-02",
+      "inicio": "09:15:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T03:58:25.492Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 9,
+    "fields": {
+      "user": [
+        "Venomsita"
+      ],
+      "clase": 4,
+      "tipo": "grupal",
+      "fecha": "2025-09-02",
+      "inicio": "09:15:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T04:01:19.878Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 10,
+    "fields": {
+      "user": [
+        "Dani"
+      ],
+      "clase": 1,
+      "tipo": "grupal",
+      "fecha": "2025-09-01",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T04:11:38.515Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 11,
+    "fields": {
+      "user": [
+        "Dani"
+      ],
+      "clase": 2,
+      "tipo": "grupal",
+      "fecha": "2025-09-08",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T04:11:40.859Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 12,
+    "fields": {
+      "user": [
+        "Javiera"
+      ],
+      "clase": 2,
+      "tipo": "grupal",
+      "fecha": "2025-09-08",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T16:35:41.595Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 13,
+    "fields": {
+      "user": [
+        "Javiera"
+      ],
+      "clase": 3,
+      "tipo": "grupal",
+      "fecha": "2025-09-15",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T16:35:44.452Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 14,
+    "fields": {
+      "user": [
+        "Venomsita"
+      ],
+      "clase": 2,
+      "tipo": "grupal",
+      "fecha": "2025-09-08",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T16:36:01.060Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 15,
+    "fields": {
+      "user": [
+        "Venomsita"
+      ],
+      "clase": 1,
+      "tipo": "grupal",
+      "fecha": "2025-09-01",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T16:36:03.691Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 16,
+    "fields": {
+      "user": [
+        "Luquitas"
+      ],
+      "clase": 1,
+      "tipo": "grupal",
+      "fecha": "2025-09-01",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T18:15:41.467Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 17,
+    "fields": {
+      "user": [
+        "Luquitas"
+      ],
+      "clase": 3,
+      "tipo": "grupal",
+      "fecha": "2025-09-15",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T18:15:43.938Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 18,
+    "fields": {
+      "user": [
+        "Luquitas"
+      ],
+      "clase": 2,
+      "tipo": "grupal",
+      "fecha": "2025-09-08",
+      "inicio": "10:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-08-31T18:15:45.889Z"
+    }
+  },
+  {
+    "model": "index.reserva",
+    "pk": 19,
+    "fields": {
+      "user": [
+        "Felipe"
+      ],
+      "clase": 5,
+      "tipo": "grupal",
+      "fecha": "2025-09-06",
+      "inicio": "08:00:00",
+      "fin": null,
+      "estado": "Confirmada",
+      "created_at": "2025-09-02T02:36:11.410Z"
+    }
+  },
+  {
+    "model": "administrador.perfilusuario",
+    "pk": 1,
+    "fields": {
+      "usuario": [
+        "Javiera"
+      ],
+      "primer_nombre": "Javiera",
+      "apellido_paterno": "Sandoval",
+      "apellido_materno": "Esquerra",
+      "rut": "18.926.597-2",
+      "direccion": "Carlos Ibañes de Campo #0496",
+      "telefono": "973631774"
+    }
+  },
+  {
+    "model": "administrador.perfilusuario",
+    "pk": 2,
+    "fields": {
+      "usuario": [
+        "Karlita"
+      ],
+      "primer_nombre": "Karla",
+      "apellido_paterno": "Sandoval",
+      "apellido_materno": "Esquerra",
+      "rut": "16.567.325-9",
+      "direccion": "Carlos Ibañes de Campo #0496",
+      "telefono": "98657421"
+    }
+  },
+  {
+    "model": "administrador.perfilusuario",
+    "pk": 3,
+    "fields": {
+      "usuario": [
+        "Venomsita"
+      ],
+      "primer_nombre": "Antonia",
+      "apellido_paterno": "Sandoval",
+      "apellido_materno": "Esquerra",
+      "rut": "20.365.289-5",
+      "direccion": "Las Urbinas #523",
+      "telefono": "965482795"
+    }
+  },
+  {
+    "model": "administrador.perfilusuario",
+    "pk": 4,
+    "fields": {
+      "usuario": [
+        "Sebastian"
+      ],
+      "primer_nombre": "Sebastián",
+      "apellido_paterno": "Orellana",
+      "apellido_materno": null,
+      "rut": "19.574.365-6",
+      "direccion": "El llano #985",
+      "telefono": "954298657"
+    }
+  },
+  {
+    "model": "administrador.perfilusuario",
+    "pk": 5,
+    "fields": {
+      "usuario": [
+        "Dani"
+      ],
+      "primer_nombre": "Daniel",
+      "apellido_paterno": "Lavin",
+      "apellido_materno": null,
+      "rut": "18.295.741-3",
+      "direccion": "Irarrazaval #2614",
+      "telefono": "984629812"
+    }
+  },
+  {
+    "model": "administrador.perfilusuario",
+    "pk": 6,
+    "fields": {
+      "usuario": [
+        "Felipe"
+      ],
+      "primer_nombre": "Felipe",
+      "apellido_paterno": "Vallade",
+      "apellido_materno": "Guadalupe",
+      "rut": "18.165.705-7",
+      "direccion": "Los Clarines #3051",
+      "telefono": "993168365"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2025-08-30T05:53:37.954Z",
+      "user": [
+        "admin"
+      ],
+      "content_type": [
+        "login",
+        "user"
+      ],
+      "object_id": "3",
+      "object_repr": "admin1",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Rol\"]}}]"
+    }
+  }
+]
