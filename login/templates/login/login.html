@@ -26,7 +26,7 @@
             </div>
           {% endif %}
 
-          <!-- Usuario/correo (usa AuthenticationForm.username) -->
+          <!-- Usuario/correo -->
           <div class="mb-3">
             <label class="form-label fw-semibold">Correo o usuario</label>
             <div class="input-group">
@@ -41,7 +41,7 @@
           </div>
 
           <!-- Password -->
-          <div class="mb-4">
+          <div class="mb-2">
             <label class="form-label fw-semibold">Contraseña</label>
             <div class="input-group">
               <span class="input-group-text bg-info text-white border-0">
@@ -52,6 +52,13 @@
             {% for error in form.password.errors %}
               <div class="invalid-feedback d-block">{{ error }}</div>
             {% endfor %}
+          </div>
+
+          <!-- Enlace: ¿Olvidaste tu contraseña? -->
+          <div class="text-end mb-4">
+            <a href="{% url 'login:password_reset' %}" class="small link-secondary link-underline-opacity-0 link-underline-opacity-100-hover">
+              ¿Olvidaste tu contraseña?
+            </a>
           </div>
 
           <button class="btn w-100 fw-semibold py-2 rounded-3 text-white"
@@ -67,9 +74,8 @@
             <a class="fw-semibold link-info link-underline-opacity-0 link-underline-opacity-100-hover"
                href="{% url 'login:registro_cliente' %}">Regístrate</a>
           </p>
-          <!-- IMPORTANTE: tu app index NO tiene namespace; usa 'index' a secas -->
           <a class="link-secondary link-underline-opacity-0 link-underline-opacity-100-hover"
-             href="{% url 'index' %}">Volver al inicio</a>
+             href="{% url 'index:index' %}">Volver al inicio</a>
         </div>
       </div>
     </div>
@@ -77,9 +83,6 @@
   </div>
 </section>
 {% endblock %}
-
-
-
 
 
 

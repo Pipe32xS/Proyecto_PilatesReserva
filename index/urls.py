@@ -2,19 +2,23 @@
 from django.urls import path
 from . import views
 
-app_name = None  # sin namespace para que {% url 'index' %} funcione tal cual
+app_name = "index"
 
 urlpatterns = [
+    # Landing
     path("", views.index, name="index"),
+
+    # Página de Clases (la que extiende base_index y muestra tabs)
     path("clases/", views.clases, name="clases"),
+
+    # Contacto público (form y confirmación)
     path("contacto/", views.contacto_publico, name="contacto_publico"),
     path("contacto/exito/", views.contacto_exito, name="contacto_exito"),
-    path("clases/reformer/", views.clase_reformer, name="clase_reformer"),
-    path("clases/mat/", views.clase_mat, name="clase_mat"),
-    path("clases/grupal/", views.clase_grupal, name="clase_grupal"),
-    path("clases/disponibles/", views.clases_disponibles_cards,
-         name="clases_disponibles"),
 
-    # ---- NUEVA RUTA (grid) ----
+    # Catálogo de clases en tarjetas
+    path("clases/disponibles/", views.clases_disponibles_cards,
+         name="clases_disponibles_cards"),
+
+    # Catálogo en grid
     path("catalogo/", views.clases_grid, name="clases_grid"),
 ]

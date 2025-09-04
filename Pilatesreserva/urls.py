@@ -1,19 +1,17 @@
 # Pilatesreserva/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from index import views as index_views  # importamos las vistas públicas
 
 urlpatterns = [
+    # Admin
     path("admin/", admin.site.urls),
 
-    # 🔹 Ruta directa al listado de clases en tarjetas (debe ir ANTES que otros includes con 'clases/')
-    path("clases/disponibles/", index_views.clases_disponibles_cards,
-         name="clases_disponibles"),
+    # Sitio público (landing, clases, contacto, etc.)
+    path("", include(("index.urls", "index"), namespace="index")),
 
-    # Rutas de las apps
-    path("", include("index.urls")),  # landing, contacto, etc.
-    path("usuarios/", include(("usuarios.urls", "usuarios"), namespace="usuarios")),
+    # Módulos propios con namespace
     path("login/", include(("login.urls", "login"), namespace="login")),
+    path("usuarios/", include(("usuarios.urls", "usuarios"), namespace="usuarios")),
     path("administrador/", include(("administrador.urls",
          "administrador"), namespace="administrador")),
 ]

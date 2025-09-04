@@ -73,7 +73,7 @@
             <a
               class="nav-link fw-semibold rounded-3 px-4 py-2
                 {% if current == 'index' %} active bg-info text-white {% else %} bg-info-subtle text-dark {% endif %}"
-              href="{% url 'index' %}"
+              href="{% url 'index:index' %}"
               style="transition:.2s; box-shadow: {% if current == 'index' %}0 8px 18px rgba(13,202,240,.25){% else %}none{% endif %};"
               onmouseenter="this.style.transform='translateY(-2px)';"
               onmouseleave="this.style.transform='none';">
@@ -86,7 +86,7 @@
             <a
               class="nav-link fw-semibold rounded-3 px-4 py-2
                 {% if current == 'contacto_publico' %} active bg-info text-white {% else %} bg-info-subtle text-dark {% endif %}"
-              href="{% url 'contacto_publico' %}"
+              href="{% url 'index:contacto_publico' %}"
               style="transition:.2s; box-shadow: {% if current == 'contacto_publico' %}0 8px 18px rgba(13,202,240,.25){% else %}none{% endif %};"
               onmouseenter="this.style.transform='translateY(-2px)';"
               onmouseleave="this.style.transform='none';">
@@ -98,9 +98,9 @@
           <li class="nav-item">
             <a
               class="nav-link fw-semibold rounded-3 px-4 py-2
-                {% if current in 'clases clase_reformer clase_mat clase_grupal' %} active bg-info text-white {% else %} bg-info-subtle text-dark {% endif %}"
-              href="{% url 'clases' %}"
-              style="transition:.2s; box-shadow: {% if current in 'clases clase_reformer clase_mat clase_grupal' %}0 8px 18px rgba(13,202,240,.25){% else %}none{% endif %};"
+                {% if current == 'clases' %} active bg-info text-white {% else %} bg-info-subtle text-dark {% endif %}"
+              href="{% url 'index:clases' %}"
+              style="transition:.2s; box-shadow: {% if current == 'clases' %}0 8px 18px rgba(13,202,240,.25){% else %}none{% endif %};"
               onmouseenter="this.style.transform='translateY(-2px)';"
               onmouseleave="this.style.transform='none';">
               <i class="bi bi-grid-3x3-gap me-2"></i>Clases
@@ -193,11 +193,31 @@
         <div class="col-6 col-md-3">
           <h6 class="text-uppercase mb-3" style="letter-spacing:.08em; color:#96e8f7;">Enlaces</h6>
           <ul class="list-unstyled m-0">
-            <li class="mb-2"><a href="{% url 'index' %}" class="link-light text-decoration-none footer-link"><i class="bi bi-house-door me-2"></i>Inicio</a></li>
-            <li class="mb-2"><a href="{% url 'clase_reformer' %}" class="link-light text-decoration-none footer-link"><i class="bi bi-bounding-box-circles me-2"></i>Reformer</a></li>
-            <li class="mb-2"><a href="{% url 'clase_mat' %}" class="link-light text-decoration-none footer-link"><i class="bi bi-grid-3x3-gap me-2"></i>Mat</a></li>
-            <li class="mb-2"><a href="{% url 'clase_grupal' %}" class="link-light text-decoration-none footer-link"><i class="bi bi-people me-2"></i>Grupal</a></li>
-            <li><a href="{% url 'contacto_publico' %}" class="link-light text-decoration-none footer-link"><i class="bi bi-envelope me-2"></i>Contacto</a></li>
+            <li class="mb-2">
+              <a href="{% url 'index:index' %}" class="link-light text-decoration-none footer-link">
+                <i class="bi bi-house-door me-2"></i>Inicio
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="{% url 'index:clases' %}?tipo=reformer" class="link-light text-decoration-none footer-link">
+                <i class="bi bi-bounding-box-circles me-2"></i>Reformer
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="{% url 'index:clases' %}?tipo=mat" class="link-light text-decoration-none footer-link">
+                <i class="bi bi-grid-3x3-gap me-2"></i>Mat
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="{% url 'index:clases' %}?tipo=grupal" class="link-light text-decoration-none footer-link">
+                <i class="bi bi-people me-2"></i>Grupal
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'index:contacto_publico' %}" class="link-light text-decoration-none footer-link">
+                <i class="bi bi-envelope me-2"></i>Contacto
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -259,7 +279,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
 
 

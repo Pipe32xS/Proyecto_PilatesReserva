@@ -34,14 +34,14 @@
 
           <!-- Botones -->
           <div class="d-flex flex-wrap gap-3">
-            <a href="{% url 'login:login' %}?next={% url 'index' %}"
+            <a href="{% url 'login:login' %}?next={% url 'index:index' %}"
                class="btn text-white fw-semibold px-4 py-2 rounded-3"
                style="background: linear-gradient(90deg, #0dcaf0, #6f42c1); border: 0; transition: all .25s ease;"
                onmouseenter="this.style.filter='brightness(1.06)'; this.style.transform='translateY(-2px)';"
                onmouseleave="this.style.filter='none'; this.style.transform='none';">
               Reservar Clase
             </a>
-            <a href="{% url 'contacto_publico' %}"
+            <a href="{% url 'index:contacto_publico' %}"
                class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3"
                style="transition: all .25s ease;"
                onmouseenter="this.style.backgroundColor='rgba(255,255,255,.95)'; this.style.color='#000'; this.style.transform='translateY(-2px)';"
@@ -273,7 +273,7 @@
     <div class="row g-4">
 
       <div class="col-md-4">
-        <a href="{% url 'clase_reformer' %}" class="text-decoration-none">
+        <a href="{% url 'index:clases' %}?tipo=reformer" class="text-decoration-none">
           <div class="ratio ratio-16x9 rounded-4 shadow-sm position-relative overflow-hidden"
                style="cursor:pointer; transition: all .35s ease; filter: grayscale(100%);"
                onmouseenter="this.style.transform='scale(1.03)'; this.style.filter='grayscale(0%)';"
@@ -289,7 +289,7 @@
       </div>
 
       <div class="col-md-4">
-        <a href="{% url 'clase_mat' %}" class="text-decoration-none">
+        <a href="{% url 'index:clases' %}?tipo=mat" class="text-decoration-none">
           <div class="ratio ratio-16x9 rounded-4 shadow-sm position-relative overflow-hidden"
                style="cursor:pointer; transition: all .35s ease; filter: grayscale(100%);"
                onmouseenter="this.style.transform='scale(1.03)'; this.style.filter='grayscale(0%)';"
@@ -305,7 +305,7 @@
       </div>
 
       <div class="col-md-4">
-        <a href="{% url 'clase_grupal' %}" class="text-decoration-none">
+        <a href="{% url 'index:clases' %}?tipo=grupal" class="text-decoration-none">
           <div class="ratio ratio-16x9 rounded-4 shadow-sm position-relative overflow-hidden"
                style="cursor:pointer; transition: all .35s ease; filter: grayscale(100%);"
                onmouseenter="this.style.transform='scale(1.03)'; this.style.filter='grayscale(0%)';"
@@ -333,7 +333,7 @@
         <p class="mb-0 opacity-90">Reserva ahora y recibe guía personalizada desde el primer día.</p>
       </div>
       <div class="col-lg-4 text-lg-end">
-        <a href="{% url 'login:login' %}?next={% url 'index' %}"
+        <a href="{% url 'login:login' %}?next={% url 'index:index' %}"
            class="btn btn-light fw-semibold rounded-3 px-4 py-2"
            style="transition: all .25s ease;"
            onmouseenter="this.style.transform='translateY(-2px)';"
@@ -380,11 +380,5 @@
   })();
 </script>
 {% endblock %}
-
-
-
-
-
-
 
 

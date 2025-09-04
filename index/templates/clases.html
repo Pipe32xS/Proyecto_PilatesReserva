@@ -150,7 +150,8 @@
             </div>
 
             <div class="mt-4 d-flex gap-2">
-              <a href="{% url 'clase_reformer' %}" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
+              <!-- Enlaces corregidos: usan index:clases con query + ancla -->
+              <a href="{% url 'index:clases' %}?tipo=reformer#reformer" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
               <a href="{% url 'login:login' %}" class="btn btn-outline-secondary">Iniciar sesión</a>
             </div>
           </div>
@@ -179,7 +180,7 @@
             </div>
 
             <div class="row g-3 mt-1">
-              <!-- Lunes -->
+              <!-- horarios... (igual que arriba) -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Lunes</strong><span class="badge text-bg-light">10 cupos</span>
@@ -187,7 +188,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Martes -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Martes</strong><span class="badge text-bg-light">10 cupos</span>
@@ -195,7 +195,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Miércoles -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Miércoles</strong><span class="badge text-bg-light">10 cupos</span>
@@ -203,7 +202,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Jueves -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Jueves</strong><span class="badge text-bg-light">10 cupos</span>
@@ -211,7 +209,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Viernes -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Viernes</strong><span class="badge text-bg-light">10 cupos</span>
@@ -219,7 +216,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Sábado -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Sábado</strong><span class="badge text-bg-light">10 cupos</span>
@@ -230,7 +226,8 @@
             </div>
 
             <div class="mt-4 d-flex gap-2">
-              <a href="{% url 'clase_mat' %}" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
+              <!-- Enlace corregido -->
+              <a href="{% url 'index:clases' %}?tipo=mat#mat" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
               <a href="{% url 'login:login' %}" class="btn btn-outline-secondary">Iniciar sesión</a>
             </div>
           </div>
@@ -259,7 +256,7 @@
             </div>
 
             <div class="row g-3 mt-1">
-              <!-- Lunes -->
+              <!-- horarios (idéntico patrón) -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Lunes</strong><span class="badge text-bg-light">12 cupos</span>
@@ -267,7 +264,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Martes -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Martes</strong><span class="badge text-bg-light">12 cupos</span>
@@ -275,7 +271,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Miércoles -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Miércoles</strong><span class="badge text-bg-light">12 cupos</span>
@@ -283,7 +278,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Jueves -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Jueves</strong><span class="badge text-bg-light">12 cupos</span>
@@ -291,7 +285,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Viernes -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Viernes</strong><span class="badge text-bg-light">12 cupos</span>
@@ -299,7 +292,6 @@
                 <p class="mb-1 mt-3"><strong>07:00 - 12:30 hrs</strong></p>
                 <p class="mb-0"><strong>16:00 - 20:00 hrs</strong></p>
               </div></div></div>
-              <!-- Sábado -->
               <div class="col-12 col-md-6 col-lg-4"><div class="card h-100 shadow-sm"><div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <strong>Sábado</strong><span class="badge text-bg-light">12 cupos</span>
@@ -310,7 +302,8 @@
             </div>
 
             <div class="mt-4 d-flex gap-2">
-              <a href="{% url 'clase_grupal' %}" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
+              <!-- Enlace corregido -->
+              <a href="{% url 'index:clases' %}?tipo=grupal#grupal" class="btn btn-info text-dark fw-semibold">Ver detalles</a>
               <a href="{% url 'login:login' %}" class="btn btn-outline-secondary">Iniciar sesión</a>
             </div>
           </div>
@@ -349,4 +342,5 @@
   </div>
 </section>
 {% endblock %}
+
 
