@@ -1,52 +1,355 @@
 {% extends "administrador/base_admin.html" %}
-{% block encabezado %}Administrar Perfiles{% endblock %}
+{% load static %}
+
+{% block titulo %}Perfiles | Admin{% endblock %}
+{% block encabezado %}<i class="bi bi-person-badge me-2"></i>Administrar Perfiles{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h5 class="mb-0">Perfiles</h5>
-  <a class="btn btn-primary" href="{% url 'administrador:perfil_crear' %}">
-    <i class="bi bi-plus-lg"></i> Nuevo perfil
-  </a>
-</div>
+<style>
+  .hero{
+    background: linear-gradient(135deg,#2563eb 0%, #22c55e 100%);
+    border-radius: 18px; color:#fff;
+    box-shadow: 0 12px 30px rgba(2,6,23,.2);
+  }
+  .metric{
+    background: rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.28);
+    border-radius:14px; padding:.85rem 1rem;
+    display:flex; gap:.65rem; align-items:center;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .metric:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(2,6,23,.18); }
+  .metric .badge-soft{
+    background:rgba(255,255,255,.25); color:#fff;
+    border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:.1rem .55rem;
+  }
 
-<table class="table table-sm table-striped align-middle">
-  <thead>
-    <tr>
-      <th>Usuario</th>
-      <th>Nombre</th>
-      <th>RUT</th>
-      <th>Teléfono</th>
-      <th class="text-end">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for p in perfiles %}
-      <tr>
-        <td>{{ p.usuario.username }}</td>
-        <td>
-          {{ p.primer_nombre }} {{ p.apellido_paterno }}
-          {% if p.apellido_materno %} {{ p.apellido_materno }}{% endif %}
-        </td>
-        <td>{{ p.rut|default:"—" }}</td>
-        <td>{{ p.telefono|default:"—" }}</td>
-        <td class="text-end">
-          <a href="{% url 'administrador:perfil_editar' p.id %}" class="btn btn-sm btn-outline-secondary">Editar perfil</a>
-          <a href="{% url 'administrador:usuarios_list' %}?q={{ p.usuario.username }}" class="btn btn-sm btn-outline-dark">Editar usuario</a>
+  .card-soft{ border:1px solid var(--bs-border-color); border-radius:14px; box-shadow:0 1px 8px rgba(2,6,23,.06); }
+  .table-modern thead th{
+    background:#f8fafc; color:#0f172a; font-weight:700; border-bottom:1px solid var(--bs-border-color);
+  }
+  .table-modern tbody tr{ transition: background .12s ease; }
+  .table-modern tbody tr:hover{ background:#f9fbff; }
 
-          {# 👉 IMPORTANTE: manda el parámetro ?cliente=<id> #}
-          <a href="{% url 'administrador:reservas_list' %}?cliente={{ p.usuario.id }}" class="btn btn-sm btn-outline-primary">
-            Ver reservas
-          </a>
+  .avatar{ width:36px; height:36px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+  .avatar-blue   { background: linear-gradient(135deg,#3b82f6,#2563eb); }
+  .avatar-green  { background: linear-gradient(135deg,#22c55e,#16a34a); }
+  .avatar-amber  { background: linear-gradient(135deg,#f59e0b,#f59e0b); }
+  .avatar-purple { background: linear-gradient(135deg,#a78bfa,#7c3aed); }
 
-          <a href="mailto:{{ p.usuario.email }}" class="btn btn-sm btn-outline-success">Email</a>
-          <a href="{% url 'administrador:perfil_eliminar' p.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
-        </td>
-      </tr>
-    {% empty %}
-      <tr>
-        <td colspan="5" class="text-center text-muted py-3">No hay perfiles aún.</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  .btn-light-soft{
+    --bs-btn-bg:#f8fafc; --bs-btn-border-color:#e5e7eb; --bs-btn-color:#0f172a;
+    --bs-btn-hover-bg:#eef2ff; --bs-btn-hover-border-color:#c7d2fe;
+  }
+
+  html[data-theme="dark"] .table-modern thead th{ background:#0b1220; color:#e2e8f0; }
+  html[data-theme="dark"] .table-modern tbody tr:hover{ background:#0b1220; }
+  html[data-theme="dark"] .card-soft{ border-color:#151d31; }
+</style>
+
+<section class="container-fluid px-0">
+
+  <!-- ======= HERO ======= -->
+  <div class="hero p-4 p-md-5 mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+      <div>
+        <span class="badge bg-white text-primary fw-semibold"><i class="bi bi-gear me-1"></i>Módulo de perfiles</span>
+        <h1 class="h3 fw-bold mt-2 mb-1 text-white">Perfiles</h1>
+        <p class="mb-0 text-white-50">Gestiona datos de contacto y acciones rápidas de tus clientes/usuarios.</p>
+      </div>
+      <div class="d-flex gap-2">
+        {# <-- AJUSTA si tu URL se llama diferente --> #}
+        <a href="{% url 'administrador:perfil_crear' %}" class="btn btn-light text-primary fw-semibold">
+          <i class="bi bi-plus-circle me-1"></i>Nuevo perfil
+        </a>
+      </div>
+    </div>
+
+    <!-- Métricas (JS las completa si hay filas) -->
+    <div class="row g-2 g-md-3 mt-3" id="metrics-row" hidden>
+      <div class="col-12 col-sm-4">
+        <div class="metric">
+          <span class="badge-soft"><i class="bi bi-people"></i></span>
+          <div>
+            <div class="small opacity-75">Total perfiles</div>
+            <div class="fs-5 fw-bold" id="mTotal">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-4">
+        <div class="metric">
+          <span class="badge-soft"><i class="bi bi-telephone"></i></span>
+          <div>
+            <div class="small opacity-75">Con teléfono</div>
+            <div class="fs-6 fw-bold" id="mConTel">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-4">
+        <div class="metric">
+          <span class="badge-soft"><i class="bi bi-emoji-neutral"></i></span>
+          <div>
+            <div class="small opacity-75">Sin teléfono</div>
+            <div class="fs-6 fw-bold" id="mSinTel">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ========================= RENDER FIABLE DE DATOS ========================= #}
+
+  {% if perfiles %}
+    {% with dataset=perfiles %}
+      <div class="card-soft p-3">
+        <div class="table-responsive">
+          <table class="table table-modern align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="min-width:260px;">Usuario</th>
+                <th style="min-width:220px;">Nombre</th>
+                <th style="min-width:150px;">RUT</th>
+                <th style="min-width:230px;">Teléfono</th>
+                <th class="text-end" style="min-width:230px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in dataset %}
+                <tr data-has-phone="{% if p.telefono %}1{% else %}0{% endif %}">
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      {% if forloop.counter0|divisibleby:4 %}
+                        <span class="avatar avatar-blue">
+                      {% elif forloop.counter0|divisibleby:3 %}
+                        <span class="avatar avatar-green">
+                      {% elif forloop.counter0|divisibleby:2 %}
+                        <span class="avatar avatar-amber">
+                      {% else %}
+                        <span class="avatar avatar-purple">
+                      {% endif %}
+                        {% if p.usuario %}{{ p.usuario.username|slice:":1"|upper }}
+                        {% elif p.nombre %}{{ p.nombre|slice:":1"|upper }}
+                        {% else %}?{% endif %}
+                      </span>
+                      <div>
+                        <div class="fw-semibold">
+                          {% if p.usuario %}{{ p.usuario.username }}{% else %}<span class="text-secondary">—</span>{% endif %}
+                        </div>
+                        <div class="small text-secondary">
+                          {% if p.usuario and p.usuario.email %}{{ p.usuario.email }}{% else %}—{% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>{{ p.nombre|default:"—" }}</td>
+                  <td>{{ p.rut|default:"—" }}</td>
+
+                  <td>
+                    {% if p.telefono %}
+                      <span class="me-2">{{ p.telefono }}</span>
+                      <button class="btn btn-sm btn-light-soft js-copy" type="button" data-copy="{{ p.telefono }}" data-bs-toggle="tooltip" title="Copiar">
+                        <i class="bi bi-clipboard"></i>
+                      </button>
+                      <a class="btn btn-sm btn-light-soft" href="tel:{{ p.telefono }}" data-bs-toggle="tooltip" title="Llamar">
+                        <i class="bi bi-telephone-outbound"></i>
+                      </a>
+                    {% else %}
+                      <span class="text-secondary">—</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    {# <-- AJUSTA estos nombres de URL si en tu app son distintos --> #}
+                    {% url 'administrador:perfil_editar' p.id as URL_EDITAR_PERFIL %}
+                    {% url 'administrador:perfil_eliminar' p.id as URL_ELIMINAR_PERFIL %}
+                    {% url 'administrador:reservas_list' as URL_RESERVAS %}
+                    {% if p.usuario %}{% url 'administrador:usuario_editar' p.usuario.id as URL_EDITAR_USUARIO %}{% endif %}
+
+                    <div class="btn-group btn-group-sm">
+                      <a href="{{ URL_EDITAR_PERFIL }}" class="btn btn-light-soft" data-bs-toggle="tooltip" title="Editar perfil">
+                        <i class="bi bi-person-gear"></i>
+                      </a>
+                      {% if p.usuario %}
+                        <a href="{{ URL_EDITAR_USUARIO }}" class="btn btn-light-soft" data-bs-toggle="tooltip" title="Editar usuario">
+                          <i class="bi bi-person-lines-fill"></i>
+                        </a>
+                      {% endif %}
+                      <a href="{{ URL_RESERVAS }}" class="btn btn-light-soft" data-bs-toggle="tooltip" title="Ver reservas">
+                        <i class="bi bi-journal-text"></i>
+                      </a>
+                      {% if p.usuario and p.usuario.email %}
+                        <a class="btn btn-light-soft" href="mailto:{{ p.usuario.email }}" data-bs-toggle="tooltip" title="Enviar email">
+                          <i class="bi bi-envelope"></i>
+                        </a>
+                      {% endif %}
+                      <a href="{{ URL_ELIMINAR_PERFIL }}" class="btn btn-outline-danger"
+                         onclick="return confirm('¿Eliminar este perfil?');" data-bs-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-secondary py-5">
+                    <div class="mb-2"><i class="bi bi-inbox fs-2"></i></div>
+                    No hay perfiles para mostrar.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endwith %}
+
+  {% elif object_list %}
+    {% with dataset=object_list %}
+      <div class="card-soft p-3">
+        <div class="table-responsive">
+          <table class="table table-modern align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="min-width:260px;">Usuario</th>
+                <th style="min-width:220px;">Nombre</th>
+                <th style="min-width:150px;">RUT</th>
+                <th style="min-width:230px;">Teléfono</th>
+                <th class="text-end" style="min-width:230px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in dataset %}
+                <tr data-has-phone="{% if p.telefono %}1{% else %}0{% endif %}">
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      {% if forloop.counter0|divisibleby:4 %}
+                        <span class="avatar avatar-blue">
+                      {% elif forloop.counter0|divisibleby:3 %}
+                        <span class="avatar avatar-green">
+                      {% elif forloop.counter0|divisibleby:2 %}
+                        <span class="avatar avatar-amber">
+                      {% else %}
+                        <span class="avatar avatar-purple">
+                      {% endif %}
+                        {% if p.usuario %}{{ p.usuario.username|slice:":1"|upper }}
+                        {% elif p.nombre %}{{ p.nombre|slice:":1"|upper }}
+                        {% else %}?{% endif %}
+                      </span>
+                      <div>
+                        <div class="fw-semibold">
+                          {% if p.usuario %}{{ p.usuario.username }}{% else %}<span class="text-secondary">—</span>{% endif %}
+                        </div>
+                        <div class="small text-secondary">
+                          {% if p.usuario and p.usuario.email %}{{ p.usuario.email }}{% else %}—{% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>{{ p.nombre|default:"—" }}</td>
+                  <td>{{ p.rut|default:"—" }}</td>
+
+                  <td>
+                    {% if p.telefono %}
+                      <span class="me-2">{{ p.telefono }}</span>
+                      <button class="btn btn-sm btn-light-soft js-copy" type="button" data-copy="{{ p.telefono }}" data-bs-toggle="tooltip" title="Copiar">
+                        <i class="bi bi-clipboard"></i>
+                      </button>
+                      <a class="btn btn-sm btn-light-soft" href="tel:{{ p.telefono }}" data-bs-toggle="tooltip" title="Llamar">
+                        <i class="bi bi-telephone-outbound"></i>
+                      </a>
+                    {% else %}
+                      <span class="text-secondary">—</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    {% url 'administrador:perfil_editar' p.id as URL_EDITAR_PERFIL %}
+                    {% url 'administrador:perfil_eliminar' p.id as URL_ELIMINAR_PERFIL %}
+                    {% url 'administrador:reservas_list' as URL_RESERVAS %}
+                    {% if p.usuario %}{% url 'administrador:usuario_editar' p.usuario.id as URL_EDITAR_USUARIO %}{% endif %}
+
+                    <div class="btn-group btn-group-sm">
+                      <a href="{{ URL_EDITAR_PERFIL }}" class="btn btn-light-soft" data-bs-toggle="tooltip" title="Editar perfil">
+                        <i class="bi bi-person-gear"></i>
+                      </a>
+                      {% if p.usuario %}
+                        <a href="{{ URL_EDITAR_USUARIO }}" class="btn btn-light-soft" data-bs-toggle="tooltip" title="Editar usuario">
+                          <i class="bi bi-person-lines-fill"></i>
+                        </a>
+                      {% endif %}
+                      <a href="{{ URL_RESERVAS }}" class="btn btn-light-soft" data-bs-toggle="tooltip" title="Ver reservas">
+                        <i class="bi bi-journal-text"></i>
+                      </a>
+                      {% if p.usuario and p.usuario.email %}
+                        <a class="btn btn-light-soft" href="mailto:{{ p.usuario.email }}" data-bs-toggle="tooltip" title="Enviar email">
+                          <i class="bi bi-envelope"></i>
+                        </a>
+                      {% endif %}
+                      <a href="{{ URL_ELIMINAR_PERFIL }}" class="btn btn-outline-danger"
+                         onclick="return confirm('¿Eliminar este perfil?');" data-bs-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-secondary py-5">
+                    <div class="mb-2"><i class="bi bi-inbox fs-2"></i></div>
+                    No hay perfiles para mostrar.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endwith %}
+
+  {% else %}
+    <div class="card-soft p-4 text-center text-secondary">
+      <div class="mb-2"><i class="bi bi-inbox fs-2"></i></div>
+      No hay perfiles para mostrar.
+    </div>
+  {% endif %}
+
+</section>
+
+<script>
+  (function(){
+    // Tooltips
+    var tt=[].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tt.forEach(function(el){ new bootstrap.Tooltip(el); });
+
+    // Copiar teléfonos
+    document.querySelectorAll('.js-copy').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var val=btn.getAttribute('data-copy')||'';
+        if(!val) return;
+        navigator.clipboard.writeText(val).then(function(){
+          var tip=bootstrap.Tooltip.getInstance(btn);
+          if(tip){ tip.setContent({'.tooltip-inner':'Copiado!'}); tip.show(); }
+          setTimeout(function(){
+            if(tip){ tip.hide(); tip.setContent({'.tooltip-inner':'Copiar'}); }
+          },900);
+        });
+      });
+    });
+
+    // Métricas con el DOM (sin filtros de plantilla)
+    var rows=document.querySelectorAll('tbody tr[data-has-phone]');
+    if(rows.length){
+      var total=rows.length, con=0, sin=0;
+      rows.forEach(function(r){ (r.getAttribute('data-has-phone')==='1')?con++:sin++; });
+      var box=document.getElementById('metrics-row');
+      if(box){ box.hidden=false; }
+      var t=document.getElementById('mTotal'), c=document.getElementById('mConTel'), s=document.getElementById('mSinTel');
+      if(t) t.textContent=total;
+      if(c) c.textContent=con;
+      if(s) s.textContent=sin;
+    }
+  })();
+</script>
 {% endblock %}

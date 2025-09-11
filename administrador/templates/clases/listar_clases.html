@@ -1,43 +1,157 @@
 {% extends 'administrador/base_admin.html' %}
 {% load static %}
 
+{% block encabezado %}Clases de Pilates{% endblock %}
+
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center;">
-    <h2 class="title">Listado de Clases de Pilates</h2>
-    <a href="{% url 'administrador:crear_clase' %}"="btn btn-success">Crear nueva clase</a>
+{% url 'administrador:crear_clase' as url_crear %}
+
+<!-- ====== PALETA / UTILIDADES (sin texto de debug) ====== -->
+<style>
+  .theme-blue  { --ring:#3b82f6; --shade:rgba(59,130,246,.12); }
+  .theme-amber { --ring:#f59e0b; --shade:rgba(245,158,11,.12); }
+  .theme-green { --ring:#22c55e; --shade:rgba(34,197,94,.10); }
+  .theme-purple{ --ring:#a78bfa; --shade:rgba(167,139,250,.10); }
+  .theme-cyan  { --ring:#06b6d4; --shade:rgba(6,182,212,.10); }
+
+  .class-card   { border:2px solid var(--ring); box-shadow:0 18px 40px rgba(2,6,23,.06);
+                  border-radius:1rem; background:#fff; display:flex; flex-direction:column; }
+  .class-franja { height:10px; background:var(--ring); border-top-left-radius:1rem; border-top-right-radius:1rem; }
+  .class-avatar { width:42px; height:42px; background:var(--ring); border:3px solid #fff; color:#fff; }
+  .class-body   { background:linear-gradient(180deg, var(--shade) 0%, rgba(255,255,255,.65) 55%, #fff 100%);
+                  /* Altura uniforme para evitar huecos entre filas */
+                  min-height:200px; }
+  .cap-badge    { background:var(--ring); color:#fff; }
+</style>
+
+<!-- ===== HERO ===== -->
+<section class="rounded-4 shadow p-4 p-md-5 mb-4 text-white"
+         style="background: linear-gradient(90deg,#4f46e5 0%, #2563eb 40%, #0ea5e9 100%);">
+  <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
+    <div>
+      <span class="badge text-bg-light text-primary fw-semibold mb-2">
+        <i class="bi bi-easel2 me-1"></i> Gestión de clases
+      </span>
+      <h1 class="h3 fw-bold mb-1">Listado de Clases de Pilates</h1>
+      <p class="mb-0 opacity-75">
+        Administra el calendario, capacidad e instructores.
+        <span class="d-inline-flex align-items-center ms-2">
+          <i class="bi bi-collection me-1"></i> Total: <strong class="ms-1">{{ clases|length }}</strong>
+        </span>
+      </p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_crear|default:'#' }}" class="btn btn-light text-primary fw-semibold {% if not url_crear %}disabled{% endif %}">
+        <i class="bi bi-plus-lg me-1"></i> Crear clase
+      </a>
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="bi bi-download me-1"></i> Exportar
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>CSV</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xls me-2"></i>Excel</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>PDF</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUSCADOR ===== -->
+<div class="rounded-4 shadow-sm p-3 p-md-4 bg-white mb-3">
+  <div class="row g-2 align-items-center">
+    <div class="col-12 col-lg-8">
+      <form method="get" class="input-group">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="search" name="q" value="{{ request.GET.q }}" class="form-control"
+               placeholder="Buscar por nombre de clase, instructor o descripción…">
+        <button class="btn btn-primary" type="submit">Buscar</button>
+      </form>
+    </div>
+    <div class="col-12 col-lg-4 d-flex justify-content-lg-end gap-2">
+      <a href="#" class="btn btn-outline-secondary"><i class="bi bi-calendar3 me-1"></i> Vista calendario</a>
+      <a href="." class="btn btn-outline-secondary"><i class="bi bi-arrow-clockwise me-1"></i> Limpiar</a>
+    </div>
+  </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Fecha</th>
-            <th>Horario</th>
-            <th>Instructor</th>
-            <th>Capacidad</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for clase in clases %}
-        <tr>
-            <td>{{ clase.nombre_clase }}</td>
-            <td>{{ clase.fecha }}</td>
-            <td>{{ clase.horario }}</td>
-            <td>{{ clase.nombre_instructor }}</td>
-            <td>{{ clase.capacidad_maxima }}</td>
-            <td>{{ clase.descripcion }}</td>
-            <td>
-                <a href="{% url 'administrador:modificar_clase' clase.id %}" class="btn btn-warning btn-sm">Modificar</a>
-                <a href="{% url 'administrador:eliminar_clase' clase.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta clase?')">Eliminar</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7">No hay clases registradas.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!-- ===== TARJETAS ORDENADAS (sin residuos) ===== -->
+{% if clases %}
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-3 g-md-4">
+    {% for clase in clases %}
+      {# asigna tema sin imprimir nada en el DOM #}
+      {% cycle 'theme-blue' 'theme-amber' 'theme-green' 'theme-purple' 'theme-cyan' as theme silent %}
+      {% url 'administrador:modificar_clase' clase.id as url_editar %}
+      {% url 'administrador:eliminar_clase'  clase.id as url_eliminar %}
+
+      <div class="col">
+        <div class="class-card {{ theme }} h-100">
+          <div class="class-franja w-100"></div>
+
+          <div class="position-absolute top-0 start-0 m-3 d-flex align-items-center gap-2">
+            <span class="rounded-circle d-inline-flex align-items-center justify-content-center fw-semibold class-avatar">
+              {{ clase.nombre_instructor|slice:":1"|default:"?" }}
+            </span>
+          </div>
+
+          <div class="position-absolute top-0 end-0 m-2 btn-group btn-group-sm">
+            <a class="btn btn-outline-primary {% if not url_editar %}disabled{% endif %}"
+               href="{{ url_editar|default:'#' }}" title="Modificar"><i class="bi bi-pencil-square"></i></a>
+            <a class="btn btn-outline-danger {% if not url_eliminar %}disabled{% endif %}"
+               href="{{ url_eliminar|default:'#' }}" title="Eliminar"
+               {% if url_eliminar %}onclick="return confirm('¿Seguro que deseas eliminar esta clase?')" {% endif %}>
+               <i class="bi bi-trash3"></i></a>
+          </div>
+
+          <div class="p-3 class-body">
+            <div class="small text-secondary mb-1">Clase</div>
+            <h3 class="fs-6 fw-semibold mb-2 text-wrap" style="color:#0f172a;">
+              {{ clase.nombre_clase|default:"Clase de Pilates" }}
+            </h3>
+
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              {% if clase.fecha %}
+                <span class="badge rounded-pill text-bg-light border">
+                  <i class="bi bi-calendar-event me-1"></i>{{ clase.fecha }}
+                </span>
+              {% endif %}
+              {% if clase.horario %}
+                <span class="badge rounded-pill text-bg-light border">
+                  <i class="bi bi-alarm me-1"></i>{{ clase.horario }}
+                </span>
+              {% endif %}
+            </div>
+
+            {% if clase.nombre_instructor %}
+              <div class="mb-2">
+                <span class="badge rounded-pill cap-badge">
+                  <i class="bi bi-person-badge me-1"></i>{{ clase.nombre_instructor }}
+                </span>
+              </div>
+            {% endif %}
+
+            <div class="small text-secondary mb-1"
+                 style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+              {% if clase.descripcion %}{{ clase.descripcion }}{% else %}—{% endif %}
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center px-3 pb-3">
+            {% if clase.capacidad_maxima %}
+              <span class="badge rounded-pill cap-badge">Cap {{ clase.capacidad_maxima }}</span>
+            {% endif %}
+            <span class="badge rounded-pill text-bg-light border">ID {{ clase.id }}</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-light border d-flex align-items-center">
+    <i class="bi bi-inboxes me-2"></i> No hay clases registradas.
+  </div>
+{% endif %}
 {% endblock %}
+

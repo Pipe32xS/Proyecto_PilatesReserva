@@ -1,94 +1,176 @@
 {% extends "administrador/base_admin.html" %}
+{% block titulo %}Contactos | CRM{% endblock %}
 {% block encabezado %}Contactos{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <form class="d-flex gap-2" method="get">
-    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Buscar por nombre, email, fono o mensaje…">
-    <select name="estado" class="form-select" style="max-width:220px">
-      {% for e in estados %}
-        <option value="{{ e }}" {% if estado == e %}selected{% endif %}>
-          {{ e|title }}
-        </option>
-      {% endfor %}
-    </select>
-    <button class="btn btn-primary">Buscar</button>
-  </form>
+<style>
+  /* ====== Estética “pro” coherente con el resto del panel ====== */
+  .hero-grad{
+    background: linear-gradient(135deg,#2563eb 0%,#22c55e 100%);
+    color:#fff;border-radius:18px;
+    box-shadow:0 14px 36px rgba(2,6,23,.18);
+  }
+  .chip{
+    display:inline-flex;align-items:center;gap:.45rem;
+    border:1px solid transparent;border-radius:999px;
+    font-weight:700;font-size:.75rem;padding:.38rem .7rem;
+    background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3);
+  }
+  .chip .dot{width:.5rem;height:.5rem;border-radius:50%;background:#fff;opacity:.9}
+
+  .card-lite{background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 10px 24px rgba(2,6,23,.08)}
+  .muted{color:#64748b}
+  .btn-soft{background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:.55rem .85rem;font-weight:600}
+  .btn-primary{background:#2563eb;border:1px solid #1d4ed8}
+  .btn-outline-reset{border-color:#cbd5e1;color:#334155}
+  .btn-outline-reset:hover{background:#f8fafc}
+
+  .table thead th{background:#f8fafc;color:#334155;font-weight:700}
+  .table tbody td{vertical-align:middle}
+  .table-hover>tbody>tr:hover{--bs-table-accent-bg:#f8fafc}
+  .form-select,.form-control{border-radius:10px}
+
+  .badge-rounded{border-radius:999px;padding:.42rem .65rem;font-weight:700}
+  .state-ok{background:#ecfdf5;color:#16a34a;border:1px solid #bbf7d0}
+  .state-mid{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+  .state-warn{background:#fff7ed;color:#d97706;border:1px solid #fed7aa}
+</style>
+
+{# =================== HERO =================== #}
+<div class="hero-grad p-4 p-md-5 mb-4">
+  <div class="d-flex flex-column flex-xl-row align-items-xl-end justify-content-between gap-3">
+    <div>
+      <span class="chip"><span class="dot"></span> CRM Usuarios</span>
+      <h3 class="mt-2 mb-1 fw-bold">Contactos</h3>
+      <p class="mb-0" style="opacity:.95">Centraliza y gestiona las consultas de tu comunidad.</p>
+    </div>
+
+    {# ========= Filtros ========= #}
+    <form class="d-flex flex-column flex-md-row align-items-stretch gap-2" method="get">
+      <div class="input-group">
+        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="Buscar por nombre, email, teléfono o mensaje…">
+      </div>
+      <div class="d-flex gap-2">
+        <select name="estado" class="form-select" style="min-width:200px">
+          {% for e in estados %}
+            <option value="{{ e }}" {% if estado == e %}selected{% endif %}>{{ e|title }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-primary"><i class="bi bi-filter me-1"></i> Buscar</button>
+        <a href="." class="btn btn-outline-reset"><i class="bi bi-x-circle me-1"></i> Limpiar</a>
+      </div>
+    </form>
+  </div>
 </div>
 
-<div class="table-responsive">
-  <table class="table table-sm align-middle">
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th>Estado</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for c in page_obj %}
+{# =================== TABLA =================== #}
+<div class="card-lite p-3">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle mb-0">
+      <thead>
         <tr>
-          <td>{{ c.fecha_envio|date:"Y-m-d H:i" }}</td>
-          <td>{{ c.nombre }}</td>
-          <td>{{ c.correo }}</td>  
-          <td>{{ c.telefono }}</td>
-          <td>
-            <span class="badge
-              {% if c.estado_mensaje == 'pendiente' %} text-bg-warning
-              {% elif c.estado_mensaje == 'revisado' %} text-bg-secondary
-              {% elif c.estado_mensaje == 'respondido' %} text-bg-success
-              {% else %} text-bg-light
-              {% endif %}">
-              {{ c.estado_mensaje|title }}
-            </span>
-          </td>
-          <td class="text-end">
-            <a href="{% url 'administrador:modificar_contacto' c.id %}" class="btn btn-sm btn-outline-primary">
-              Ver / editar
-            </a>
-          </td>
+          <th style="width: 170px;">Fecha</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th style="width: 160px;">Teléfono</th>
+          <th style="width: 150px;">Estado</th>
+          <th style="width: 140px;" class="text-end">Acciones</th>
         </tr>
-      {% empty %}
-        <tr>
-          <td colspan="6" class="text-center text-muted py-4">
-            No hay contactos que coincidan.
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for c in page_obj %}
+          <tr>
+            {# Solo fecha para evitar errores si el campo es date (sin hora) #}
+            <td>{% if c.fecha_envio %}{{ c.fecha_envio|date:"Y-m-d" }}{% else %}<span class="muted">—</span>{% endif %}</td>
+
+            <td class="fw-semibold">{{ c.nombre }}</td>
+
+            <td>
+              {% if c.correo %}
+                <a href="mailto:{{ c.correo }}">{{ c.correo }}</a>
+              {% else %}
+                <span class="muted">—</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if c.telefono %}
+                <a href="tel:{{ c.telefono }}">{{ c.telefono }}</a>
+              {% else %}
+                <span class="muted">—</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if c.estado_mensaje %}
+                {% with s=c.estado_mensaje|lower %}
+                  {% if s == 'respondido' %}
+                    <span class="badge-rounded state-ok"><i class="bi bi-check2-circle me-1"></i>Respondido</span>
+                  {% elif s == 'revisado' %}
+                    <span class="badge-rounded state-mid"><i class="bi bi-eye me-1"></i>Revisado</span>
+                  {% elif s == 'pendiente' %}
+                    <span class="badge-rounded state-warn"><i class="bi bi-exclamation-circle me-1"></i>Pendiente</span>
+                  {% else %}
+                    <span class="badge-rounded state-mid">{{ c.estado_mensaje|title }}</span>
+                  {% endif %}
+                {% endwith %}
+              {% else %}
+                <span class="badge-rounded state-mid">—</span>
+              {% endif %}
+            </td>
+
+            <td class="text-end">
+              <a href="{% url 'administrador:modificar_contacto' c.id %}"
+                 class="btn btn-soft btn-sm">
+                <i class="bi bi-eye"></i> Ver / editar
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 muted">No hay contactos que coincidan.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# =================== PAGINACIÓN =================== #}
+  {% if paginator.num_pages > 1 %}
+  <div class="d-flex justify-content-between align-items-center px-2 py-3">
+    <small class="muted">
+      Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}
+    </small>
+    <nav>
+      <ul class="pagination mb-0">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ q }}&estado={{ estado }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        {% endif %}
+
+        {% for p in paginator.page_range %}
+          {% if p >= page_obj.number|add:"-2" and p <= page_obj.number|add:"2" %}
+            <li class="page-item {% if p == page_obj.number %}active{% endif %}">
+              <a class="page-link" href="?q={{ q }}&estado={{ estado }}&page={{ p }}">{{ p }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ q }}&estado={{ estado }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
 </div>
-
-{% if paginator.num_pages > 1 %}
-<nav class="mt-3">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item">
-        <a class="page-link" href="?q={{ q }}&estado={{ estado }}&page={{ page_obj.previous_page_number }}">Anterior</a>
-      </li>
-    {% else %}
-      <li class="page-item disabled"><span class="page-link">Anterior</span></li>
-    {% endif %}
-
-    {% for p in paginator.page_range %}
-      {% if p >= page_obj.number|add:"-2" and p <= page_obj.number|add:"2" %}
-        <li class="page-item {% if p == page_obj.number %}active{% endif %}">
-          <a class="page-link" href="?q={{ q }}&estado={{ estado }}&page={{ p }}">{{ p }}</a>
-        </li>
-      {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-      <li class="page-item">
-        <a class="page-link" href="?q={{ q }}&estado={{ estado }}&page={{ page_obj.next_page_number }}">Siguiente</a>
-      </li>
-    {% else %}
-      <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
 {% endblock %}

@@ -2,141 +2,765 @@
 {% block encabezado %}Bienvenido Administrador{% endblock %}
 
 {% block content %}
-<!-- HERO -->
-<section class="p-4 p-md-5 rounded-4 mb-4"
-         style="background: linear-gradient(0deg, rgba(13,110,253,.035), rgba(13,110,253,.035));
-                border:1px solid rgba(13,110,253,.08);">
-  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-    <div>
-      <h1 class="h3 fw-bold mb-1">Dashboard</h1>
-      <p class="text-secondary mb-0">
-        Hola, <span class="fw-semibold">{{ request.user.first_name|default:request.user.username }}</span>.
-        Aquí tienes un resumen rápido del día.
-      </p>
-    </div>
-    <div class="d-flex gap-2">
-      <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-outline-primary">Ir a Contactos</a>
-      <a href="{% url 'administrador:reservas_list' %}" class="btn btn-primary">Ir a Reservas</a>
-    </div>
-  </div>
-</section>
+<div class="container-fluid p-0">
 
-<!-- KPIs -->
-<div class="row g-3 mb-4">
-  <div class="col-6 col-lg-3">
-    <div class="kpi card border-0 shadow-sm h-100">
-      <div class="card-body">
-        <div class="text-secondary small mb-1">Contactos pendientes</div>
-        <div class="display-6 fw-bold">
-          {{ contactos_pendientes|default:"0" }}
-        </div>
-        <div class="small text-secondary">Mensajes por revisar</div>
+  <!-- ===== HERO ===== -->
+  <section class="p-4 p-md-5 bg-primary bg-gradient text-white rounded-4 shadow-sm mb-4">
+    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
+      <div>
+        <span class="badge text-bg-light text-primary fw-semibold mb-2">Panel de control</span>
+        <h1 class="h3 fw-bold mb-1">Dashboard</h1>
+        <p class="mb-0">
+          Hola, <span class="fw-semibold">{{ request.user.first_name|default:request.user.username }}</span>.
+          ¡Que sea un gran día en <span class="fw-semibold">PilatesReserva</span>!
+        </p>
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-outline-light">
+          <i class="bi bi-people me-1"></i> Contactos
+        </a>
+        <a href="{% url 'administrador:reservas_list' %}" class="btn btn-light text-primary fw-semibold">
+          <i class="bi bi-calendar-check me-1"></i> Reservas
+        </a>
+        <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#accionesPanel">
+          <i class="bi bi-lightning-charge me-1"></i> Acciones
+        </button>
       </div>
     </div>
-  </div>
-  <div class="col-6 col-lg-3">
-    <div class="kpi card border-0 shadow-sm h-100">
-      <div class="card-body">
-        <div class="text-secondary small mb-1">Reservas hoy</div>
-        <div class="display-6 fw-bold">
-          {{ reservas_hoy|default:"0" }}
-        </div>
-        <div class="small text-secondary">Clases del día</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-lg-3">
-    <div class="kpi card border-0 shadow-sm h-100">
-      <div class="card-body">
-        <div class="text-secondary small mb-1">Clases esta semana</div>
-        <div class="display-6 fw-bold">
-          {{ clases_semana|default:"0" }}
-        </div>
-        <div class="small text-secondary">Programadas</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-lg-3">
-    <div class="kpi card border-0 shadow-sm h-100">
-      <div class="card-body">
-        <div class="text-secondary small mb-1">Usuarios activos</div>
-        <div class="display-6 fw-bold">
-          {{ usuarios_activos|default:"0" }}
-        </div>
-        <div class="small text-secondary">Con acceso</div>
-      </div>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- DOS COLUMNAS: próximas clases / últimos contactos -->
-<div class="row g-4">
-  <div class="col-12 col-lg-7">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h2 class="h6 m-0">Próximas clases</h2>
-          <a class="small text-decoration-none" href="{% url 'administrador:listar_clases' %}">Ver todas</a>
-        </div>
+  <!-- ===== KPIs (arriba de todo) ===== -->
+  <div class="row g-3 mb-4 row-cols-1 row-cols-md-2 row-cols-xl-6">
 
-        {% if proximas_clases %}
-          <ul class="list-group list-group-flush">
-            {% for c in proximas_clases %}
-              <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                <div class="me-3">
-                  <div class="fw-semibold">{{ c.nombre_clase }}</div>
-                  <div class="text-secondary small">
-                    {{ c.fecha }} · {{ c.horario }}{% if c.nombre_instructor %} · {{ c.nombre_instructor }}{% endif %}
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm bg-primary-subtle text-primary-emphasis">
+        <div class="card-body d-flex justify-content-between align-items-start">
+          <div>
+            <div class="small opacity-75">Contactos</div>
+            <div class="display-6 fw-bold">{{ contactos_pendientes|default:"0" }}</div>
+            <span class="badge rounded-pill text-bg-light border">Pendientes</span>
+          </div>
+          <i class="bi bi-inbox fs-1 opacity-75"></i>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'administrador:listar_contactos' %}">Ver CRM</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm bg-info-subtle text-info-emphasis">
+        <div class="card-body d-flex justify-content-between align-items-start">
+          <div>
+            <div class="small opacity-75">Reservas hoy</div>
+            <div class="display-6 fw-bold">{{ reservas_hoy|default:"0" }}</div>
+            <span class="badge rounded-pill text-bg-light border">Del día</span>
+          </div>
+          <i class="bi bi-clock-history fs-1 opacity-75"></i>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a class="btn btn-sm btn-outline-info" href="{% url 'administrador:reservas_list' %}">Ver reservas</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm bg-success-subtle text-success-emphasis">
+        <div class="card-body d-flex justify-content-between align-items-start">
+          <div>
+            <div class="small opacity-75">Clases semana</div>
+            <div class="display-6 fw-bold">{{ clases_semana|default:"0" }}</div>
+            <span class="badge rounded-pill text-bg-light border">Programadas</span>
+          </div>
+          <i class="bi bi-calendar-week fs-1 opacity-75"></i>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a class="btn btn-sm btn-outline-success" href="{% url 'administrador:listar_clases' %}">Ver calendario</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm bg-warning-subtle text-warning-emphasis">
+        <div class="card-body d-flex justify-content-between align-items-start">
+          <div>
+            <div class="small opacity-75">Usuarios activos</div>
+            <div class="display-6 fw-bold">{{ usuarios_activos|default:"0" }}</div>
+            <span class="badge rounded-pill text-bg-light border">Con acceso</span>
+          </div>
+          <i class="bi bi-people fs-1 opacity-75"></i>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+          <a class="btn btn-sm btn-outline-warning" href="{% url 'administrador:usuarios_list' %}">Administrar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <div class="small text-secondary">Ocupación del día</div>
+          <div class="progress">
+            <div class="progress-bar bg-primary" style="width:75%">75%</div>
+          </div>
+          <div class="d-flex justify-content-between small mt-1 text-secondary">
+            <span>Libre</span><span>Completo</span>
+          </div>
+        </div>
+        <div class="card-footer bg-body-tertiary border-0">
+          <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tab" data-bs-target="#tab-resumen">Ver resumen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <div class="small text-secondary">Satisfacción (NPS)</div>
+          <div class="progress">
+            <div class="progress-bar bg-success" style="width:85%">85</div>
+          </div>
+          <div class="d-flex justify-content-between small mt-1 text-secondary">
+            <span>0</span><span>100</span>
+          </div>
+        </div>
+        <div class="card-footer bg-body-tertiary border-0">
+          <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#enviarAnuncioModal">
+            <i class="bi bi-megaphone me-1"></i> Anuncio
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== CRM PRIORITARIO (debajo de KPIs) ===== -->
+  {% if ultimos_contactos %}
+  <div class="card border-0 shadow-sm rounded-4 mb-3">
+    <div class="card-header bg-body-tertiary border-0 rounded-top-4 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-inbox text-primary"></i>
+        <span class="fw-semibold">Bandeja CRM</span>
+        <span class="badge text-bg-primary">{{ contactos_pendientes|default:"0" }} pendientes</span>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'administrador:listar_contactos' %}">Abrir CRM</a>
+        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#crmTopExpand">Expandir</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="list-group list-group-flush">
+        {% for con in ultimos_contactos|slice:":3" %}
+        <li class="list-group-item px-0 d-flex align-items-start justify-content-between">
+          <div class="me-3">
+            <div class="fw-semibold">{{ con.nombre|default:"Contacto" }}</div>
+            <div class="small text-secondary">
+              {% if con.correo %}{{ con.correo }}{% endif %}{% if con.telefono %} · {{ con.telefono }}{% endif %}
+            </div>
+            {% if con.mensaje %}<div class="small mt-1 text-secondary">{{ con.mensaje }}</div>{% endif %}
+          </div>
+          <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-reply"></i>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <div class="collapse mt-3" id="crmTopExpand">
+        <div class="alert alert-light border mb-0">
+          <i class="bi bi-info-circle me-2"></i> Estás viendo un resumen. Abre el CRM para gestionar todos los mensajes.
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ===== BARRA BÚSQUEDA + CTAs ===== -->
+  <div class="card border-0 shadow-sm rounded-4 mb-3">
+    <div class="card-body">
+      <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-7">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="search" class="form-control" placeholder="Buscar clase, instructor o usuario…">
+            <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Filtros</button>
+            <ul class="dropdown-menu">
+              <li class="dropdown-header">Filtrar por</li>
+              <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvanzados">Avanzado…</button></li>
+              <li><a class="dropdown-item">Fecha</a></li>
+              <li><a class="dropdown-item">Instructor</a></li>
+              <li><a class="dropdown-item">Capacidad</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-5 text-md-end">
+          <div class="btn-group" role="group">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaClaseModal"><i class="bi bi-plus-lg me-1"></i> Clase</button>
+            <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#nuevaReservaModal"><i class="bi bi-check2-square me-1"></i> Reserva</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#invitarUsuarioModal"><i class="bi bi-person-plus me-1"></i> Usuario</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse mt-3" id="filtrosAvanzados">
+        <div class="row g-2">
+          <div class="col-12 col-md-3">
+            <select class="form-select">
+              <option selected>Tipo de clase</option>
+              <option>Reformer</option>
+              <option>Mat</option>
+              <option>Grupal</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-3">
+            <select class="form-select">
+              <option selected>Estado</option>
+              <option>Disponible</option>
+              <option>Completa</option>
+              <option>Cancelada</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-3">
+            <input type="date" class="form-control">
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="btn-group w-100">
+              <button class="btn btn-primary"><i class="bi bi-funnel me-1"></i> Aplicar</button>
+              <button class="btn btn-outline-secondary"><i class="bi bi-arrow-clockwise me-1"></i> Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NAV PILLS ===== -->
+  <ul class="nav nav-pills gap-2 mb-3">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-agenda"><i class="bi bi-calendar3 me-1"></i> Agenda</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-hoy"><i class="bi bi-sun me-1"></i> Hoy</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-crm"><i class="bi bi-chat-left-dots me-1"></i> CRM</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-resumen"><i class="bi bi-graph-up-arrow me-1"></i> Resumen</button></li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- ===== TAB: AGENDA ===== -->
+    <div class="tab-pane fade show active" id="tab-agenda">
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+          {% if proximas_clases %}
+          <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="w-25">Clase</th>
+                  <th>Fecha y hora</th>
+                  <th>Instructor</th>
+                  <th>Capacidad</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in proximas_clases %}
+                <tr>
+                  <td class="fw-semibold"><i class="bi bi-calendar-event text-primary me-1"></i>{{ c.nombre_clase|default:"Clase de Pilates" }}</td>
+                  <td class="text-secondary">{{ c.fecha|default:"—" }}{% if c.horario %} · {{ c.horario }}{% endif %}</td>
+                  <td class="text-secondary">{{ c.nombre_instructor|default:"—" }}</td>
+                  <td>
+                    {% if c.capacidad_maxima %}
+                    <span class="badge rounded-pill text-bg-light border">Cap {{ c.capacidad_maxima }}</span>
+                    {% else %}—{% endif %}
+                  </td>
+                  <td class="text-end">
+                    <div class="btn-group btn-group-sm">
+                      <a class="btn btn-outline-primary" href="{% url 'administrador:listar_clases' %}">
+                        <i class="bi bi-box-arrow-up-right"></i> Abrir
+                      </a>
+                      <button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                        <span class="visually-hidden">Más</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'administrador:listar_clases' %}"><i class="bi bi-pencil me-2"></i> Editar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'administrador:listar_clases' %}"><i class="bi bi-copy me-2"></i> Duplicar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'administrador:listar_clases' %}"><i class="bi bi-x-circle me-2"></i> Cancelar</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="alert alert-light border mb-0 d-flex align-items-center">
+            <i class="bi bi-info-circle me-2"></i> No hay clases próximas registradas.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ====== NUEVAS SECCIONES DEBAJO ====== -->
+      <section class="mt-3">
+        <div class="row g-3">
+
+          <!-- Columna izquierda (ancha) -->
+          <div class="col-12 col-xl-8">
+            <div class="row g-3">
+
+              <!-- HISTORIAL CRM (detalle largo) -->
+              <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                  <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-chat-left-text me-2 text-primary"></i> Actividad reciente (CRM)</span>
+                    <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-sm btn-outline-secondary">Abrir CRM</a>
+                  </div>
+                  <div class="card-body">
+                    {% if ultimos_contactos %}
+                      <ul class="list-group list-group-flush">
+                        {% for con in ultimos_contactos %}
+                        <li class="list-group-item px-0 d-flex align-items-start justify-content-between">
+                          <div class="me-3">
+                            <div class="fw-semibold">{{ con.nombre|default:"Contacto" }}</div>
+                            <div class="small text-secondary">
+                              {{ con.correo|default:"" }}{% if con.telefono %} · {{ con.telefono }}{% endif %}
+                            </div>
+                            {% if con.mensaje %}<div class="small mt-1 text-secondary">{{ con.mensaje }}</div>{% endif %}
+                          </div>
+                          <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-reply"></i>
+                          </a>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <div class="alert alert-light border d-flex align-items-center mb-0">
+                        <i class="bi bi-inbox me-2"></i> Sin actividad reciente.
+                      </div>
+                    {% endif %}
                   </div>
                 </div>
-                {% if c.capacidad_maxima %}
-                  <span class="badge text-bg-light border">
-                    Cap: {{ c.capacidad_maxima }}
-                  </span>
-                {% endif %}
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="text-secondary small">No hay clases próximas registradas.</div>
-        {% endif %}
-      </div>
-    </div>
-  </div>
+              </div>
 
-  <div class="col-12 col-lg-5">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h2 class="h6 m-0">Últimos contactos</h2>
-          <a class="small text-decoration-none" href="{% url 'administrador:listar_contactos' %}">Abrir CRM</a>
+              <!-- Resumen semanal -->
+              <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold">
+                    <i class="bi bi-graph-up-arrow me-2 text-success"></i> Resumen semanal
+                  </div>
+                  <div class="card-body">
+                    <div class="row g-3">
+                      <div class="col-12 col-md-6">
+                        <div class="small text-secondary mb-1">Clases programadas</div>
+                        <div class="progress mb-2">
+                          <div class="progress-bar bg-success" style="width:75%">{{ clases_semana|default:"0" }}</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                          <span class="badge text-bg-light border">Semana</span>
+                          <span class="badge text-bg-success">OK</span>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <div class="small text-secondary mb-1">Reservas de hoy</div>
+                        <div class="progress mb-2">
+                          <div class="progress-bar bg-info" style="width:25%">{{ reservas_hoy|default:"0" }}</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                          <span class="badge text-bg-light border">Hoy</span>
+                          <span class="badge text-bg-info">Activas</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div> <!-- /row interior -->
+          </div>
+
+          <!-- Columna derecha (estrecha) -->
+          <div class="col-12 col-xl-4">
+
+            <!-- Top instructores -->
+            <div class="card border-0 shadow-sm rounded-4 mb-3">
+              <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold">
+                <i class="bi bi-trophy me-2 text-warning"></i> Top instructores
+              </div>
+              <div class="card-body">
+                {% if proximas_clases %}
+                  <ul class="list-group list-group-flush">
+                    {% for c in proximas_clases|slice:":5" %}
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="btn btn-outline-secondary btn-sm rounded-circle" disabled>
+                          <i class="bi bi-person"></i>
+                        </span>
+                        <span class="text-truncate">{{ c.nombre_instructor|default:"—" }}</span>
+                      </div>
+                      <span class="badge text-bg-light border">{{ c.nombre_clase|default:"Clase" }}</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <div class="text-secondary">Sin clases para evaluar.</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold">
+                <i class="bi bi-check2-square me-2 text-primary"></i> Checklist
+              </div>
+              <div class="card-body">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="t1">
+                  <label class="form-check-label" for="t1">Confirmar agenda de mañana</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="t2">
+                  <label class="form-check-label" for="t2">Responder mensajes pendientes</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="t3">
+                  <label class="form-check-label" for="t3">Revisar cupos de clases populares</label>
+                </div>
+                <div class="d-grid">
+                  <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#enviarAnuncioModal">
+                    <i class="bi bi-megaphone me-1"></i> Enviar aviso rápido
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+      <!-- ====== /NUEVAS SECCIONES ====== -->
+
+    </div>
+
+    <!-- ===== TAB: HOY ===== -->
+    <div class="tab-pane fade" id="tab-hoy">
+      <div class="row g-3">
+        <div class="col-12 col-xl-7">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-body-tertiary border-0 rounded-top-4 d-flex justify-content-between align-items-center">
+              <div class="fw-semibold"><i class="bi bi-sun me-2 text-primary"></i> Hoy</div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaClaseModal"><i class="bi bi-plus-lg me-1"></i> Nueva clase</button>
+                <a href="{% url 'administrador:listar_clases' %}" class="btn btn-sm btn-outline-secondary">Ver agenda</a>
+              </div>
+            </div>
+            <div class="card-body">
+              {% if proximas_clases %}
+              <div class="row row-cols-1 row-cols-md-2 g-3">
+                {% for c in proximas_clases|slice:":6" %}
+                <div class="col">
+                  <div class="card border rounded-4 h-100">
+                    <div class="card-body d-flex gap-3 align-items-start">
+                      <span class="btn btn-outline-primary rounded-circle p-3 d-inline-flex align-items-center justify-content-center" disabled>
+                        <i class="bi bi-calendar-event"></i>
+                      </span>
+                      <div class="flex-grow-1">
+                        <div class="fw-semibold">{{ c.nombre_clase|default:"Clase de Pilates" }}</div>
+                        <div class="text-secondary small">
+                          {{ c.fecha|default:"—" }}{% if c.horario %} · {{ c.horario }}{% endif %}{% if c.nombre_instructor %} · {{ c.nombre_instructor }}{% endif %}
+                        </div>
+                      </div>
+                      {% if c.capacidad_maxima %}
+                      <span class="badge rounded-pill text-bg-light border">Cap {{ c.capacidad_maxima }}</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="alert alert-light border d-flex align-items-center mb-0"><i class="bi bi-info-circle me-2"></i> No hay clases para hoy.</div>
+              {% endif %}
+            </div>
+          </div>
         </div>
 
-        {% if ultimos_contactos %}
-          <ul class="list-group list-group-flush">
+        <div class="col-12 col-xl-5">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-bell me-2 text-primary"></i> Recordatorios</span>
+              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="toast" data-bs-target="#toastOk">Marcar visto</button>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item px-0 d-flex align-items-center justify-content-between">
+                  <span><i class="bi bi-exclamation-circle text-warning me-2"></i> Revisa los contactos pendientes</span>
+                  <a class="btn btn-sm btn-outline-warning" href="{% url 'administrador:listar_contactos' %}">Ir</a>
+                </li>
+                <li class="list-group-item px-0 d-flex align-items-center justify-content-between">
+                  <span><i class="bi bi-calendar-event text-primary me-2"></i> Confirma horarios de mañana</span>
+                  <a class="btn btn-sm btn-outline-primary" href="{% url 'administrador:listar_clases' %}">Ver</a>
+                </li>
+                <li class="list-group-item px-0 d-flex align-items-center justify-content-between">
+                  <span><i class="bi bi-people text-success me-2"></i> Revisa altas de usuarios</span>
+                  <a class="btn btn-sm btn-outline-success" href="{% url 'administrador:usuarios_list' %}">Abrir</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Toasts container -->
+          <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="toastOk" class="toast align-items-center text-bg-success border-0">
+              <div class="d-flex">
+                <div class="toast-body">
+                  <i class="bi bi-check2-circle me-2"></i> ¡Listo! Recordatorios al día.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: CRM (acordeón) ===== -->
+    <div class="tab-pane fade" id="tab-crm">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-chat-left-text me-2 text-primary"></i> Últimos contactos</span>
+          <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-sm btn-outline-secondary">Abrir CRM</a>
+        </div>
+        <div class="card-body">
+          {% if ultimos_contactos %}
+          <div class="accordion accordion-flush" id="accContactos">
             {% for con in ultimos_contactos %}
-              <li class="list-group-item px-0">
-                <div class="fw-semibold">{{ con.nombre }}</div>
-                <div class="text-secondary small">
-                  {{ con.correo }}{% if con.telefono %} · {{ con.telefono }}{% endif %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="cHead{{ forloop.counter }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cBody{{ forloop.counter }}">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-person-circle text-primary"></i>
+                    <span class="fw-semibold">{{ con.nombre|default:"Contacto" }}</span>
+                    <small class="text-secondary">{% if con.correo %}{{ con.correo }}{% endif %}{% if con.telefono %} · {{ con.telefono }}{% endif %}</small>
+                  </div>
+                </button>
+              </h2>
+              <div id="cBody{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accContactos">
+                <div class="accordion-body">
+                  {% if con.mensaje %}<p class="mb-0">{{ con.mensaje }}</p>{% else %}<span class="text-secondary">Sin mensaje.</span>{% endif %}
                 </div>
-                <div class="small mt-1 text-truncate" style="-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
-                  {{ con.mensaje }}
-                </div>
-              </li>
+              </div>
+            </div>
             {% endfor %}
-          </ul>
-        {% else %}
-          <div class="text-secondary small">Aún no hay mensajes recientes.</div>
-        {% endif %}
+          </div>
+          {% else %}
+          <div class="alert alert-light border mb-0 d-flex align-items-center">
+            <i class="bi bi-inbox me-2"></i> Sin mensajes recientes.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: RESUMEN ===== -->
+    <div class="tab-pane fade" id="tab-resumen">
+      <div class="row g-3">
+        <div class="col-12 col-xl-4">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold">Indicadores</div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Contactos</span><span class="fw-semibold">{{ contactos_pendientes|default:"0" }}</span>
+              </div>
+              <div class="progress mb-3"><div class="progress-bar bg-primary" style="width:50%"></div></div>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span>Reservas hoy</span><span class="fw-semibold">{{ reservas_hoy|default:"0" }}</span>
+              </div>
+              <div class="progress mb-3"><div class="progress-bar bg-info" style="width:25%"></div></div>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span>Clases semana</span><span class="fw-semibold">{{ clases_semana|default:"0" }}</span>
+              </div>
+              <div class="progress"><div class="progress-bar bg-success" style="width:75%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold">Top instructores</div>
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-person-badge text-success me-2"></i> <span class="me-auto">Daniel</span>
+                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                  <div class="progress-bar bg-success" style="width:75%"></div>
+                </div>
+                <span class="small text-secondary">75%</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-person-badge text-primary me-2"></i> <span class="me-auto">AXEL</span>
+                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                  <div class="progress-bar bg-primary" style="width:60%"></div>
+                </div>
+                <span class="small text-secondary">60%</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="bi bi-person-badge text-info me-2"></i> <span class="me-auto">Felipe</span>
+                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                  <div class="progress-bar bg-info" style="width:45%"></div>
+                </div>
+                <span class="small text-secondary">45%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-body-tertiary border-0 rounded-top-4 fw-semibold">Actividad</div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item px-0"><i class="bi bi-check2-circle text-success me-2"></i> Se confirmó una reserva.</li>
+                <li class="list-group-item px-0"><i class="bi bi-envelope-open text-primary me-2"></i> Nuevo mensaje en CRM.</li>
+                <li class="list-group-item px-0"><i class="bi bi-person-plus-fill text-warning me-2"></i> Alta de usuario creada.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /tab-content -->
+
+  <!-- ===== OFFCANVAS ACCIONES ===== -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="accionesPanel">
+    <div class="offcanvas-header">
+      <h5 class="mb-0">Acciones del panel</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="list-group mb-3">
+        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#nuevaClaseModal">
+          Programar clase <i class="bi bi-plus-circle"></i>
+        </button>
+        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#nuevaReservaModal">
+          Crear reserva <i class="bi bi-check2-circle"></i>
+        </button>
+        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#invitarUsuarioModal">
+          Invitar usuario <i class="bi bi-person-plus"></i>
+        </button>
+        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#enviarAnuncioModal">
+          Enviar anuncio <i class="bi bi-megaphone"></i>
+        </button>
+      </div>
+      <div class="small text-secondary">Ir a secciones:</div>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        <a href="{% url 'administrador:listar_clases' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-easel2 me-1"></i> Clases</a>
+        <a href="{% url 'administrador:reservas_list' %}" class="btn btn-outline-info btn-sm"><i class="bi bi-kanban me-1"></i> Reservas</a>
+        <a href="{% url 'administrador:usuarios_list' %}" class="btn btn-outline-success btn-sm"><i class="bi bi-people me-1"></i> Usuarios</a>
+        <a href="{% url 'administrador:listar_contactos' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-chat-dots me-1"></i> CRM</a>
       </div>
     </div>
   </div>
+
+  <!-- ===== MODALES ===== -->
+  <!-- Nueva clase -->
+  <div class="modal fade" id="nuevaClaseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Programar nueva clase</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label">Nombre</label><input class="form-control" placeholder="Ej. Pilates Reformer"></div>
+            <div class="col-6"><label class="form-label">Fecha</label><input type="date" class="form-control"></div>
+            <div class="col-6"><label class="form-label">Hora</label><input type="time" class="form-control"></div>
+            <div class="col-8"><label class="form-label">Instructor</label><input class="form-control" placeholder="Nombre"></div>
+            <div class="col-4"><label class="form-label">Capacidad</label><input type="number" class="form-control" value="10" min="1"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="{% url 'administrador:listar_clases' %}" class="btn btn-primary">Guardar</a>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nueva reserva -->
+  <div class="modal fade" id="nuevaReservaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Crear reserva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label">Cliente</label><input class="form-control" placeholder="Correo o nombre"></div>
+            <div class="col-8"><label class="form-label">Clase</label><input class="form-control" placeholder="Clase destino"></div>
+            <div class="col-4"><label class="form-label">Cupos</label><input type="number" class="form-control" value="1" min="1"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="{% url 'administrador:reservas_list' %}" class="btn btn-info text-white">Crear</a>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invitar usuario -->
+  <div class="modal fade" id="invitarUsuarioModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Invitar usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label">Email</label><input type="email" class="form-control" placeholder="usuario@correo.com"></div>
+            <div class="col-12">
+              <label class="form-label">Rol</label>
+              <select class="form-select">
+                <option>Cliente</option>
+                <option>Administrador</option>
+                <option>Instructor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="{% url 'administrador:usuarios_list' %}" class="btn btn-success">Enviar invitación</a>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enviar anuncio -->
+  <div class="modal fade" id="enviarAnuncioModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Enviar anuncio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Mensaje</label>
+          <textarea class="form-control" rows="6" placeholder="Escribe tu anuncio para los clientes…"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-warning"><i class="bi bi-megaphone me-1"></i> Enviar</button>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
-
-<style>
-  .kpi .display-6 { line-height: .9; }
-</style>
 {% endblock %}
-
 

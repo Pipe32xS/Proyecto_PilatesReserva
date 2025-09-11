@@ -1,132 +1,411 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block titulo %}Panel Administrador{% endblock %}</title>
 
+  <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+  <style>
+    /* ===========================================================
+       Paleta por variables + tema claro/oscuro
+       =========================================================== */
+    :root{
+      /* superficies y textos (LIGHT) */
+      --surface-1:#f6f7fb;     /* body */
+      --surface-2:#ffffff;     /* cards/header */
+      --text-1:#0f172a;        /* títulos */
+      --text-2:#475569;        /* secundarios */
+      --border:#e7edf3;        /* bordes suaves */
+
+      /* hero (gradiente) */
+      --hero-start:#2563eb;
+      --hero-end:#0ea5e9;
+
+      /* sidebar (permanece oscuro en ambos temas) */
+      --sb-w: 280px;
+      --sb-w-collapsed: 88px;
+      --sb-bg: #0b1220;
+      --sb-bg-2: #0e1626;
+      --sb-text: #e2e8f0;
+      --sb-muted: #8aa0b6;
+      --sb-accent: #4f46e5;
+      --sb-hover: #14213a;
+      --ring: 0 10px 30px rgba(2,6,23,.35);
+    }
+
+    /* Tema OSCURO: cambiamos superficies y textos globales */
+    [data-theme="dark"]{
+      color-scheme: dark;
+      --surface-1:#0b1020;
+      --surface-2:#0f162a;
+      --text-1:#e5e7eb;
+      --text-2:#b6c2d0;
+      --border:#1e293b;
+
+      --hero-start:#0f172a;
+      --hero-end:#0b3b6f;
+    }
+
+    html, body{height:100%;}
+    body{
+      background:var(--surface-1);
+      color:var(--text-1);
+    }
+
+    /* Layout */
+    .app{ min-height:100%; display:flex; flex-direction:row; }
+    .sidebar{
+      width:var(--sb-w);
+      background:linear-gradient(180deg, var(--sb-bg) 0%, var(--sb-bg-2) 100%);
+      color:var(--sb-text);
+      position:sticky; top:0; height:100vh;
+      box-shadow: var(--ring);
+      z-index:1020;
+      transition: width .25s ease;
+    }
+    .sidebar.collapsed{ width:var(--sb-w-collapsed); }
+
+    .brand{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 18px; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .brand-name{
+      font-weight:800; letter-spacing:.3px; color:#fff; margin:0; font-size:1.25rem;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .toggle-btn{
+      color:#c7d2fe; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+      border-radius:14px; padding:6px 10px; cursor:pointer;
+    }
+    .toggle-btn:hover{ background:rgba(255,255,255,.15); }
+
+    .nav-section{ padding:10px; }
+    .nav-title{
+      font-size:.75rem; text-transform:uppercase; letter-spacing:.08em;
+      color:var(--sb-muted); padding:8px 12px; margin:0;
+    }
+    .nav-pills .nav-link{
+      display:flex; align-items:center; gap:12px;
+      color:var(--sb-text); border-radius:12px; padding:10px 12px;
+      transition: all .15s ease; position:relative;
+    }
+    .nav-pills .nav-link .bi{ font-size:1.08rem; width:22px; text-align:center; }
+    .nav-pills .nav-link:hover{ background:var(--sb-hover); color:#fff; }
+    .nav-pills .nav-link.active{
+      background: rgba(79,70,229,.15);
+      color:#fff;
+      border:1px solid rgba(79,70,229,.35);
+      box-shadow: inset 0 0 0 1px rgba(79,70,229,.15);
+    }
+
+    .sidebar.collapsed .brand-name{ display:none; }
+    .sidebar.collapsed .nav-title{ display:none; }
+    .sidebar.collapsed .nav-link span.label{ display:none; }
+    .sidebar.collapsed .nav-link{ justify-content:center; }
+
+    /* Main */
+    .main{ flex:1; display:flex; flex-direction:column; min-width:0; }
+    header.appbar{
+      background:var(--surface-2);
+      border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:1010;
+    }
+    .appbar .title{ font-weight:700; color:var(--text-1); margin:0; }
+
+    /* Tarjeta/barra de filtros opcional */
+    .filters-bar{
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, .06);
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    /* Badges suaves */
+    .badge-soft{
+      background:#eef2ff; color:#4f46e5; border:1px solid rgba(79,70,229,.25);
+      border-radius:999px; font-weight:600;
+    }
+    [data-theme="dark"] .badge-soft{
+      background:rgba(79,70,229,.18); color:#cdd6ff; border-color:rgba(79,70,229,.35);
+    }
+
+    /* Inputs / selects en modo oscuro */
+    [data-theme="dark"] .form-control,
+    [data-theme="dark"] .form-select{
+      background:#0f172a;
+      color:var(--text-1);
+      border-color:#273449;
+    }
+    [data-theme="dark"] .form-control::placeholder{ color:#7c8aa0; }
+
+    /* Tablas en modo oscuro */
+    [data-theme="dark"] .table{
+      --bs-table-bg: transparent;
+      --bs-table-striped-bg: rgba(255,255,255,.04);
+      --bs-table-hover-bg: rgba(255,255,255,.06);
+      color: var(--text-1);
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .table thead th{
+      color:var(--text-1);
+      border-color: var(--border);
+      background: #111a30;
+    }
+
+    /* Dropdowns / Modals en modo oscuro */
+    [data-theme="dark"] .dropdown-menu,
+    [data-theme="dark"] .modal-content,
+    [data-theme="dark"] .offcanvas{
+      background: var(--surface-2);
+      color: var(--text-1);
+      border-color: var(--border);
+    }
+
+    /* Botones outline en modo oscuro */
+    [data-theme="dark"] .btn-outline-secondary{
+      color:#cbd5e1; border-color:#334155;
+    }
+    [data-theme="dark"] .btn-outline-secondary:hover{
+      background:#1f2a44;
+      color:#fff;
+      border-color:#3b4a63;
+    }
+
+    @media (max-width: 991px){
+      .sidebar{ position:fixed; height:100dvh; transform: translateX(0); }
+      .sidebar.off{ transform: translateX(-100%); }
+      .main{ margin-left:0; }
+    }
+
+    /* ===========================================================
+       FIX: botones claros sobre hero azul (sigue activo en ambos temas)
+       =========================================================== */
+    .bg-primary.bg-gradient .btn-outline-light,
+    .bg-primary.bg-gradient .btn-light,
+    .bg-primary.bg-gradient .btn-white,
+    .bg-primary.bg-gradient .btn-outline-secondary {
+      background: #f8fafc;
+      color: #0b1220;
+      border-color: #cfd8e3;
+    }
+    .bg-primary.bg-gradient .btn-outline-light:hover,
+    .bg-primary.bg-gradient .btn-light:hover,
+    .bg-primary.bg-gradient .btn-white:hover,
+    .bg-primary.bg-gradient .btn-outline-secondary:hover,
+    .bg-primary.bg-gradient .btn-outline-light:focus,
+    .bg-primary.bg-gradient .btn-light:focus,
+    .bg-primary.bg-gradient .btn-white:focus,
+    .bg-primary.bg-gradient .btn-outline-secondary:focus {
+      background: #eef2f7;
+      color: #0b1220;
+      border-color: #b7c4d3;
+    }
+    .bg-primary.bg-gradient .btn-check:checked + .btn,
+    .bg-primary.bg-gradient .btn.active,
+    .bg-primary.bg-gradient .nav-pills .nav-link.active {
+      background: #0ea5e9 !important;
+      border-color: #0ea5e9 !important;
+      color: #ffffff !important;
+      box-shadow: 0 8px 24px rgba(14,165,233,.36);
+    }
+    .bg-primary.bg-gradient .btn .badge{
+      background: rgba(2,132,199,.12);
+      color: #0b1220;
+      border: 0;
+    }
+
+    /* Hero en oscuro (ajuste de gradiente) */
+    [data-theme="dark"] .bg-primary.bg-gradient{
+      background: linear-gradient(90deg, var(--hero-start) 0%, var(--hero-end) 100%) !important;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
 
-  {% comment %}
-    Usamos resolver_match para saber ruta y namespace actuales.
-    - app_name debería ser "administrador" en tus urls del panel.
-  {% endcomment %}
-  {% with rm=request.resolver_match %}
-    {% with current_name=rm.url_name current_app=rm.app_name %}
+{% with rm=request.resolver_match %}
+{% with current_name=rm.url_name current_app=rm.app_name %}
 
-  <div class="container-fluid">
-    <div class="row">
-      <!-- Sidebar -->
-      <nav class="col-md-2 d-none d-md-block bg-dark text-white sidebar p-3 min-vh-100">
-        <div class="fw-bold fs-4 mb-4 text-center text-primary">Admin Panel</div>
-        <ul class="nav flex-column">
+<div class="app">
 
-          <!-- Inicio -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'home' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:home' %}">
-              <i class="bi bi-house me-2"></i>Inicio
-            </a>
-          </li>
-
-          <!-- Administrar Usuarios -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'usuarios_list' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:usuarios_list' %}">
-              <i class="bi bi-people me-2"></i>Administrar Usuarios
-            </a>
-          </li>
-
-          <!-- Administrar Clases -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'listar_clases' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:listar_clases' %}">
-              <i class="bi bi-grid-3x3-gap me-2"></i>Administrar Clases
-            </a>
-          </li>
-
-          <!-- Gestión de Horarios -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'horarios_list' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:horarios_list' %}">
-              <i class="bi bi-calendar3-week me-2"></i>Gestión de Horarios
-            </a>
-          </li>
-
-          <!-- Administrar Perfiles -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'perfiles_list' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:perfiles_list' %}">
-              <i class="bi bi-person-badge me-2"></i>Administrar Perfiles
-            </a>
-          </li>
-
-          <!-- Reservas -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'reservas_list' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:reservas_list' %}">
-              <i class="bi bi-calendar-check me-2"></i>Reservas
-            </a>
-          </li>
-
-          <!-- CRM Usuarios / Contactos -->
-          <li class="nav-item mb-2">
-            <a
-              class="nav-link {% if current_app == 'administrador' and current_name == 'listar_contactos' %}active bg-secondary{% else %}text-white{% endif %}"
-              href="{% url 'administrador:listar_contactos' %}">
-              <i class="bi bi-inboxes me-2"></i>CRM Usuarios
-            </a>
-          </li>
-
-          <!-- Reportes (placeholder) -->
-          <li class="nav-item mb-2">
-            <a class="nav-link text-white" href="#">
-              <i class="bi bi-graph-up me-2"></i>Reportes
-            </a>
-          </li>
-
-          <!-- Logout (namespace del app de login) -->
-          <li class="nav-item mt-4">
-            <form action="{% url 'login:logout' %}" method="post" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="nav-link text-danger fw-semibold bg-transparent border-0 p-0">
-                <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
-              </button>
-            </form>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Contenido principal -->
-      <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4">
-        <header class="py-3 mb-4 border-bottom bg-white shadow-sm">
-          <div class="container-fluid d-flex justify-content-between align-items-center">
-            <h2 class="mb-0 text-primary">{% block encabezado %}Bienvenido Administrador{% endblock %}</h2>
-            <span class="text-muted fw-semibold">PilatesReserva</span>
-          </div>
-        </header>
-
-        <div class="bg-white p-4 rounded shadow-sm">
-          {% block content %}{% endblock %}
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <div class="brand">
+      <div class="d-flex align-items-center gap-2">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center"
+             style="width:36px;height:36px;background:rgba(255,255,255,.1); color:#c7d2fe;">
+          <i class="bi bi-lightning-charge"></i>
         </div>
-      </main>
+        <h1 class="brand-name">Admin Panel</h1>
+      </div>
+      <button class="toggle-btn d-none d-lg-inline-flex" type="button" id="sbToggle" aria-label="Colapsar sidebar">
+        <i class="bi bi-layout-sidebar-inset"></i>
+      </button>
+      <button class="toggle-btn d-inline-flex d-lg-none" type="button" id="sbMobile" aria-label="Mostrar sidebar">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
-  </div>
 
-  {% endwith %}
-  {% endwith %}
+    <nav class="nav-section">
+      <p class="nav-title">Navegación</p>
+      <ul class="nav nav-pills flex-column gap-1">
+        <li class="nav-item">
+          <a class="nav-link {% if current_app == 'administrador' and current_name == 'home' %}active{% endif %}"
+             href="{% url 'administrador:home' %}">
+            <i class="bi bi-house"></i><span class="label">Inicio</span>
+          </a>
+        </li>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'usuarios_list' %}active{% endif %}"
+             href="{% url 'administrador:usuarios_list' %}">
+            <i class="bi bi-people"></i><span class="label">Administrar Usuarios</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'listar_clases' %}active{% endif %}"
+             href="{% url 'administrador:listar_clases' %}">
+            <i class="bi bi-grid-3x3-gap"></i><span class="label">Administrar Clases</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'horarios_list' %}active{% endif %}"
+             href="{% url 'administrador:horarios_list' %}">
+            <i class="bi bi-calendar3-week"></i><span class="label">Gestión de Horarios</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'perfiles_list' %}active{% endif %}"
+             href="{% url 'administrador:perfiles_list' %}">
+            <i class="bi bi-person-badge"></i><span class="label">Administrar Perfiles</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'reservas_list' %}active{% endif %}"
+             href="{% url 'administrador:reservas_list' %}">
+            <i class="bi bi-calendar-check"></i><span class="label">Reservas</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'listar_contactos' %}active{% endif %}"
+             href="{% url 'administrador:listar_contactos' %}">
+            <i class="bi bi-inboxes"></i><span class="label">CRM Usuarios</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current_name == 'reportes' %}active{% endif %}" href="#">
+            <i class="bi bi-graph-up"></i><span class="label">Reportes</span>
+          </a>
+        </li>
+      </ul>
+
+      <hr class="border-secondary-subtle my-3">
+
+      <ul class="nav nav-pills flex-column gap-1">
+        <li class="nav-item">
+          <form action="{% url 'login:logout' %}" method="post" class="w-100">
+            {% csrf_token %}
+            <button type="submit" class="nav-link text-danger w-100">
+              <i class="bi bi-box-arrow-right"></i><span class="label">Cerrar sesión</span>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="appbar">
+      <div class="container-fluid py-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <h2 class="title">{% block encabezado %}Bienvenido Administrador{% endblock %}</h2>
+
+          <div class="d-flex align-items-center gap-2">
+            <!-- Botón Modo Claro/Oscuro -->
+            <button class="btn btn-outline-secondary d-inline-flex align-items-center"
+                    id="themeToggle" type="button" aria-label="Cambiar tema">
+              <i id="themeIcon" class="bi bi-moon-stars"></i>
+            </button>
+            <span class="badge badge-soft px-3 py-2">PilatesReserva</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-fluid py-4">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+</div>
+
+{% endwith %}
+{% endwith %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  (function(){
+    const root = document.documentElement;
+    const THEME_KEY = 'pr-theme';
+
+    function setIcon(theme){
+      const i = document.getElementById('themeIcon');
+      if(!i) return;
+      i.className = (theme === 'dark') ? 'bi bi-sun' : 'bi bi-moon-stars';
+    }
+    function applyTheme(theme){
+      root.setAttribute('data-theme', theme);
+      setIcon(theme);
+    }
+
+    // Preferencia guardada o del sistema
+    let saved = null;
+    try{ saved = localStorage.getItem(THEME_KEY); }catch(e){}
+    let theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(theme);
+
+    const toggle = document.getElementById('themeToggle');
+    if(toggle){
+      toggle.addEventListener('click', ()=>{
+        theme = (root.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
+        applyTheme(theme);
+        try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
+      });
+    }
+
+    // Sidebar toggles
+    const sb = document.getElementById('sidebar');
+    const btn = document.getElementById('sbToggle');
+    const mob = document.getElementById('sbMobile');
+    const SB_KEY = 'sb-collapsed';
+    try {
+      if(localStorage.getItem(SB_KEY) === '1') sb.classList.add('collapsed');
+    } catch(e){}
+
+    if(btn){
+      btn.addEventListener('click', ()=>{
+        sb.classList.toggle('collapsed');
+        try{ localStorage.setItem(SB_KEY, sb.classList.contains('collapsed') ? '1' : '0'); }catch(e){}
+      });
+    }
+    if(mob){
+      mob.addEventListener('click', ()=> sb.classList.toggle('off'));
+    }
+  })();
+</script>
 </body>
 </html>

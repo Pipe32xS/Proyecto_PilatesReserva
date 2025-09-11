@@ -1,232 +1,593 @@
 {% extends "administrador/base_admin.html" %}
+{% load static %}
+
+{% block titulo %}Administrar Usuarios | Panel{% endblock %}
+{% block encabezado %}Administrar Usuarios{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
 
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="mb-0">Administrar Usuarios</h2>
-    <div class="d-flex gap-2">
-      <form class="d-none d-md-block" method="get">
-        <input type="hidden" name="estado" value="{{ estado }}">
-        <input type="hidden" name="sort" value="{{ sort }}">
-        <input type="hidden" name="dir" value="{{ dir }}">
-        <div class="input-group input-group-sm" style="min-width: 280px;">
-          <input type="text" class="form-control" name="q"
-                 placeholder="Buscar username, nombre o email…"
-                 value="{{ q }}">
-          <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+<style>
+  /* ======= Estética local para esta vista ======= */
+  .hero-grad{
+    background: linear-gradient(135deg,#1e40af 0%, #2563eb 50%, #06b6d4 100%);
+    color:#fff; border:0;
+  }
+  .hero-grad .btn{
+    background: rgba(255,255,255,.14);
+    color:#fff; border:1px solid rgba(255,255,255,.25);
+  }
+  .hero-grad .btn:hover{ background: rgba(255,255,255,.22); color:#fff; }
+
+  .kpi{
+    border:1px solid var(--border,#e9eef5);
+    background: var(--surface-2,#fff);
+    border-radius:16px;
+  }
+  .kpi .icon{
+    width:42px; height:42px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:#eef2ff; color:#1e40af;
+  }
+
+  .filters-card{
+    border:1px solid var(--border,#e9eef5);
+    background: var(--surface-2,#fff);
+    border-radius:16px;
+  }
+
+  /* Tabla moderna */
+  .table-modern{
+    --row-hover: rgba(2,6,23,.05);
+    --row-border: var(--border,#e6ebf3);
+    border:1px solid var(--row-border);
+    border-radius:16px; overflow:hidden;
+  }
+  .table-modern thead th{
+    background:#f8fafc;
+    border-bottom:1px solid var(--row-border);
+    color:#0f172a; font-weight:700;
+  }
+  [data-theme="dark"] .table-modern thead th{
+    background:#111a30; color:#e5e7eb;
+  }
+  .table-modern tbody tr:hover{ background:var(--row-hover); }
+
+  /* Badges de rol/estado */
+  .role-badge{
+    font-weight:700; border-radius:999px; padding:.25rem .5rem; font-size:.8rem;
+  }
+  .role-admin{ background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; }
+  .role-cliente{ background:#dbeafe; color:#1d4ed8; border:1px solid #bfdbfe; }
+
+  .state-ok{ background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
+  .state-off{ background:#e5e7eb; color:#374151; border:1px solid #e5e7eb; }
+
+  /* Botón chip */
+  .btn-chip{
+    border-radius:999px; padding:.35rem .65rem; font-weight:600;
+  }
+</style>
+
+{# Alias seguros para evitar errores cuando no hay page_obj/usuarios/object_list #}
+{% with po=page_obj ulist=usuarios ol=object_list %}
+
+{% if po %}
+  {# ========= Rama con paginación: po.object_list ========= #}
+  {% with lista=po.object_list %}
+
+  <!-- ============ HERO ============ -->
+  <div class="card hero-grad shadow-sm mb-4 rounded-4">
+    <div class="card-body p-4 p-xl-5">
+      <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center justify-content-between gap-3">
+        <div>
+          <span class="badge bg-light text-dark fw-semibold mb-2">
+            <i class="bi bi-person-gear me-1"></i> Gestión de usuarios
+          </span>
+          <h1 class="h3 fw-bold mb-1">Panel de administración</h1>
+          <p class="mb-0 opacity-75">
+            Controla accesos y roles de tu comunidad en <strong>PilatesReserva</strong>.
+          </p>
         </div>
-      </form>
-      <a class="btn btn-primary btn-sm" href="{% url 'administrador:usuario_crear' %}">
-        + Crear usuario
-      </a>
-      <a class="btn btn-outline-secondary btn-sm d-md-none" href="{% url 'administrador:usuario_crear' %}">Nuevo</a>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'administrador:usuario_crear' %}" class="btn">
+            <i class="bi bi-plus-lg me-1"></i> Crear usuario
+          </a>
+          <div class="btn-group">
+            <button class="btn dropdown-toggle" data-bs-toggle="dropdown">
+              <i class="bi bi-box-arrow-down me-1"></i> Exportar
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">CSV</a></li>
+              <li><a class="dropdown-item" href="#">XLSX</a></li>
+              <li><a class="dropdown-item" href="#">PDF</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  {% if messages %}
-    <div class="mb-3">
-      {% for m in messages|slice:":3" %}
-        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
-      {% endfor %}
+  <!-- ============ KPIs ============ -->
+  <div class="row g-3 mb-4 row-cols-1 row-cols-md-2 row-cols-xl-4">
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Total usuarios</div>
+            <div class="display-6 fw-bold">{{ total_usuarios|default:lista|length }}</div>
+          </div>
+          <div class="icon"><i class="bi bi-people"></i></div>
+        </div>
+      </div>
     </div>
-  {% endif %}
-
-  <!-- Filtros -->
-  <form class="row g-2 align-items-center mb-3" method="get">
-    <div class="col-auto">
-      <select class="form-select form-select-sm" name="estado" onchange="this.form.submit()">
-        <option value="todos" {% if estado == "todos" %}selected{% endif %}>Todos</option>
-        <option value="activos" {% if estado == "activos" %}selected{% endif %}>Activos</option>
-        <option value="inactivos" {% if estado == "inactivos" %}selected{% endif %}>Inactivos</option>
-      </select>
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Activos</div>
+            <div class="display-6 fw-bold">{{ activos_count|default:"—" }}</div>
+          </div>
+          <div class="icon" style="background:#dcfce7; color:#166534;"><i class="bi bi-shield-check"></i></div>
+        </div>
+      </div>
     </div>
-    <input type="hidden" name="q" value="{{ q }}">
-    <input type="hidden" name="sort" value="{{ sort }}">
-    <input type="hidden" name="dir" value="{{ dir }}">
-  </form>
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Inactivos</div>
+            <div class="display-6 fw-bold">{{ inactivos_count|default:"—" }}</div>
+          </div>
+          <div class="icon" style="background:#fee2e2; color:#991b1b;"><i class="bi bi-shield-x"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Administradores</div>
+            <div class="display-6 fw-bold">{{ admins_count|default:"—" }}</div>
+          </div>
+          <div class="icon" style="background:#fae8ff; color:#6b21a8;"><i class="bi bi-person-gear"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div class="table-responsive">
-    <table class="table table-striped align-middle">
+  <!-- ============ FILTROS ============ -->
+  <div class="filters-card p-3 p-md-4 mb-3">
+    <form method="get" class="row g-2 align-items-center">
+      <div class="col-12 col-md-6 col-xl-5">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Buscar username, nombre o email…">
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3 col-xl-2">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-sort-alpha-down"></i></span>
+          <select class="form-select" name="sort">
+            <option value="id" {% if sort == "id" %}selected{% endif %}>ID</option>
+            <option value="username" {% if sort == "username" %}selected{% endif %}>Username</option>
+            <option value="nombre" {% if sort == "nombre" %}selected{% endif %}>Nombre</option>
+            <option value="email" {% if sort == "email" %}selected{% endif %}>Email</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3 col-xl-2">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+          <select class="form-select" name="dir">
+            <option value="asc" {% if dir == "asc" %}selected{% endif %}>Asc</option>
+            <option value="desc" {% if dir == "desc" %}selected{% endif %}>Desc</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="btn-group w-100" role="group">
+          <input type="hidden" name="rol" value="{{ rol }}">
+          <a href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}" class="btn btn-outline-secondary {% if not rol %}active{% endif %}">
+            Todos los roles
+          </a>
+          <a href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol=admin" class="btn btn-outline-danger {% if rol == 'admin' %}active{% endif %}">
+            <i class="bi bi-shield-lock me-1"></i> Admin
+          </a>
+          <a href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol=cliente" class="btn btn-outline-primary {% if rol == 'cliente' %}active{% endif %}">
+            <i class="bi bi-person-check me-1"></i> Cliente
+          </a>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-auto">
+        <a href="{% url 'administrador:usuarios_list' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-eraser me-1"></i> Limpiar
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ TABLA ============ -->
+  <div class="table-responsive table-modern mb-3">
+    <table class="table align-middle mb-0">
       <thead>
-        <tr>
-          <!-- ID -->
-          <th style="width:70px;">
-            <a class="text-decoration-none"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=id&dir={% if sort == 'id' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-              ID
-              {% if sort == 'id' %}
-                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
-              {% endif %}
-            </a>
-          </th>
-
-          <!-- Username -->
-          <th>
-            <a class="text-decoration-none"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=username&dir={% if sort == 'username' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-              Username
-              {% if sort == 'username' %}
-                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
-              {% endif %}
-            </a>
-          </th>
-
-          <!-- Nombre -->
-          <th>
-            <a class="text-decoration-none"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=nombre&dir={% if sort == 'nombre' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-              Nombre
-              {% if sort == 'nombre' %}
-                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
-              {% endif %}
-            </a>
-          </th>
-
-          <!-- Email -->
-          <th>
-            <a class="text-decoration-none"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=email&dir={% if sort == 'email' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-              Email
-              {% if sort == 'email' %}
-                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
-              {% endif %}
-            </a>
-          </th>
-
-          {% if tiene_rol %}
-            <th>
-              <a class="text-decoration-none"
-                 href="?estado={{ estado }}&q={{ q|urlencode }}&sort=rol&dir={% if sort == 'rol' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-                Rol
-                {% if sort == 'rol' %}
-                  <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
-                {% endif %}
-              </a>
-            </th>
-          {% endif %}
-
-          <th>
-            <a class="text-decoration-none"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort=estado&dir={% if sort == 'estado' and dir == 'asc' %}desc{% else %}asc{% endif %}">
-              Estado
-              {% if sort == 'estado' %}
-                <span class="small">{% if dir == 'asc' %}▲{% else %}▼{% endif %}</span>
-              {% endif %}
-            </a>
-          </th>
-
-          <th style="width:1%; white-space:nowrap;">Acciones</th>
-        </tr>
+      <tr>
+        <th style="width:60px;">#</th>
+        <th><i class="bi bi-person me-1"></i> Username</th>
+        <th><i class="bi bi-person-vcard me-1"></i> Nombre</th>
+        <th><i class="bi bi-envelope me-1"></i> Email</th>
+        <th style="width:140px;"><i class="bi bi-award me-1"></i> Rol</th>
+        <th style="width:120px;"><i class="bi bi-activity me-1"></i> Estado</th>
+        <th class="text-end" style="width:160px;">Acciones</th>
+      </tr>
       </thead>
-
       <tbody>
-        {% for u in usuarios %}
-          <tr>
-            <td>{{ u.id }}</td>
-            <td>{{ u.username }}</td>
-            <td>
-              {% if u.first_name or u.last_name %}
-                {{ u.first_name }} {{ u.last_name }}
-              {% else %}
-                <span class="text-muted">—</span>
-              {% endif %}
-            </td>
-            <td>{{ u.email|default:"—" }}</td>
-
-            {% if tiene_rol %}
-              <td>
-                {% if u.rol %}
-                  {% with r=u.rol|lower %}
-                    {% if "admin" in r %}
-                      <span class="badge text-bg-danger">{{ u.rol }}</span>
-                    {% elif "cliente" in r %}
-                      <span class="badge text-bg-primary">{{ u.rol }}</span>
-                    {% else %}
-                      <span class="badge text-bg-secondary">{{ u.rol }}</span>
-                    {% endif %}
-                  {% endwith %}
-                {% else %}
-                  <span class="text-muted">—</span>
-                {% endif %}
-              </td>
+      {% for u in lista %}
+        <tr>
+          <td class="text-secondary">{{ forloop.counter }}</td>
+          <td class="fw-semibold">
+            <div class="d-flex align-items-center gap-2">
+              <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
+                    style="width:28px;height:28px;background:#e2e8f0;color:#1f2937;">
+                {{ u.username|first|upper }}
+              </span>
+              {{ u.username }}
+            </div>
+          </td>
+          <td>
+            {% if u.first_name or u.last_name %}
+              {{ u.first_name }} {{ u.last_name }}
+            {% else %}
+              <span class="text-secondary">—</span>
             {% endif %}
+          </td>
+          <td class="text-secondary">{{ u.email|default:"—" }}</td>
 
-            <td>
-              {% if u.is_active %}
-                <span class="badge text-bg-success">Activo</span>
+          <td>
+            {% with r=u.rol|default_if_none:"" %}
+              {% if u.is_superuser or "admin" in r|lower %}
+                <span class="role-badge role-admin"><i class="bi bi-shield-lock me-1"></i> administrador</span>
               {% else %}
-                <span class="badge text-bg-secondary">Inactivo</span>
+                <span class="role-badge role-cliente"><i class="bi bi-person-check me-1"></i> cliente</span>
               {% endif %}
-            </td>
+            {% endwith %}
+          </td>
 
-            <td class="d-flex gap-2">
+          <td>
+            {% if u.is_active %}
+              <span class="role-badge state-ok"><i class="bi bi-check2-circle me-1"></i> Activo</span>
+            {% else %}
+              <span class="role-badge state-off"><i class="bi bi-slash-circle me-1"></i> Inactivo</span>
+            {% endif %}
+          </td>
+
+          <td class="text-end">
+            <div class="btn-group">
+              <a class="btn btn-sm btn-outline-primary btn-chip"
+                 href="{% url 'administrador:usuario_editar' u.id %}">
+                <i class="bi bi-pencil-square me-1"></i> Editar
+              </a>
               {% if not u.is_superuser %}
-                <a class="btn btn-sm btn-outline-primary" href="{% url 'administrador:usuario_editar' u.id %}">
-                  Editar
-                </a>
                 <form method="post" action="{% url 'administrador:usuario_toggle_activo' u.id %}"
                       onsubmit="return confirm('¿Seguro que quieres {% if u.is_active %}desactivar{% else %}activar{% endif %} este usuario?');">
                   {% csrf_token %}
-                  <button class="btn btn-sm {% if u.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
-                    {% if u.is_active %}Desactivar{% else %}Activar{% endif %}
+                  <button class="btn btn-sm btn-outline-secondary btn-chip" type="submit">
+                    {% if u.is_active %}
+                      <i class="bi bi-pause-circle me-1"></i> Desactivar
+                    {% else %}
+                      <i class="bi bi-play-circle me-1"></i> Activar
+                    {% endif %}
                   </button>
                 </form>
-              {% else %}
-                <span class="text-muted">—</span>
               {% endif %}
-            </td>
-          </tr>
-        {% empty %}
-          <tr>
-            <td colspan="7" class="text-center py-4 text-muted">No hay usuarios.</td>
-          </tr>
-        {% endfor %}
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="text-center py-4 text-secondary">
+            <i class="bi bi-inbox me-2"></i> No hay usuarios que coincidan con tu búsqueda.
+          </td>
+        </tr>
+      {% endfor %}
       </tbody>
     </table>
   </div>
 
-  {% if page_obj and page_obj.paginator.num_pages > 1 %}
-    <nav class="mt-3" aria-label="Paginación">
-      <ul class="pagination pagination-sm mb-0">
-        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-          {% if page_obj.has_previous %}
-            <a class="page-link"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&page={{ page_obj.previous_page_number }}">Anterior</a>
-          {% else %}
-            <span class="page-link">Anterior</span>
-          {% endif %}
-        </li>
+  <!-- Leyenda + paginación -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+    <div class="small text-secondary">
+      <span class="role-badge role-admin">Admin</span>
+      <span class="role-badge role-cliente ms-2">Cliente</span>
+      <span class="role-badge state-ok ms-2">Activo</span>
+      <span class="role-badge state-off ms-2">Inactivo</span>
+    </div>
 
-        {% for num in page_obj.paginator.page_range %}
-          {% if num == page_obj.number %}
-            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-          {% else %}
-            <li class="page-item">
+    {% if page_obj and page_obj.paginator.num_pages > 1 %}
+      <nav aria-label="Paginación">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+            {% if page_obj.has_previous %}
               <a class="page-link"
-                 href="?estado={{ estado }}&q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&page={{ num }}">{{ num }}</a>
-            </li>
-          {% endif %}
-        {% endfor %}
+                 href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol={{ rol }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% else %}
+              <span class="page-link">Anterior</span>
+            {% endif %}
+          </li>
 
-        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-          {% if page_obj.has_next %}
-            <a class="page-link"
-               href="?estado={{ estado }}&q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&page={{ page_obj.next_page_number }}">Siguiente</a>
-          {% else %}
-            <span class="page-link">Siguiente</span>
-          {% endif %}
-        </li>
-      </ul>
-    </nav>
+          {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+              <li class="page-item">
+                <a class="page-link"
+                   href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol={{ rol }}&page={{ num }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
 
-    <p class="text-muted small mt-2">
-      Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ page_obj.paginator.count }}
-    </p>
-  {% endif %}
-</div>
+          <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+            {% if page_obj.has_next %}
+              <a class="page-link"
+                 href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol={{ rol }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+            {% else %}
+              <span class="page-link">Siguiente</span>
+            {% endif %}
+          </li>
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+
+  {% endwith %} {# FIN with lista=po.object_list #}
+
+{% else %}
+  {# ========= Rama sin paginación: usuarios u object_list ========= #}
+  {% with lista=ulist|default:ol %}
+
+  <!-- ======= El mismo contenido que arriba (HERO, KPIs, FILTROS, TABLA, LEYENDA/PAG) ======= -->
+  <!-- Para brevedad, es exactamente el MISMO bloque anterior, reutilizando 'lista' en lugar de po.object_list.
+       Puedes copiar/pegar el mismo bloque de código entre {# ... #} y mantenerlo idéntico. -->
+
+  <!-- ============ HERO ============ -->
+  <div class="card hero-grad shadow-sm mb-4 rounded-4">
+    <div class="card-body p-4 p-xl-5">
+      <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center justify-content-between gap-3">
+        <div>
+          <span class="badge bg-light text-dark fw-semibold mb-2">
+            <i class="bi bi-person-gear me-1"></i> Gestión de usuarios
+          </span>
+          <h1 class="h3 fw-bold mb-1">Panel de administración</h1>
+          <p class="mb-0 opacity-75">
+            Controla accesos y roles de tu comunidad en <strong>PilatesReserva</strong>.
+          </p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'administrador:usuario_crear' %}" class="btn">
+            <i class="bi bi-plus-lg me-1"></i> Crear usuario
+          </a>
+          <div class="btn-group">
+            <button class="btn dropdown-toggle" data-bs-toggle="dropdown">
+              <i class="bi bi-box-arrow-down me-1"></i> Exportar
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">CSV</a></li>
+              <li><a class="dropdown-item" href="#">XLSX</a></li>
+              <li><a class="dropdown-item" href="#">PDF</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ KPIs ============ -->
+  <div class="row g-3 mb-4 row-cols-1 row-cols-md-2 row-cols-xl-4">
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Total usuarios</div>
+            <div class="display-6 fw-bold">{{ total_usuarios|default:lista|length }}</div>
+          </div>
+          <div class="icon"><i class="bi bi-people"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Activos</div>
+            <div class="display-6 fw-bold">{{ activos_count|default:"—" }}</div>
+          </div>
+          <div class="icon" style="background:#dcfce7; color:#166534;"><i class="bi bi-shield-check"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Inactivos</div>
+            <div class="display-6 fw-bold">{{ inactivos_count|default:"—" }}</div>
+          </div>
+          <div class="icon" style="background:#fee2e2; color:#991b1b;"><i class="bi bi-shield-x"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="small text-secondary">Administradores</div>
+            <div class="display-6 fw-bold">{{ admins_count|default:"—" }}</div>
+          </div>
+          <div class="icon" style="background:#fae8ff; color:#6b21a8;"><i class="bi bi-person-gear"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FILTROS ============ -->
+  <div class="filters-card p-3 p-md-4 mb-3">
+    <form method="get" class="row g-2 align-items-center">
+      <div class="col-12 col-md-6 col-xl-5">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Buscar username, nombre o email…">
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3 col-xl-2">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-sort-alpha-down"></i></span>
+          <select class="form-select" name="sort">
+            <option value="id" {% if sort == "id" %}selected{% endif %}>ID</option>
+            <option value="username" {% if sort == "username" %}selected{% endif %}>Username</option>
+            <option value="nombre" {% if sort == "nombre" %}selected{% endif %}>Nombre</option>
+            <option value="email" {% if sort == "email" %}selected{% endif %}>Email</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3 col-xl-2">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+          <select class="form-select" name="dir">
+            <option value="asc" {% if dir == "asc" %}selected{% endif %}>Asc</option>
+            <option value="desc" {% if dir == "desc" %}selected{% endif %}>Desc</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="btn-group w-100" role="group">
+          <input type="hidden" name="rol" value="{{ rol }}">
+          <a href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}" class="btn btn-outline-secondary {% if not rol %}active{% endif %}">
+            Todos los roles
+          </a>
+          <a href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol=admin" class="btn btn-outline-danger {% if rol == 'admin' %}active{% endif %}">
+            <i class="bi bi-shield-lock me-1"></i> Admin
+          </a>
+          <a href="?q={{ q|urlencode }}&sort={{ sort }}&dir={{ dir }}&rol=cliente" class="btn btn-outline-primary {% if rol == 'cliente' %}active{% endif %}">
+            <i class="bi bi-person-check me-1"></i> Cliente
+          </a>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-auto">
+        <a href="{% url 'administrador:usuarios_list' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-eraser me-1"></i> Limpiar
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ TABLA ============ -->
+  <div class="table-responsive table-modern mb-3">
+    <table class="table align-middle mb-0">
+      <thead>
+      <tr>
+        <th style="width:60px;">#</th>
+        <th><i class="bi bi-person me-1"></i> Username</th>
+        <th><i class="bi bi-person-vcard me-1"></i> Nombre</th>
+        <th><i class="bi bi-envelope me-1"></i> Email</th>
+        <th style="width:140px;"><i class="bi bi-award me-1"></i> Rol</th>
+        <th style="width:120px;"><i class="bi bi-activity me-1"></i> Estado</th>
+        <th class="text-end" style="width:160px;">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for u in lista %}
+        <tr>
+          <td class="text-secondary">{{ forloop.counter }}</td>
+          <td class="fw-semibold">
+            <div class="d-flex align-items-center gap-2">
+              <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
+                    style="width:28px;height:28px;background:#e2e8f0;color:#1f2937;">
+                {{ u.username|first|upper }}
+              </span>
+              {{ u.username }}
+            </div>
+          </td>
+          <td>
+            {% if u.first_name or u.last_name %}
+              {{ u.first_name }} {{ u.last_name }}
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+          <td class="text-secondary">{{ u.email|default:"—" }}</td>
+
+          <td>
+            {% with r=u.rol|default_if_none:"" %}
+              {% if u.is_superuser or "admin" in r|lower %}
+                <span class="role-badge role-admin"><i class="bi bi-shield-lock me-1"></i> administrador</span>
+              {% else %}
+                <span class="role-badge role-cliente"><i class="bi bi-person-check me-1"></i> cliente</span>
+              {% endif %}
+            {% endwith %}
+          </td>
+
+          <td>
+            {% if u.is_active %}
+              <span class="role-badge state-ok"><i class="bi bi-check2-circle me-1"></i> Activo</span>
+            {% else %}
+              <span class="role-badge state-off"><i class="bi bi-slash-circle me-1"></i> Inactivo</span>
+            {% endif %}
+          </td>
+
+          <td class="text-end">
+            <div class="btn-group">
+              <a class="btn btn-sm btn-outline-primary btn-chip"
+                 href="{% url 'administrador:usuario_editar' u.id %}">
+                <i class="bi bi-pencil-square me-1"></i> Editar
+              </a>
+              {% if not u.is_superuser %}
+                <form method="post" action="{% url 'administrador:usuario_toggle_activo' u.id %}"
+                      onsubmit="return confirm('¿Seguro que quieres {% if u.is_active %}desactivar{% else %}activar{% endif %} este usuario?');">
+                  {% csrf_token %}
+                  <button class="btn btn-sm btn-outline-secondary btn-chip" type="submit">
+                    {% if u.is_active %}
+                      <i class="bi bi-pause-circle me-1"></i> Desactivar
+                    {% else %}
+                      <i class="bi bi-play-circle me-1"></i> Activar
+                    {% endif %}
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="text-center py-4 text-secondary">
+            <i class="bi bi-inbox me-2"></i> No hay usuarios que coincidan con tu búsqueda.
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Leyenda -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+    <div class="small text-secondary">
+      <span class="role-badge role-admin">Admin</span>
+      <span class="role-badge role-cliente ms-2">Cliente</span>
+      <span class="role-badge state-ok ms-2">Activo</span>
+      <span class="role-badge state-off ms-2">Inactivo</span>
+    </div>
+    {# En esta rama normalmente no hay paginación #}
+  </div>
+
+  {% endwith %} {# FIN with lista=ulist|default:ol #}
+{% endif %}
+
+{% endwith %} {# FIN alias po/ulist/ol #}
+
 {% endblock %}
-
-
-
-
