@@ -1,6 +1,7 @@
 # index/urls.py
 from django.urls import path
 from . import views
+from .views_chat import chat_api
 
 app_name = "index"
 
@@ -21,4 +22,5 @@ urlpatterns = [
 
     # Catálogo en grid
     path("catalogo/", views.clases_grid, name="clases_grid"),
+    path("api/chat/", chat_api, name="chat_api"),
 ]

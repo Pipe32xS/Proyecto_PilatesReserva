@@ -100,16 +100,15 @@ def admin_home(request):
 
     # ---- Clases de esta semana ----
     clases_semana = ClasePilates.objects.filter(
-        fecha__range=(lunes, domingo)
-    ).count()
+        fecha__range=(lunes, domingo)).count()
 
     # ---- Usuarios activos ----
     usuarios_activos = User.objects.filter(is_active=True).count()
 
     # ---- Próximas clases (top 5) ----
     proximas_clases = (
-        ClasePilates.objects.filter(fecha__gte=hoy)
-        .order_by("fecha", "horario")[:5]
+        ClasePilates.objects.filter(
+            fecha__gte=hoy).order_by("fecha", "horario")[:5]
     )
 
     # ---- Últimos contactos (top 5) ----
@@ -141,7 +140,12 @@ def listar_contactos(request):
     q = (request.GET.get("q") or "").strip()
     estado = (request.GET.get("estado") or "todos").lower()
 
-    qs = Contacto.objects.all().order_by("-fecha_envio")
+    qs = Contacto.objects.all()
+    # Orden robusto según exista o no fecha_envio
+    if _has_field(Contacto, "fecha_envio"):
+        qs = qs.order_by("-fecha_envio", "-id")
+    else:
+        qs = qs.order_by("-id")
 
     # Búsqueda: usa los NOMBRES DE CAMPO reales del modelo Contacto
     if q:
@@ -154,7 +158,9 @@ def listar_contactos(request):
         )
 
     # Filtro por estado si corresponde
-    if estado in {"pendiente", "revisado", "respondido"} and _has_field(Contacto, "estado_mensaje"):
+    if estado in {"pendiente", "revisado", "respondido"} and _has_field(
+        Contacto, "estado_mensaje"
+    ):
         qs = qs.filter(estado_mensaje=estado)
 
     paginator = Paginator(qs, 10)
@@ -626,6 +632,7 @@ def horarios_generar_clases(request):
                 "solo_activos": True,
                 "ignorar_existentes": True,
                 "nombre_clase": "Clase de Pilates",
+                "descripcion": "",
             }
         )
 
@@ -697,5 +704,10 @@ def crm_contactos(request):
     if (resp := _forbidden_if_not_admin(request)) is not None:
         return resp
 
-    contactos = Contacto.objects.all().order_by("-fecha_envio")
-    return render(request, "administrador/crm_contactos.html", {"contactos": contactos})
+    qs = Contacto.objects.all()
+    if _has_field(Contacto, "fecha_envio"):
+        qs = qs.order_by("-fecha_envio", "-id")
+    else:
+        qs = qs.order_by("-id")
+
+    return render(request, "administrador/crm_contactos.html", {"contactos": qs})

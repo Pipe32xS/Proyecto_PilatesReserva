@@ -155,3 +155,16 @@ EMAIL_TIMEOUT = 30
 
 # Link de reseteo válido por 24 horas
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
+
+# --- Chatbot (config editable sin tocar el código del bot) ---
+CHATBOT_ADDRESS = "Av. Consistorial 2810, Peñalolen, Santiago, Chile"
+CHATBOT_PHONE = "+56 9 1234 5678"
+CHATBOT_PRICES = (
+    "Plan 4 clases: $X / mes · Plan 8 clases: $Y / mes · "
+    "Clase suelta: $Z. Escríbenos para promociones."
+)
+# Tipos de clases (opcional, el bot también puede leer desde la BD)
+CHATBOT_CLASS_TYPES = ["Mat", "Reformer", "Full Power", "Grupales"]
+
+# (opcional) Link directo a Google Maps para que el bot lo ofrezca
+CHATBOT_MAP_URL = "https://maps.app.goo.gl/Ytz1CZTw9wGq4Jwh7"

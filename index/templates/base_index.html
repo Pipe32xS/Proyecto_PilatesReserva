@@ -1,13 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}PilatesReserva{% endblock %}</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- en <head> -->
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
+  <!-- Chatbot CSS externo -->
+  <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100 chat-theme--glass">
+
+  <!-- CSRF token accesible para JS -->
+  <div id="csrf-token" style="display:none">{% csrf_token %}</div>
 
   <!-- TOP BAR con el degradado azul-morado -->
   <div style="background: linear-gradient(90deg, #00c6ff, #7d5fff); color: white;">
@@ -276,8 +287,145 @@
     </script>
   </footer>
 
+  <!-- ===================== CHATBOT WIDGET ===================== -->
+  <!-- en el FAB -->
+<button id="chatFab" title="Chatear" aria-label="Abrir chat">
+  <span class="iconify" data-icon="teenyicons:robot-solid"></span>
+</button>
+
+
+  <div id="chatBox" role="dialog" aria-label="Asistente Pilates">
+    <header>
+      <div>
+        <div class="fw-semibold">Asistente Pilates</div>
+        <small class="opacity-75">Estoy para ayudarte ✨</small>
+      </div>
+      <button class="btn btn-sm btn-light" id="chatClose" aria-label="Cerrar"><i class="bi bi-x"></i></button>
+    </header>
+    <div id="chatMsgs"></div>
+    <form id="chatForm" autocomplete="off">
+      <input id="chatInput" type="text" placeholder="Escribe tu mensaje..." />
+      <button id="chatSend" type="submit"><i class="bi bi-send"></i> Enviar</button>
+    </form>
+  </div>
+
+  <script>
+    (function(){
+      const ENDPOINT = "{% url 'index:chat_api' %}";
+      const box = document.getElementById('chatBox');
+      const fab = document.getElementById('chatFab');
+      const closeBtn = document.getElementById('chatClose');
+      const msgs = document.getElementById('chatMsgs');
+      const form = document.getElementById('chatForm');
+      const input = document.getElementById('chatInput');
+      const STORAGE_KEY = 'pr-chat-history';
+
+      // --- helpers: escapar + linkify (para links clickeables) ---
+      function esc(s){
+        return (s || "").replace(/[&<>"']/g, ch => (
+          { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]
+        ));
+      }
+      function linkify(text){
+        const urlRe = /(https?:\/\/[^\s<>"']+)/g;
+        return text.replace(urlRe, url =>
+          `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        );
+      }
+      function toHtml(text){
+        return linkify(esc(text).replace(/\n/g, "<br>"));
+      }
+
+      function getCSRF(){
+        const n = document.querySelector('#csrf-token input[name=csrfmiddlewaretoken]');
+        if(n && n.value) return n.value;
+        const m = document.cookie.match(/(^|;)\s*csrftoken=([^;]+)/);
+        return m ? decodeURIComponent(m[2]) : '';
+      }
+
+      function saveHistory(){
+        try{
+          const data = Array.from(msgs.querySelectorAll('.bubble')).map(b => ({
+            t: b.classList.contains('me-bubble') ? 'me':'bot',
+            m: b.innerText
+          }));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }catch(e){}
+      }
+      function loadHistory(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(!raw) return;
+          const arr = JSON.parse(raw);
+          arr.forEach(o => appendBubble(o.m, o.t === 'me'));
+          scrollToBottom();
+        }catch(e){}
+      }
+
+      function appendBubble(text, isMe){
+        const div = document.createElement('div');
+        div.className = 'bubble ' + (isMe ? 'me-bubble':'bot-bubble');
+        div.innerHTML = toHtml(text);
+        msgs.appendChild(div);
+        saveHistory();
+      }
+
+      function scrollToBottom(){ msgs.scrollTop = msgs.scrollHeight; }
+      function toggle(open){ box.style.display = open ? 'block' : 'none'; if(open){ setTimeout(()=>input.focus(), 100);} }
+
+      fab.addEventListener('click', ()=> toggle(true));
+      closeBtn.addEventListener('click', ()=> toggle(false));
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const text = (input.value || '').trim();
+        if(!text) return;
+        appendBubble(text, true);
+        input.value = '';
+        scrollToBottom();
+
+        const wait = document.createElement('div');
+        wait.className = 'bubble bot-bubble';
+        wait.textContent = '…';
+        msgs.appendChild(wait);
+        scrollToBottom();
+
+        try{
+          const res = await fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRF() },
+            body: JSON.stringify({ message: text })
+          });
+          msgs.removeChild(wait);
+
+          if(res.ok){
+            const data = await res.json();
+            appendBubble(data.reply || 'Gracias por tu mensaje.', false);
+          }else{
+            appendBubble('Lo siento, no pude responder ahora. Intenta más tarde.', false);
+          }
+        }catch(err){
+          try{ msgs.removeChild(wait); }catch(_){}
+          appendBubble('Hubo un problema de conexión. Intenta nuevamente.', false);
+        }
+        scrollToBottom();
+      });
+
+      input.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' && !e.shiftKey){
+          e.preventDefault();
+          form.requestSubmit();
+        }
+      });
+
+      loadHistory();
+      if(!msgs.children.length){
+        appendBubble('¡Hola! Soy tu asistente de Pilates 🤸‍♀️\nPregúntame por horarios, precios, ubicación o cómo reservar.', false);
+      }
+    })();
+  </script>
+  <!-- =================== /CHATBOT WIDGET =================== -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
