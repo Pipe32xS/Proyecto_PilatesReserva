@@ -1,0 +1,283 @@
+{% extends "base_index.html" %}
+{% block title %}FAQs | PilatesReserva{% endblock %}
+
+{% block content %}
+<section id="faqs-pro" class="faqpro-section py-5">
+  <div class="container">
+
+    <!-- Encabezado -->
+    <header class="text-center mb-4">
+      <h1 class="fw-bold m-0">Preguntas frecuentes</h1>
+      <p class="text-secondary m-0">Todo lo esencial en un solo lugar. Usa el buscador o navega por categorías.</p>
+    </header>
+
+    <!-- Barra de control -->
+    <div class="faqpro-controls">
+      <div class="faqpro-search">
+        <i class="bi bi-search"></i>
+        <input id="faqproSearch" type="search" class="form-control" placeholder="Buscar: reservas, pagos, reformer, reembolsos…" aria-label="Buscar en preguntas frecuentes">
+        <button id="faqproClear" class="btn btn-link" type="button" aria-label="Borrar búsqueda"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="faqpro-actions">
+        <button id="faqproExpand" class="btn btn-outline-secondary btn-sm">Expandir todo</button>
+        <button id="faqproCollapse" class="btn btn-outline-secondary btn-sm">Contraer todo</button>
+      </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="faqpro-grid">
+      <!-- Contenido principal -->
+      <main class="faqpro-main">
+
+        <!-- Grupo: Reservas -->
+        <h2 id="cat-reservas" class="faqpro-cat">Reservas</h2>
+
+        <article id="faq-reservar" class="faqpro-item" data-cat="reservas">
+          <details>
+            <summary>
+              <span class="faqpro-num">1</span>
+              ¿Cómo reservo una clase?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Entra a <a href="{% url 'index:clases' %}">Clases</a>, elige modalidad e instructor y confirma tu horario.
+              Te llegará un correo con el detalle de tu reserva. También puedes reservar desde el botón
+              <strong>Reservar ahora</strong> del encabezado.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <article id="faq-reagendar" class="faqpro-item" data-cat="reservas">
+          <details>
+            <summary>
+              <span class="faqpro-num">2</span>
+              ¿Puedo reagendar o cancelar?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Puedes reagendar hasta <strong>12 horas</strong> antes desde tu panel o escribiéndonos.
+              Cancelaciones fuera de plazo se descuentan del plan para liberar el cupo de manera justa.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <article id="faq-espera" class="faqpro-item" data-cat="reservas">
+          <details>
+            <summary>
+              <span class="faqpro-num">3</span>
+              ¿Hay lista de espera si no quedan cupos?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Sí. Activa <em>“Avisarme si se libera”</em> en la clase llena. Si alguien cancela, te notificamos para que tomes el cupo.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- Grupo: Pagos -->
+        <h2 id="cat-pagos" class="faqpro-cat">Pagos</h2>
+
+        <article id="faq-medios" class="faqpro-item" data-cat="pagos">
+          <details>
+            <summary>
+              <span class="faqpro-num">4</span>
+              ¿Qué medios de pago aceptan?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Aceptamos tarjeta de débito/crédito, transferencias y billeteras según tu banco.
+              Para empresas emitimos boleta o factura electrónica.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <article id="faq-reembolsos" class="faqpro-item" data-cat="pagos">
+          <details>
+            <summary>
+              <span class="faqpro-num">5</span>
+              ¿Realizan reembolsos?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Si no puedes continuar por indicación médica, gestionamos reembolsos proporcionales
+              presentando el certificado. En otros casos evaluamos alternativas: congelar o traspasar.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- Grupo: Clases -->
+        <h2 id="cat-clases" class="faqpro-cat">Clases</h2>
+
+        <article id="faq-experiencia" class="faqpro-item" data-cat="clases">
+          <details>
+            <summary>
+              <span class="faqpro-num">6</span>
+              ¿Necesito experiencia previa?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              No. Tenemos niveles para principiantes y progresiones seguras. En la primera sesión
+              evaluamos postura y objetivos para recomendar Mat, Reformer o grupal.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <article id="faq-llevar" class="faqpro-item" data-cat="clases">
+          <details>
+            <summary>
+              <span class="faqpro-num">7</span>
+              ¿Qué debo llevar a la clase?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Ropa cómoda, toalla pequeña y botella de agua.
+              Nosotros ponemos colchonetas y equipos higienizados.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- Grupo: Salud -->
+        <h2 id="cat-salud" class="faqpro-cat">Salud & Seguridad</h2>
+
+        <article id="faq-sanitarias" class="faqpro-item" data-cat="salud">
+          <details>
+            <summary>
+              <span class="faqpro-num">8</span>
+              ¿Qué medidas sanitarias aplican?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Desinfección entre clases, ventilación del estudio y cupos limitados para mantener distancia.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <article id="faq-lesion" class="faqpro-item" data-cat="salud">
+          <details>
+            <summary>
+              <span class="faqpro-num">9</span>
+              Estoy con una lesión, ¿puedo asistir?
+              <i class="bi bi-chevron-down"></i>
+            </summary>
+            <div class="faqpro-body">
+              Sí, con autorización de tu profesional tratante. Adaptamos ejercicios para que entrenes con seguridad.
+              <div class="faqpro-tools">
+                <button class="btn btn-link p-0 faqpro-copy"><i class="bi bi-link-45deg me-1"></i>Copiar enlace</button>
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- CTA -->
+        <div class="text-center mt-4">
+          <a href="{% url 'index:contacto_publico' %}" class="btn btn-gradient rounded-3 px-4 py-2">
+            <i class="bi bi-chat-dots me-1"></i> ¿Aún con dudas? Escríbenos
+          </a>
+        </div>
+      </main>
+
+      <!-- Índice lateral -->
+      <aside class="faqpro-aside">
+        <nav class="faqpro-card">
+          <h6 class="fw-bold mb-2">Índice</h6>
+          <ul class="list-unstyled m-0 faqp-nav">
+            <li><a href="#cat-reservas">Reservas</a></li>
+            <li><a href="#cat-pagos">Pagos</a></li>
+            <li><a href="#cat-clases">Clases</a></li>
+            <li><a href="#cat-salud">Salud & Seguridad</a></li>
+          </ul>
+        </nav>
+
+        <div class="faqpro-card">
+          <h6 class="fw-bold mb-2">¿Necesitas ayuda?</h6>
+          <p class="text-secondary small mb-3">Respondemos de 09:00 a 20:00 hrs.</p>
+          <a class="btn w-100 btn-outline-secondary btn-sm mb-2" href="{% url 'index:contacto_publico' %}">
+            <i class="bi bi-envelope me-1"></i> Formulario de contacto
+          </a>
+          <a class="btn w-100 btn-gradient btn-sm" href="{% url 'index:clases' %}">
+            <i class="bi bi-calendar-check me-1"></i> Reservar clase
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- JS mínimo: buscar/limpiar, expandir/contraer, copiar enlace, abrir por #hash -->
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const q = $('#faqproSearch'), clearBtn = $('#faqproClear');
+  const expand = $('#faqproExpand'), collapse = $('#faqproCollapse');
+
+  const items = $$('.faqpro-item');
+  const detailsAll = () => $$('.faqpro-item details');
+
+  // Normaliza texto (sin tildes)
+  const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+  function filter(){
+    const text = norm(q.value.trim());
+    items.forEach(card => {
+      const match = !text || norm(card.textContent).includes(text);
+      card.classList.toggle('d-none', !match);
+    });
+  }
+
+  q?.addEventListener('input', filter);
+  clearBtn?.addEventListener('click', () => { q.value=''; filter(); q.focus(); });
+
+  expand?.addEventListener('click', () => detailsAll().forEach(d => d.open = true));
+  collapse?.addEventListener('click', () => detailsAll().forEach(d => d.open = false));
+
+  // Copiar enlace directo
+  $$('.faqpro-copy').forEach(btn => btn.addEventListener('click', async () => {
+    const id = btn.closest('.faqpro-item')?.id;
+    if(!id) return;
+    const url = new URL(location.href); url.hash = id;
+    try { await navigator.clipboard.writeText(url.toString());
+      btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Enlace copiado';
+      setTimeout(()=> btn.innerHTML = '<i class="bi bi-link-45deg me-1"></i>Copiar enlace', 1200);
+    } catch {}
+  }));
+
+  // Si viene con #hash, abre esa pregunta
+  function openHash(){
+    if(!location.hash) return;
+    const el = document.querySelector(location.hash);
+    const det = el?.querySelector('details');
+    if(det && !det.open) det.open = true;
+    el?.scrollIntoView({behavior:'smooth', block:'start'});
+    el?.classList.add('faqpro-focus');
+    setTimeout(()=> el?.classList.remove('faqpro-focus'), 1200);
+  }
+  window.addEventListener('hashchange', openHash);
+  openHash();
+})();
+</script>
+{% endblock %}

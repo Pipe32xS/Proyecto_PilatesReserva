@@ -142,3 +142,31 @@ def clases_grid(request):
             "reserve_url_name": "reservar_clase",
         },
     )
+
+
+def faqs(request):
+    return render(request, "index/faqs.html")
+
+
+def novedades(request):
+    posts = [
+        {
+            "title": "Nueva clase Reformer Intermedio",
+            "excerpt": "Agregamos horario martes y jueves 19:30. Cupos limitados.",
+            "tag": "Eventos",
+            "date": "2025-09-01",
+        },
+        {
+            "title": "Cómo activar el core en 3 pasos",
+            "excerpt": "Mini-guía práctica para sentir el trabajo sin sobrecargar cuello ni zona lumbar.",
+            "tag": "Consejos",
+            "date": "2025-08-26",
+        },
+        {
+            "title": "Promo de Primavera",
+            "excerpt": "Plan Mat 2x/semana con 15% OFF durante septiembre.",
+            "tag": "Promos",
+            "date": "2025-09-10",
+        },
+    ]
+    return render(request, "index/novedades.html", {"posts": posts})

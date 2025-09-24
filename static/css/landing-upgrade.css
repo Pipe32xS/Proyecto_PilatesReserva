@@ -1,0 +1,189 @@
+/* ====== LANDING UPGRADE – estilos aislados con prefijo lp- ====== */
+:root {
+    --lp-grad-1: #0dcaf0;
+    --lp-grad-2: #6f42c1;
+    --lp-surface: #ffffff;
+    --lp-ink: #0f172a;
+    --lp-muted: #64748b;
+    --lp-border: #e7edf3;
+    --lp-glass: rgba(255, 255, 255, .72);
+    --lp-ring: 0 10px 28px rgba(15, 23, 42, .12);
+}
+
+/* TRUST BAR (bajo navbar) */
+.lp-trustbar {
+    background: linear-gradient(90deg, rgba(13, 202, 240, .08), rgba(111, 66, 193, .08));
+    border-bottom: 1px solid var(--lp-border);
+}
+
+.lp-trustbar .item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: #0b1730;
+    opacity: .85;
+}
+
+.lp-trustbar .item i {
+    color: #0ea5e9;
+}
+
+/* STATS band */
+.lp-stats {
+    background: linear-gradient(90deg, var(--lp-grad-1), var(--lp-grad-2));
+    color: #fff;
+    border-radius: 18px;
+    box-shadow: var(--lp-ring);
+}
+
+.lp-stats .stat {
+    text-align: center;
+    padding: 18px 10px;
+}
+
+.lp-stats .num {
+    font-weight: 800;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    letter-spacing: .5px;
+}
+
+.lp-stats .lbl {
+    opacity: .9;
+}
+
+/* CARDS hover suave (puedes agregar la clase lp-card-hover a tus cards) */
+.lp-card-hover {
+    transition: transform .2s ease, box-shadow .2s ease;
+    will-change: transform;
+}
+
+.lp-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .08);
+}
+
+/* TESTIMONIOS */
+.lp-testimonials {
+    background: radial-gradient(1200px 400px at 15% -10%, rgba(13, 202, 240, .12), transparent),
+        radial-gradient(1000px 380px at 95% -20%, rgba(111, 66, 193, .12), transparent);
+    border: 1px solid var(--lp-border);
+    border-radius: 18px;
+    box-shadow: var(--lp-ring);
+}
+
+.lp-quote {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--lp-ink);
+}
+
+.lp-quote i {
+    color: #60a5fa;
+}
+
+.lp-autor {
+    color: var(--lp-muted);
+}
+
+/* FAQ */
+.lp-faq .accordion-button {
+    font-weight: 600;
+    background: #fff;
+}
+
+.lp-faq .accordion-item {
+    border: 1px solid var(--lp-border);
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .06);
+}
+
+/* STICKY CTA */
+.lp-sticky-cta {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 88px;
+    /* deja espacio al chatbot */
+    z-index: 1045;
+    background: var(--lp-glass);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--lp-border);
+    box-shadow: var(--lp-ring);
+    border-radius: 999px;
+    padding: 8px 12px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+}
+
+.lp-sticky-cta .btn {
+    border-radius: 999px;
+}
+
+@media (max-width: 576px) {
+    .lp-sticky-cta {
+        width: 95%;
+        bottom: 90px;
+    }
+}
+
+/* REVEAL anim (opcional) */
+.lp-reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all .5s ease;
+}
+
+.lp-reveal.is-in {
+    opacity: 1;
+    transform: none;
+}
+
+/* Accesibilidad / senior friendly (opcional, leve) */
+.lp-big-text p {
+    line-height: 1.75;
+}
+
+.lp-big-text .btn {
+    padding: .7rem 1.1rem;
+    font-weight: 600;
+}
+
+/* === HOTFIX HERO OVERLAY & STICKY === */
+.hero-img {
+    position: relative;
+    background-image: var(--hero-bg);
+    /* la imagen real la setea JS */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.hero-img::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* overlay más suave (se acabó la “neblina” 💨) */
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, .20),
+            rgba(255, 255, 255, .28) 35%,
+            rgba(255, 255, 255, .40) 70%,
+            rgba(255, 255, 255, .46));
+    pointer-events: none;
+}
+
+[data-theme="dark"] .hero-img::before {
+    background: linear-gradient(to bottom,
+            rgba(7, 10, 19, .55),
+            rgba(7, 10, 19, .55));
+}
+
+/* anclas más limpias (que no tape la subnav) */
+[id] {
+    scroll-margin-top: calc(var(--top-offset) + 24px);
+}
+
+.section-nav {
+    top: var(--top-offset);
+}

@@ -23,4 +23,6 @@ urlpatterns = [
     # Catálogo en grid
     path("catalogo/", views.clases_grid, name="clases_grid"),
     path("api/chat/", chat_api, name="chat_api"),
+    path("faqs/", views.faqs, name="faqs"),
+    path("novedades/", views.novedades, name="novedades"),
 ]

@@ -3,8 +3,8 @@
 {% block title %}Inicio | PilatesReserva{% endblock %}
 
 {% block content %}
-<!-- HERO con glass y degradado diagonal -->
-<section class="text-white"
+<!-- HERO: fondo con imagen + degradado -->
+<section id="idx-hero" class="text-white"
   style="background:
     linear-gradient(135deg, rgba(0,0,0,.65), rgba(0,0,0,.25)),
     url('https://images.squarespace-cdn.com/content/v1/65a715a0a14a675d05f66d98/6e49f011-1930-481f-b998-7e465102dd14/Reformer+Banner.jpg')
@@ -12,60 +12,61 @@
   <div class="container py-5">
     <div class="row">
       <div class="col-lg-8 col-xl-7">
+        
+        <!-- WRAP con halo externo alineado + nudge a la izquierda -->
+        <div class="idx-hero-wrap">
+          <!-- Tarjeta del hero (blanca / glass) -->
+          <div class="idx-hero-card rounded-4 p-4 p-md-5">
 
-        <!-- Glass card -->
-        <div class="rounded-4 p-4 p-md-5"
-             style="backdrop-filter: blur(6px);
-                    background: rgba(255,255,255,.08);
-                    border: 1px solid rgba(255,255,255,.15);">
-
-          <!-- Badge animada -->
-          <span class="badge rounded-pill mb-3"
-                style="background: rgba(13,202,240,.2); color: var(--bs-info); letter-spacing:.35px; transition:transform .25s;"
-                onmouseenter="this.style.transform='translateY(-2px)';"
-                onmouseleave="this.style.transform='none';">
-            Bienestar &amp; Movimiento
-          </span>
-
-          <h1 class="display-4 fw-bold lh-1">Transforma tu cuerpo con Pilates</h1>
-          <p class="lead mt-3 opacity-75 mb-4">
-            Fortalece tu cuerpo, mejora tu postura y recupera energía con clases guiadas para todos los niveles.
-          </p>
-
-          <!-- Botones -->
-          <div class="d-flex flex-wrap gap-3">
-            <a href="{% url 'login:login' %}?next={% url 'index:index' %}"
-               class="btn text-white fw-semibold px-4 py-2 rounded-3"
-               style="background: linear-gradient(90deg, #0dcaf0, #6f42c1); border: 0; transition: all .25s ease;"
-               onmouseenter="this.style.filter='brightness(1.06)'; this.style.transform='translateY(-2px)';"
-               onmouseleave="this.style.filter='none'; this.style.transform='none';">
-              Reservar Clase
-            </a>
-            <a href="{% url 'index:contacto_publico' %}"
-               class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3"
-               style="transition: all .25s ease;"
-               onmouseenter="this.style.backgroundColor='rgba(255,255,255,.95)'; this.style.color='#000'; this.style.transform='translateY(-2px)';"
-               onmouseleave="this.style.backgroundColor='transparent'; this.style.color='#fff'; this.style.transform='none';">
-              Contáctanos
-            </a>
-          </div>
-
-          <!-- Chips -->
-          <div class="d-flex flex-wrap gap-3 mt-4">
-            <span class="badge rounded-pill text-bg-light"
-                  style="opacity:.9; border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(2px);">
-              +500 clases reservadas
+            <!-- Badge animada -->
+            <span class="badge rounded-pill mb-3"
+                  style="background: rgba(13,202,240,.2); color: var(--bs-info); letter-spacing:.35px; transition:transform .25s;"
+                  onmouseenter="this.style.transform='translateY(-2px)';"
+                  onmouseleave="this.style.transform='none';">
+              Bienestar &amp; Movimiento
             </span>
-            <span class="badge rounded-pill text-bg-light"
-                  style="opacity:.9; border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(2px);">
-              Instructores certificados
-            </span>
-            <span class="badge rounded-pill text-bg-light"
-                  style="opacity:.9; border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(2px);">
-              Resultados visibles
-            </span>
-          </div>
-        </div>
+
+            <h1 class="display-4 fw-bold lh-1 text-dark">Transforma tu cuerpo con Pilates</h1>
+            <p class="lead mt-3 mb-4" style="color:#304057">
+              Fortalece tu cuerpo, mejora tu postura y recupera energía con clases guiadas para todos los niveles.
+            </p>
+
+            <!-- Botones -->
+            <div class="d-flex flex-wrap gap-3">
+              <a href="{% url 'login:login' %}?next={% url 'index:index' %}"
+                 class="btn text-white fw-semibold px-4 py-2 rounded-3"
+                 style="background: linear-gradient(90deg, #0dcaf0, #6f42c1); border: 0; transition: all .25s ease;"
+                 onmouseenter="this.style.filter='brightness(1.06)'; this.style.transform='translateY(-2px)';"
+                 onmouseleave="this.style.filter='none'; this.style.transform='none';">
+                Reservar Clase
+              </a>
+              <a href="{% url 'index:contacto_publico' %}"
+                 class="btn btn-outline-dark fw-semibold px-4 py-2 rounded-3"
+                 style="transition: all .25s ease;"
+                 onmouseenter="this.style.backgroundColor='rgba(0,0,0,.85)'; this.style.color='#fff'; this.style.transform='translateY(-2px)';"
+                 onmouseleave="this.style.backgroundColor='transparent'; this.style.color='#000'; this.style.transform='none';">
+                Contáctanos
+              </a>
+            </div>
+
+            <!-- Chips -->
+            <div class="d-flex flex-wrap gap-3 mt-4">
+              <span class="badge rounded-pill text-bg-light"
+                    style="opacity:.9; border:1px solid rgba(0,0,0,.08); backdrop-filter: blur(2px);">
+                +500 clases reservadas
+              </span>
+              <span class="badge rounded-pill text-bg-light"
+                    style="opacity:.9; border:1px solid rgba(0,0,0,.08); backdrop-filter: blur(2px);">
+                Instructores certificados
+              </span>
+              <span class="badge rounded-pill text-bg-light"
+                    style="opacity:.9; border:1px solid rgba(0,0,0,.08); backdrop-filter: blur(2px);">
+                Resultados visibles
+              </span>
+            </div>
+
+          </div><!-- /.idx-hero-card -->
+        </div><!-- /.idx-hero-wrap -->
 
       </div>
     </div>
@@ -191,80 +192,204 @@
   </div>
 </section>
 
-<!-- TESTIMONIOS (Carrusel) -->
-<section class="py-5">
+<!-- ===================== TESTIMONIOS ===================== -->
+<section class="py-5 lp-reveal" style="background: linear-gradient(180deg,#f7fbff 0,#ffffff 100%);">
   <div class="container">
-    <h2 class="fw-bold text-center mb-4">Lo que dicen nuestros alumnos</h2>
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div id="carouselTestimonios" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-          <div class="carousel-inner">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">Lo que dicen nuestros alumnos</h2>
+      <div class="text-muted">Experiencias reales de quienes ya entrenan con nosotros.</div>
+    </div>
 
-            <div class="carousel-item active">
-              <div class="card border-0 shadow-sm rounded-4 p-4">
-                <div class="d-flex align-items-start gap-3">
-                  <div class="rounded-circle d-flex align-items-center justify-content-center"
-                       style="width:56px;height:56px;background: rgba(13,202,240,.15);">
-                    <i class="bi bi-chat-quote-fill fs-4" style="color: var(--bs-info);"></i>
-                  </div>
-                  <div>
-                    <p class="mb-2 fst-italic">“Desde la primera clase noté cambios en mi postura. ¡El equipo es increíble!”</p>
-                    <div class="fw-semibold">Camila R.</div>
-                    <small class="text-secondary">Clase Reformer</small>
-                  </div>
+    <div class="position-relative tst-carousel">
+      <!-- Flechas -->
+      <button class="tst-arrow prev" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="prev" aria-label="Anterior">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button class="tst-arrow next" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="next" aria-label="Siguiente">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+
+      <div id="carouselTestimonios" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500" data-bs-touch="true" data-bs-pause="hover">
+        <!-- Indicadores -->
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="0" class="active" aria-current="true" aria-label="1"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="1" aria-label="2"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="2" aria-label="3"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="3" aria-label="4"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="4" aria-label="5"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="5" aria-label="6"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="6" aria-label="7"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="7" aria-label="8"></button>
+          <button type="button" data-bs-target="#carouselTestimonios" data-bs-slide-to="8" aria-label="9"></button>
+        </div>
+
+        <div class="carousel-inner">
+
+          <!-- 1 -->
+          <div class="carousel-item active d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">
+                “Llegué con dolor lumbar y cero experiencia. En seis semanas noté cambios en mi postura y en cómo respiro durante el día.
+                Las clases son claras, progresivas y el estudio se siente <em>muy</em> cuidado. Si necesito mover mi clase, ¡responden al tiro!”
+              </p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">RM</div>
+                <div>
+                  <div class="fw-semibold">Rodrigo M.</div>
+                  <small class="text-secondary">Plan Mat · 2x por semana</small>
                 </div>
               </div>
-            </div>
-
-            <div class="carousel-item">
-              <div class="card border-0 shadow-sm rounded-4 p-4">
-                <div class="d-flex align-items-start gap-3">
-                  <div class="rounded-circle d-flex align-items-center justify-content-center"
-                       style="width:56px;height:56px;background: rgba(13,202,240,.15);">
-                    <i class="bi bi-chat-quote-fill fs-4" style="color: var(--bs-info);"></i>
-                  </div>
-                  <div>
-                    <p class="mb-2 fst-italic">“La plataforma de reservas es muy fácil y flexible. Recomiendo 100%.”</p>
-                    <div class="fw-semibold">Rodrigo M.</div>
-                    <small class="text-secondary">Clase Mat</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="carousel-item">
-              <div class="card border-0 shadow-sm rounded-4 p-4">
-                <div class="d-flex align-items-start gap-3">
-                  <div class="rounded-circle d-flex align-items-center justify-content-center"
-                       style="width:56px;height:56px;background: rgba(13,202,240,.15);">
-                    <i class="bi bi-chat-quote-fill fs-4" style="color: var(--bs-info);"></i>
-                  </div>
-                  <div>
-                    <p class="mb-2 fst-italic">“Ambiente motivador y profesores muy atentos. ¡Me encanta la clase grupal!”</p>
-                    <div class="fw-semibold">Valentina S.</div>
-                    <small class="text-secondary">Clase Grupal</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            </article>
           </div>
 
-          <!-- Controles -->
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-          </button>
+          <!-- 2 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“La plataforma de reservas es muy fácil y flexible. Recomiendo 100%.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">CS</div>
+                <div>
+                  <div class="fw-semibold">Camila S.</div>
+                  <small class="text-secondary">Reformer</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 3 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“Se nota la formación de los profes. Corrigen de forma amable y te hacen progresar de verdad.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">MJ</div>
+                <div>
+                  <div class="fw-semibold">María J.</div>
+                  <small class="text-secondary">Mat</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 4 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">
+                “Volví a moverme después de una lesión de rodilla. Las adaptaciones me dieron mucha seguridad y pude retomar sin miedo.
+                Ahora incluso me siento más fuerte para mis entrenamientos de running.”
+              </p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">DV</div>
+                <div>
+                  <div class="fw-semibold">Daniela V.</div>
+                  <small class="text-secondary">Reformer</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 5 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“Vine por estrés y me quedé por la energía del grupo. Salgo livianita y con mejor ánimo.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">CP</div>
+                <div>
+                  <div class="fw-semibold">Carla P.</div>
+                  <small class="text-secondary">Grupal</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 6 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“El estudio es hermoso y siempre impecable. Me encanta el ambiente.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">FR</div>
+                <div>
+                  <div class="fw-semibold">Felipe R.</div>
+                  <small class="text-secondary">Grupal</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 7 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“Clases top ✅ Reservo desde el metro y listo.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">IT</div>
+                <div>
+                  <div class="fw-semibold">Ignacio T.</div>
+                  <small class="text-secondary">Mat Express</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 8 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“Me ayudaron con la respiración y la activación del core. Noté cambios en la postura del trabajo.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">SL</div>
+                <div>
+                  <div class="fw-semibold">Sofía L.</div>
+                  <small class="text-secondary">Mat + Reformer</small>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 9 -->
+          <div class="carousel-item d-flex justify-content-center align-items-center tst-item">
+            <article class="tst-card p-4 p-md-5 rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+              <p class="mb-3 fst-italic">“Horarios flexibles y recordatorios por mail. Todo fácil.”</p>
+              <div class="d-flex align-items-center gap-3">
+                <div class="tst-badge">AN</div>
+                <div>
+                  <div class="fw-semibold">Anto N.</div>
+                  <small class="text-secondary">Beginner</small>
+                </div>
+              </div>
+            </article>
+          </div>
 
         </div>
       </div>
     </div>
   </div>
 </section>
+<!-- =================== /TESTIMONIOS =================== -->
 
 <!-- GALERÍA -->
 <section class="py-5 bg-light">
@@ -380,5 +505,4 @@
   })();
 </script>
 {% endblock %}
-
 

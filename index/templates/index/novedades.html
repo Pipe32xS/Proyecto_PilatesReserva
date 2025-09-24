@@ -1,0 +1,319 @@
+{% extends "base_index.html" %}
+{% block title %}Novedades | PilatesReserva{% endblock %}
+
+{% block content %}
+<section id="newsx" class="newsx-section py-5">
+  <div class="container">
+
+    <!-- HERO -->
+    <header class="newsx-hero text-center mb-4">
+      <span class="chip small d-inline-flex align-items-center gap-1 mb-2"
+            style="border:1px solid var(--lp-border);background:var(--lp-surface-2)">
+        <i class="bi bi-megaphone"></i> Blog & Noticias
+      </span>
+      <h1 class="fw-bold m-0"><span class="newsx-grad">Novedades</span></h1>
+      <p class="text-secondary m-0">Consejos, anuncios, promociones y la historia que nos inspira.</p>
+    </header>
+
+    <!-- CONTROLES -->
+    <div class="newsx-controls">
+      <div class="newsx-search">
+        <i class="bi bi-search"></i>
+        <input id="newsxSearch" type="search" class="form-control"
+               placeholder="Buscar: reformer, respiración, eventos…"
+               aria-label="Buscar en novedades" />
+        <button id="newsxClear" class="btn btn-link" type="button" aria-label="Borrar búsqueda">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="newsx-chips" role="tablist" aria-label="Filtrar por categoría">
+        <button class="newsx-chip is-active" data-filter="all" role="tab">Todo</button>
+        <button class="newsx-chip" data-filter="consejos" role="tab">Consejos</button>
+        <button class="newsx-chip" data-filter="eventos" role="tab">Eventos</button>
+        <button class="newsx-chip" data-filter="promos" role="tab">Promos</button>
+        <button class="newsx-chip" data-filter="mk" role="tab">Historia MK</button>
+      </div>
+    </div>
+
+    <!-- DESTACADO (MICHAEL KING) -->
+    <article id="post-mk" class="newsx-feature newsx-item mb-4" data-cat="mk">
+      <figure class="newsx-feature-media">
+        <img loading="lazy"
+             src="https://images.unsplash.com/photo-1570829460005-c840387bb1ca?q=80&w=1600&auto=format&fit=crop"
+             alt="Estudio de Pilates con reformers" />
+        <figcaption class="newsx-feature-tag">Historia MK</figcaption>
+      </figure>
+      <div class="newsx-feature-body">
+        <h2 class="fw-bold">Michael King Pilates: la escuela que inspira nuestro enfoque</h2>
+        <p class="text-secondary mb-3">
+          Michael King ha sido una de las voces más influyentes del Pilates contemporáneo. Su método combina
+          precisión, musicalidad y fluidez, con énfasis en la calidad del movimiento por sobre la cantidad.
+        </p>
+        <details>
+          <summary class="newsx-more">Leer la historia completa</summary>
+          <div class="newsx-full">
+            <p>
+              Desde los años 80, King llevó el Pilates a nuevos públicos y formó instructores en decenas de países.
+              Con <em>MK Pilates</em>, profesionalizó la enseñanza con estándares didácticos claros y una visión de
+              progreso segura y sostenible para todo tipo de cuerpos.
+            </p>
+            <div class="newsx-timeline">
+              <div class="newsx-step">
+                <div class="newsx-dot"></div>
+                <div>
+                  <h5>1980s · Orígenes y exploración</h5>
+                  <p class="m-0">Inicio como intérprete y docente de movimiento. Adopta Pilates como base técnica.</p>
+                </div>
+              </div>
+              <div class="newsx-step">
+                <div class="newsx-dot"></div>
+                <div>
+                  <h5>1990s · Fundación de MK Pilates</h5>
+                  <p class="m-0">Nace el sistema educativo con una mirada contemporánea y musical del método.</p>
+                </div>
+              </div>
+              <div class="newsx-step">
+                <div class="newsx-dot"></div>
+                <div>
+                  <h5>2000s · Expansión internacional</h5>
+                  <p class="m-0">Certificaciones y workshops en Europa, América y Asia. Miles de instructores formados.</p>
+                </div>
+              </div>
+              <div class="newsx-step">
+                <div class="newsx-dot"></div>
+                <div>
+                  <h5>2010s–Hoy · Evolución continua</h5>
+                  <p class="m-0">Actualizaciones constantes, integración con evidencias y foco en la experiencia del alumno.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="newsx-strip my-3" aria-label="Galería del estudio">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?q=80&w=1200&auto=format&fit=crop" alt="Clase de reformer" />
+              <img loading="lazy" src="https://images.unsplash.com/photo-1599050751795-5f0b0c0f2a9d?q=80&w=1200&auto=format&fit=crop" alt="Trabajo de centro" />
+              <img loading="lazy" src="https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=1200&auto=format&fit=crop" alt="Postura y control" />
+              <img loading="lazy" src="https://images.unsplash.com/photo-1588286840104-8957b019727f?q=80&w=1200&auto=format&fit=crop" alt="Respiración y fluidez" />
+            </div>
+          </div>
+        </details>
+        <div class="newsx-actions">
+          <button class="btn btn-gradient btn-sm rounded-3 px-3 newsx-share"><i class="bi bi-share me-1"></i> Compartir</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- GRID DE TARJETAS -->
+    <div id="newsxGrid" class="newsx-grid">
+      <!-- EVENTO -->
+      <article id="post-reformer-flow" class="newsx-card newsx-item" data-cat="eventos">
+        <figure class="newsx-media">
+          <img loading="lazy"
+               src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1200&auto=format&fit=crop"
+               alt="Reformer Flow" />
+          <span class="newsx-tag">Evento</span>
+        </figure>
+        <div class="newsx-card-body">
+          <div class="newsx-meta"><span>Eventos</span><small> · 05 Sep</small></div>
+          <h3>Reformer Flow — nueva clase de media mañana</h3>
+          <p class="text-secondary m-0">Sesión fluida con transiciones musicales. Cupos limitados, nivel mixto.</p>
+          <details>
+            <summary class="newsx-more">Leer más</summary>
+            <div class="newsx-full">
+              <p>Ideal para quienes buscan continuidad y trabajo de resistencia con control. Duración 55 min.</p>
+              <p class="m-0"><a href="{% url 'index:clases' %}" class="btn btn-sm btn-gradient rounded-3">Reservar</a></p>
+            </div>
+          </details>
+          <div class="newsx-actions">
+            <button class="btn btn-outline-secondary btn-sm rounded-3 newsx-share"><i class="bi bi-share me-1"></i> Compartir</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- CONSEJO -->
+      <article id="post-respiracion" class="newsx-card newsx-item" data-cat="consejos">
+        <figure class="newsx-media">
+          <img loading="lazy"
+               src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1200&auto=format&fit=crop"
+               alt="Respiración costal" />
+          <span class="newsx-tag">Consejo</span>
+        </figure>
+        <div class="newsx-card-body">
+          <div class="newsx-meta"><span>Consejos</span><small> · 28 Ago</small></div>
+          <h3>Respiración lateral costal: tu aliado para el control</h3>
+          <p class="text-secondary m-0">Expande costillas hacia los lados sin elevar hombros. Más oxígeno, más control.</p>
+          <details>
+            <summary class="newsx-more">Cómo practicar</summary>
+            <div class="newsx-full">
+              <ul class="mb-2">
+                <li>Inhala por la nariz expandiendo costillas a los lados.</li>
+                <li>Exhala por la boca activando suave el centro.</li>
+                <li>Ritmo: lento, constante y silencioso.</li>
+              </ul>
+              <p class="m-0">Prueba 3×10 respiraciones antes de entrenar.</p>
+            </div>
+          </details>
+          <div class="newsx-actions">
+            <button class="btn btn-outline-secondary btn-sm rounded-3 newsx-share"><i class="bi bi-share me-1"></i> Compartir</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROMO -->
+      <article id="post-semana-core" class="newsx-card newsx-item" data-cat="promos">
+        <figure class="newsx-media">
+          <img loading="lazy"
+               src="https://images.unsplash.com/photo-1594737625785-c6683fcddc3a?q=80&w=1200&auto-format&fit=crop"
+               alt="Semana del Core" />
+          <span class="newsx-tag">Promo</span>
+        </figure>
+        <div class="newsx-card-body">
+          <div class="newsx-meta"><span>Promos</span><small> · 18 Ago</small></div>
+          <h3>Semana del Core — 20% dcto. en paquetes Mat</h3>
+          <p class="text-secondary m-0">Fortalece el centro con una progresión segura para todos los niveles.</p>
+          <details>
+            <summary class="newsx-more">Ver detalles</summary>
+            <div class="newsx-full">
+              <p>Válido hasta el domingo. Compatible con estudiantes nuevos. No acumulable con otras promos.</p>
+              <p class="m-0"><a href="{% url 'index:clases' %}" class="btn btn-sm btn-gradient rounded-3">Elegir plan</a></p>
+            </div>
+          </details>
+          <div class="newsx-actions">
+            <button class="btn btn-outline-secondary btn-sm rounded-3 newsx-share"><i class="bi bi-share me-1"></i> Compartir</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- CONSEJO -->
+      <article id="post-alineacion" class="newsx-card newsx-item" data-cat="consejos">
+        <figure class="newsx-media">
+          <img loading="lazy"
+               src="https://images.unsplash.com/photo-1552196563-55cd4e45efb3?q=80&w=1200&auto=format&fit=crop"
+               alt="Alineación en Pilates" />
+          <span class="newsx-tag">Consejo</span>
+        </figure>
+        <div class="newsx-card-body">
+          <div class="newsx-meta"><span>Consejos</span><small> · 09 Ago</small></div>
+          <h3>Checklist de alineación: 3 puntos rápidos</h3>
+          <p class="text-secondary m-0">Crecimiento axial, costillas alineadas y pelvis neutra. El resto fluye.</p>
+          <details>
+            <summary class="newsx-more">Leer más</summary>
+            <div class="newsx-full">
+              <ol class="mb-2">
+                <li>Imagina un hilo que te alarga desde la coronilla.</li>
+                <li>Costillas sobre pelvis, sin arquear la zona lumbar.</li>
+                <li>Pies activos y mirada suave al horizonte.</li>
+              </ol>
+              <p class="m-0">Haz este repaso antes de cada serie.</p>
+            </div>
+          </details>
+          <div class="newsx-actions">
+            <button class="btn btn-outline-secondary btn-sm rounded-3 newsx-share"><i class="bi bi-share me-1"></i> Compartir</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- EVENTO -->
+      <article id="post-workshop-espalda" class="newsx-card newsx-item" data-cat="eventos">
+        <figure class="newsx-media">
+          <img loading="lazy"
+               src="https://images.unsplash.com/photo-1575052812156-9f57de8bb1b7?q=80&w=1200&auto=format&fit=crop"
+               alt="Workshop de espalda sana" />
+          <span class="newsx-tag">Evento</span>
+        </figure>
+        <div class="newsx-card-body">
+          <div class="newsx-meta"><span>Eventos</span><small> · 30 Jul</small></div>
+          <h3>Workshop: Espalda sana con principios de Pilates</h3>
+          <p class="text-secondary m-0">Movilidad segura, estabilidad y respiración para tu columna.</p>
+          <details>
+            <summary class="newsx-more">Temario</summary>
+            <div class="newsx-full">
+              <ul class="mb-2">
+                <li>Movimientos seguros para zona lumbar.</li>
+                <li>Respiración y control del centro.</li>
+                <li>Programa de 10 minutos para casa.</li>
+              </ul>
+              <p class="m-0"><a href="{% url 'index:contacto_publico' %}" class="btn btn-sm btn-gradient rounded-3">Quiero información</a></p>
+            </div>
+          </details>
+          <div class="newsx-actions">
+            <button class="btn btn-outline-secondary btn-sm rounded-3 newsx-share"><i class="bi bi-share me-1"></i> Compartir</button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- CTA NEWSLETTER -->
+    <div class="newsx-cta mt-5 text-center">
+      <div class="newsx-cta-inner d-inline-flex align-items-center gap-2">
+        <i class="bi bi-envelope-open"></i>
+        <input type="email" class="form-control border-0" placeholder="Tu email para recibir novedades" style="min-width:260px;">
+        <button class="btn btn-gradient rounded-3 px-3">Suscribirme</button>
+      </div>
+      <div class="text-secondary small mt-2">Cero spam. Solo noticias útiles y promociones.</div>
+    </div>
+  </div>
+</section>
+
+<!-- JS: filtros, búsqueda, deep-link y compartir -->
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+
+  const chips = $$('.newsx-chip');
+  const items = $$('.newsx-item');
+  const q = $('#newsxSearch');
+  const qClear = $('#newsxClear');
+
+  let cat = 'all';
+  const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+  function apply(){
+    const text = norm(q?.value?.trim() || '');
+    items.forEach(el => {
+      const inCat = (cat==='all') || (el.dataset.cat||'').includes(cat);
+      const inText = !text || norm(el.textContent).includes(text);
+      el.classList.toggle('d-none', !(inCat && inText));
+    });
+  }
+
+  chips.forEach(btn => btn.addEventListener('click', () => {
+    chips.forEach(c => c.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    cat = btn.dataset.filter || 'all';
+    apply();
+  }));
+
+  q && q.addEventListener('input', apply);
+  qClear && qClear.addEventListener('click', ()=>{ q.value=''; apply(); q.focus(); });
+
+  // Compartir
+  $$('.newsx-share').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.newsx-item');
+      const title = card?.querySelector('h2,h3')?.innerText?.trim() || 'PilatesReserva';
+      const url = new URL(location.href);
+      url.hash = card?.id || '';
+      const data = { title: 'PilatesReserva', text: title, url: url.toString() };
+      try {
+        if (navigator.share) { await navigator.share(data); }
+        else { await navigator.clipboard.writeText(data.url); btn.classList.add('is-copied'); setTimeout(()=>btn.classList.remove('is-copied'), 1000); }
+      } catch {}
+    });
+  });
+
+  // Deep link
+  function openHash(){
+    if(location.hash){
+      const el = document.querySelector(location.hash);
+      if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.add('newsx-focus'); setTimeout(()=>el.classList.remove('newsx-focus'),1200); }
+    }
+  }
+  window.addEventListener('hashchange', openHash);
+  openHash();
+
+  apply();
+})();
+</script>
+{% endblock %}
